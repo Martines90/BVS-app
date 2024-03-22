@@ -1,9 +1,18 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { MainProps } from './types';
 
-const Main: React.FC = () => (
-  <Box sx={{ width: { xs: '100%', md: '80%' }, margin: '0 auto' }}>
-    <p>Welcome to the BVS App</p>
+const Main: React.FC<MainProps> = ({ children }) => (
+  <Box
+    sx={{
+      flexGrow: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}
+  >
+    {children}
   </Box>
 );
 
