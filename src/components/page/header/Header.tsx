@@ -1,12 +1,10 @@
 import * as React from 'react';
-import {AppBar, Toolbar, Typography} from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 
 const Header: React.FC = () => (
-  <AppBar position="static">
+  <AppBar position='static'>
     <Toolbar>
-      <Typography variant="h6">
-        BVS App
-      </Typography>
+      <Typography variant='h6'>BVS App</Typography>
     </Toolbar>
   </AppBar>
 );
