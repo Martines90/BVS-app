@@ -23,7 +23,14 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@pages': path.resolve(__dirname, 'src/pages'),
+      '@hooks': path.resolve(__dirname, 'src/hooks'),
+      '@global': path.resolve(__dirname, 'src/global'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
+    }
   },
   mode: 'development',
 };
