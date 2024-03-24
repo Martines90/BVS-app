@@ -15,12 +15,9 @@ const ModalContextWrapper: React.FC<ModalContextWrapperProps> = ({
   };
 
   const hideModal = () => {
-    console.log('hide modal');
     setIsVisible(false);
     setContent(null);
   };
-
-  console.log('isVisible:', isVisible);
 
   return (
     <ModalContext.Provider value={{ showModal, hideModal, content, isVisible }}>
