@@ -6,7 +6,7 @@ import { ModalContextWrapperProps } from './types';
 const ModalContextWrapper: React.FC<ModalContextWrapperProps> = ({
   children
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean | undefined>(undefined);
   const [content, setContent] = useState<React.ReactNode>(null);
 
   const showModal = (modalContent: React.ReactNode) => {
@@ -15,9 +15,12 @@ const ModalContextWrapper: React.FC<ModalContextWrapperProps> = ({
   };
 
   const hideModal = () => {
+    console.log('hide modal');
     setIsVisible(false);
     setContent(null);
   };
+
+  console.log('isVisible:', isVisible);
 
   return (
     <ModalContext.Provider value={{ showModal, hideModal, content, isVisible }}>

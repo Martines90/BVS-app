@@ -1,7 +1,8 @@
 import React from 'react';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import { ModalProps } from './types';
-import { Box, Modal } from '@mui/material';
+import { Box, IconButton, Modal } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const ModalComponent: React.FC<ModalProps> = ({ modalContent }) => {
   const { hideModal } = useModalContext();
@@ -20,9 +21,22 @@ const ModalComponent: React.FC<ModalProps> = ({ modalContent }) => {
           p: 4,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
+          outline: 'none' // Remove default focus outline
         }}
       >
+        <IconButton
+          aria-label='close'
+          onClick={hideModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         {modalContent}
       </Box>
     </Modal>
