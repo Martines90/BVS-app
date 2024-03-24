@@ -1,11 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
-import { ComponentChildren, UserMode, UserRole } from '@global/types/global';
-
-export type UserState = {
-  loggedIn: boolean;
-  mode: UserMode;
-  roles: UserRole[];
-};
+import { ComponentChildren } from '@global/types/global';
+import { UserState } from '@global/types/user';
 
 export interface IUserContext {
   setUserState: Dispatch<SetStateAction<UserState>>;
