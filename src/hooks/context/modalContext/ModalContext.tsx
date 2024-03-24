@@ -1,20 +1,14 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext } from 'react';
+import { IModalContext } from './types';
 
-type ModalContextType = {
-  showModal: (content: ReactNode) => void;
-  hideModal: () => void;
-  content: ReactNode;
-  isVisible: boolean;
-};
-
-const initialContext: ModalContextType = {
+const initialContext: IModalContext = {
   showModal: () => {},
   hideModal: () => {},
   content: null,
   isVisible: false
 };
 
-const ModalContext = createContext<ModalContextType>(initialContext);
+const ModalContext = createContext<IModalContext>(initialContext);
 
 export const useModalContext = () => useContext(ModalContext);
 
