@@ -4,6 +4,7 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
@@ -13,7 +14,8 @@
       "@pages/*": ["./pages/*"],
       "@hooks/*": ["./hooks/*"],
       "@global/*": ["./global/*"],
-      "@utils/*": ["./utils/*"]
+      "@utils/*": ["./utils/*"],
+      "@assets/*": ["./assets/*"]
     }
   },
   "include": ["src/**/*"]

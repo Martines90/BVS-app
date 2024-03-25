@@ -1,3 +1,5 @@
+import { BVS_Voting } from '@assets/contract';
+
 export enum USER_ROLES {
   CITIZEN = 'citizen',
   POLITICAL_ACTOR = 'political_actor',
@@ -16,6 +18,7 @@ export type UserMode = USER_MODES | undefined;
 export type UserRole = USER_ROLES;
 
 export type UserState = {
-  connected: boolean;
+  metaAccount: any;
+  contract?: BVS_Voting;
   mode: UserMode;
 };

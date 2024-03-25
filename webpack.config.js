@@ -30,6 +30,7 @@ module.exports = {
       '@hooks': path.resolve(__dirname, 'src/hooks'),
       '@global': path.resolve(__dirname, 'src/global'),
       '@utils': path.resolve(__dirname, 'src/utils'),
+      '@assets': path.resolve(__dirname, 'src/assets'),
     }
   },
   mode: 'development',

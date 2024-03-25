@@ -4,7 +4,8 @@ import { IUserContext } from './types';
 export const initialUserContextValue: IUserContext = {
   setUserState: () => {},
   userState: {
-    connected: false,
+    metaAccount: undefined,
+    contract: undefined,
     mode: undefined
   }
 };

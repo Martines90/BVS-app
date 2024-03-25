@@ -11,7 +11,7 @@ const UserContextWrapper = ({
 }: UserContextWrapperProps) => {
   const [userState, setUserState] = useState(iUserState);
 
-  const initAdViewContext = useMemo(
+  const initUserContext = useMemo(
     () => ({
       setUserState,
       userState
@@ -24,7 +24,7 @@ const UserContextWrapper = ({
   }, [iUserState]);
 
   return (
-    <UserContext.Provider value={initAdViewContext}>
+    <UserContext.Provider value={initUserContext}>
       {children}
     </UserContext.Provider>
   );
