@@ -19,10 +19,6 @@ const UserContextWrapper = ({
     [userState]
   );
 
-  useEffect(() => {
-    setUserState(iUserState);
-  }, [iUserState]);
-
   return (
     <UserContext.Provider value={initUserContext}>
       {children}

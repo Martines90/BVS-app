@@ -4,9 +4,10 @@ import { IUserContext } from './types';
 export const initialUserContextValue: IUserContext = {
   setUserState: () => {},
   userState: {
-    metaAccount: undefined,
+    walletAddress: undefined,
     contract: undefined,
-    mode: undefined
+    mode: undefined,
+    chainId: undefined
   }
 };
 

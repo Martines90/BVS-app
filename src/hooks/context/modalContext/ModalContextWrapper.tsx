@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import ModalContext from './ModalContext';
 import Modal from '@components/general/Modal/Modal';
 import { ModalContextWrapperProps } from './types';
@@ -19,10 +19,22 @@ const ModalContextWrapper: React.FC<ModalContextWrapperProps> = ({
     setContent(null);
   };
 
+  const initModalContext = useMemo(
+    () => ({
+      showModal,
+      hideModal,
+      isVisible,
+      setIsVisible,
+      content,
+      setContent
+    }),
+    [isVisible, content]
+  );
+
   return (
-    <ModalContext.Provider value={{ showModal, hideModal, content, isVisible }}>
+    <ModalContext.Provider value={initModalContext}>
       {children}
-      {isVisible && <Modal modalContent={content} />}
+      {<Modal modalContent={content} />}
     </ModalContext.Provider>
   );
 };

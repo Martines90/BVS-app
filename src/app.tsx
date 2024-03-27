@@ -26,8 +26,8 @@ const App: React.FC = () => {
     <Router>
       <MetamaskContextWrapper>
         <ThemeProviderWrapper>
-          <ModalContextWrapper>
-            <UserContextWrapper>
+          <UserContextWrapper>
+            <ModalContextWrapper>
               <CssBaseline />
               <Box
                 sx={{
@@ -59,9 +59,9 @@ const App: React.FC = () => {
                 </Container>
                 <Footer />
               </Box>
-            </UserContextWrapper>
-            <UserChooseModeModal />
-          </ModalContextWrapper>
+              <UserChooseModeModal />
+            </ModalContextWrapper>
+          </UserContextWrapper>
         </ThemeProviderWrapper>
       </MetamaskContextWrapper>
     </Router>
