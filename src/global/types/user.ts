@@ -1,6 +1,6 @@
 import { BVS_Voting } from '@assets/contract';
 import { Bytes } from '@metamask/utils';
-import { AddressLike } from 'ethers';
+import { AddressLike, Contract } from 'ethers';
 
 export enum USER_ROLES {
   CITIZEN = 'citizen',
@@ -27,7 +27,7 @@ export type UserRole = USER_ROLES;
 
 export type UserState = {
   walletAddress?: AddressLike;
-  contract?: BVS_Voting;
+  contract?: Contract & BVS_Voting;
   chainId?: Bytes;
   mode?: UserMode;
 };

@@ -5,5 +5,5 @@ export type BVS_Contract = {
 
 export const BVS_CONTRACT = {
   chainId: '',
-  address: '0x25C47e31bf6C6C32c18eE8A3a84e8719D95cdbd4'
+  address: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 };

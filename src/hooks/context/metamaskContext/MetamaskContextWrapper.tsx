@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Modal from '@components/general/Modal/Modal';
+import React from 'react';
 import { MetamaskContextWrapperProps } from './types';
 import { MetaMaskProvider } from '@metamask/sdk-react';
 

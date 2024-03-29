@@ -1,23 +1,37 @@
-import { useEffect, useState } from "react";
+import { NO_PERSTISTANT_STATE_PROPS } from '@global/constants/flags';
+import { useEffect, useState } from 'react';
 
 export default function usePersistantState<T>(
-   key: string,
-   initialValue: T
+  key: string,
+  initialValue: T
 ): [T, (value: T) => void] {
-   const [state, setInternalState] = useState<T>(initialValue);
+  const [state, setInternalState] = useState<T>(initialValue);
 
-   useEffect(() => {
-       const value = localStorage.getItem(key);
+  useEffect(() => {
+    const value = window.sessionStorage.getItem(key);
 
-       if (!value) return;
+    if (!value) return;
 
-       setInternalState(JSON.parse(value));
-   }, [key]);
+    const obj = JSON.parse(value);
 
-   const setState = (value: T) => {
-       localStorage.setItem(key, JSON.stringify(value));
-       setInternalState(value);
-   };
+    // make sure if an object props has a function value at any level then it will set to undefined
+    Object.keys(obj).forEach((objKey) => {
+      if (
+        typeof obj[objKey] === 'object' &&
+        obj[objKey] !== null &&
+        NO_PERSTISTANT_STATE_PROPS.includes(objKey)
+      ) {
+        obj[objKey] = undefined;
+      }
+    });
 
-   return [state, setState];
+    setInternalState(obj);
+  }, [key]);
+
+  const setState = (value: T) => {
+    window.sessionStorage.setItem(key, JSON.stringify(value));
+    setInternalState(value);
+  };
+
+  return [state, setState];
 }

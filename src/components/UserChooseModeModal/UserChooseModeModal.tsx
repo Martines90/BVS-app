@@ -5,34 +5,50 @@ import {
   USER_MODES,
   UserMode
 } from '@global/types/user';
-import { getUserMode } from '@global/selectors/user';
+
 import { Box, Button, Stack, Typography } from '@mui/material';
 
 import { useSDK } from '@metamask/sdk-react';
-import MetaMaskOnboarding from '@metamask/onboarding';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 import connectToContract from '@hooks/contract/connectToContract';
 import { Bytes } from '@metamask/utils';
 
 const UserChooseModeModal: React.FC = () => {
-  const [metamaskInstalled, setMetamaskInstalled] = useState(
-    MetaMaskOnboarding.isMetaMaskInstalled()
-  );
-  const onboarding = React.useRef<any>();
+  const [metamaskInstalled, setMetamaskInstalled] = useState(true);
 
   const { userState, setUserState } = useUserContext();
-  const { sdk, connected, connecting, provider, chainId } = useSDK();
-  const userMode = getUserMode(userState);
+  const { sdk, connected, connecting, provider: ethereum, chainId } = useSDK();
 
   const [availableModes, setAvailableModes] = useState([USER_MODES.GUEST]);
 
+  useEffect(() => {
+    detectEthereumProvider().then(async (provider) => {
+      if (provider && provider.isMetaMask) {
+        await ethereum
+          ?.request({ method: 'eth_accounts' })
+          .then((accounts: any) => {
+            if (accounts.length === 0) {
+            } else {
+              //  handleConnectMetamask();
+            }
+          })
+          .catch(console.error);
+      } else {
+        setMetamaskInstalled(false);
+      }
+    });
+  }, []);
+
   React.useEffect(() => {
     const checkAvailableRoles = async () => {
-      const checkRole = async (role: string) =>
-        await userState.contract?.hasRole(
+      const checkRole = async (role: string) => {
+        const hasRole = await userState.contract?.hasRole(
           role,
           userState.walletAddress || '0x0'
         );
+        return hasRole;
+      };
       const availableModes = [
         USER_MODES.GUEST,
         ...((await checkRole(ContractRoleskeccak256.CITIZEN))
@@ -48,16 +64,12 @@ const UserChooseModeModal: React.FC = () => {
       setAvailableModes(availableModes);
     };
 
-    if (userState.contract && userState.walletAddress) {
+    if (userState.contract && userState.walletAddress && connected) {
       checkAvailableRoles();
     }
-  }, [userState]);
+  }, [userState, connected]);
 
   React.useEffect(() => {
-    if (!onboarding.current) {
-      onboarding.current = new MetaMaskOnboarding();
-    }
-
     if (window.ethereum) {
       window.ethereum.on('chainChanged', (chainId) => {
         window.location.reload();
@@ -75,13 +87,11 @@ const UserChooseModeModal: React.FC = () => {
     try {
       const account = ((await sdk?.connect()) as any[])?.[0];
 
-      const chainId = (await provider?.request({
+      const chainId = (await ethereum?.request({
         method: 'eth_chainId'
       })) as Bytes;
 
-      const contract = await connectToContract(provider);
-
-      console.log('account:', account, 'contract:', contract);
+      const contract = await connectToContract(ethereum);
 
       setUserState({
         ...userState,
@@ -95,23 +105,12 @@ const UserChooseModeModal: React.FC = () => {
   };
 
   const handleInstallMetamask = async () => {
-    if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
-      onboarding.current.startOnboarding();
-    }
+    sdk?.installer?.startDesktopOnboarding();
   };
 
   const enterAs = (mode: UserMode) => {
     setUserState({ ...userState, mode });
   };
-
-  console.log(
-    'connecting:',
-    connecting,
-    'connected:',
-    connected,
-    'userState:',
-    userState
-  );
 
   useEffect(() => {
     const callHandleConnectMetamask = async () => {
