@@ -9,7 +9,7 @@ const DashboardPage: React.FC = () => {
   const { userState } = useUserContext();
 
   useEffect(() => {
-    if (isVisible === undefined && !getUserMode(userState)) {
+    if (!isVisible && !getUserMode(userState)) {
       showModal(<UserChooseModeModal />);
     }
   }, []);

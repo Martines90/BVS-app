@@ -3,7 +3,6 @@ import { useUserContext } from '@hooks/context/userContext/UserContext';
 import {
   ContractRoleskeccak256,
   USER_MODES,
-  USER_ROLES,
   UserMode
 } from '@global/types/user';
 import { getUserMode } from '@global/selectors/user';
@@ -46,7 +45,6 @@ const UserChooseModeModal: React.FC = () => {
           ? [USER_MODES.ADMINISTRATOR]
           : [])
       ];
-      console.log('availableModes:', availableModes);
       setAvailableModes(availableModes);
     };
 
@@ -138,11 +136,11 @@ const UserChooseModeModal: React.FC = () => {
         >
           {!userState.walletAddress
             ? 'Connect to MetaMask 🦊'
-            : 'Connected to metamask'}
+            : 'Connected to metamask 🦊'}
         </Button>
       ) : (
         <Button variant='contained' onClick={handleInstallMetamask}>
-          Click here to install MetaMask!
+          Click here to install MetaMask 🦊!
         </Button>
       )}
       <Typography>

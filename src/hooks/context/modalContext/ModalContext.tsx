@@ -4,6 +4,8 @@ import { IModalContext } from './types';
 const initialContext: IModalContext = {
   showModal: () => {},
   hideModal: () => {},
+  setIsVisible: () => {},
+  setContent: () => {},
   content: null,
   isVisible: false
 };
