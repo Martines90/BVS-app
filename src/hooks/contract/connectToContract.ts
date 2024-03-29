@@ -10,6 +10,7 @@ const connectToContract = async (
   const provider = new ethers.BrowserProvider(ethereum);
 
   const signer = await provider.getSigner();
+
   const contract = new ethers.Contract(
     BVS_CONTRACT.address,
     BVS_VotingJSON.abi,

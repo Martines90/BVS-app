@@ -6,16 +6,19 @@ import {
   UserMode
 } from '@global/types/user';
 
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Stack, Typography } from '@mui/material';
 
 import { useSDK } from '@metamask/sdk-react';
 import detectEthereumProvider from '@metamask/detect-provider';
 
 import connectToContract from '@hooks/contract/connectToContract';
 import { Bytes } from '@metamask/utils';
+import { BVS_CONTRACT } from '@global/constants/blockchain';
+import { AlertMessage } from '@global/types/global';
 
 const UserChooseModeModal: React.FC = () => {
   const [metamaskInstalled, setMetamaskInstalled] = useState(true);
+  const [alerts, setAlerts] = useState<AlertMessage>({});
 
   const { userState, setUserState } = useUserContext();
   const { sdk, connected, connecting, provider: ethereum, chainId } = useSDK();
@@ -87,11 +90,58 @@ const UserChooseModeModal: React.FC = () => {
     try {
       const account = ((await sdk?.connect()) as any[])?.[0];
 
-      const chainId = (await ethereum?.request({
-        method: 'eth_chainId'
-      })) as Bytes;
+      const chainId = parseInt(
+        (await ethereum?.request({
+          method: 'eth_chainId'
+        })) as string
+      );
 
-      const contract = await connectToContract(ethereum);
+      if (chainId !== BVS_CONTRACT.chainId) {
+        setAlerts({
+          ...alerts,
+          incorrectChainId: {
+            severity: 'error',
+            text: `Wrong chain id! Connect to: ${BVS_CONTRACT.chainId}`
+          }
+        });
+
+        setUserState({
+          ...userState,
+          walletAddress: account,
+          chainId
+        });
+        return;
+      } else {
+        delete alerts.incorrectChainId;
+        setAlerts({
+          ...alerts
+        });
+      }
+
+      let contract;
+
+      try {
+        contract = await connectToContract(ethereum);
+
+        if ((await contract.getDeployedCode()) === null) {
+          contract = undefined;
+          throw new Error('No contract found');
+        } else {
+          delete alerts.failedContractConnection;
+          setAlerts({
+            ...alerts
+          });
+        }
+      } catch (err: any) {
+        console.log('error', err);
+        setAlerts({
+          ...alerts,
+          failedContractConnection: {
+            severity: 'error',
+            text: `Something went wrong with BVS_Voting smart contract connection: ${err}`
+          }
+        });
+      }
 
       setUserState({
         ...userState,
@@ -142,28 +192,36 @@ const UserChooseModeModal: React.FC = () => {
           Click here to install MetaMask 🦊!
         </Button>
       )}
-      <Typography>
-        <Stack>
-          <Typography>
-            <Box fontWeight='bold' display='inline'>
-              Connected chain:
-            </Box>
-            {` ${userState.chainId || ''}`}
-          </Typography>
-          <Typography>
-            <Box fontWeight='bold' display='inline'>
-              Connected account:
-            </Box>
-            {` ${userState.walletAddress || ''}`}
-          </Typography>
-          <Typography>
-            <Box fontWeight='bold' display='inline'>
-              Current mode:
-            </Box>
-            {` ${userState.mode || ''}`}
-          </Typography>
-        </Stack>
-      </Typography>
+      <Stack>
+        {alerts.failedContractConnection && (
+          <Alert severity={alerts.failedContractConnection.severity}>
+            {alerts.failedContractConnection.text}
+          </Alert>
+        )}
+        <Box>
+          <Box fontWeight='bold' display='inline'>
+            Connected chain:
+          </Box>
+          {` ${userState.chainId || ''}`}
+        </Box>
+        {alerts.incorrectChainId && (
+          <Alert severity={alerts.incorrectChainId.severity}>
+            {alerts.incorrectChainId.text}
+          </Alert>
+        )}
+        <Box>
+          <Box fontWeight='bold' display='inline'>
+            Connected account:
+          </Box>
+          {` ${userState.walletAddress || ''}`}
+        </Box>
+        <Box>
+          <Box fontWeight='bold' display='inline'>
+            Current mode:
+          </Box>
+          {` ${userState.mode || ''}`}
+        </Box>
+      </Stack>
       Modes you have access:
       <Button
         variant='contained'

@@ -28,6 +28,6 @@ export type UserRole = USER_ROLES;
 export type UserState = {
   walletAddress?: AddressLike;
   contract?: Contract & BVS_Voting;
-  chainId?: Bytes;
+  chainId?: number;
   mode?: UserMode;
 };
