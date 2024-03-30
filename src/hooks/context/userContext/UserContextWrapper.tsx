@@ -1,8 +1,6 @@
 import { useMemo, useState, useEffect, SetStateAction, Dispatch } from 'react';
 
-import UserContext, {
-  initialUserContextValue
-} from '@hooks/context/userContext/UserContext';
+import UserContext, { initialUserContextValue } from './UserContext';
 import { IUserContext, UserContextWrapperProps } from './types';
 import usePersistantState from '@hooks/persistentState/usePersistentState';
 import { UserState } from '@global/types/user';

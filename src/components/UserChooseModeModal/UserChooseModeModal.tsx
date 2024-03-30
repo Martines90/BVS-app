@@ -14,11 +14,14 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import connectToContract from '@hooks/contract/connectToContract';
 import { Bytes } from '@metamask/utils';
 import { BVS_CONTRACT } from '@global/constants/blockchain';
-import { AlertMessage } from '@global/types/global';
+import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
+import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
 const UserChooseModeModal: React.FC = () => {
   const [metamaskInstalled, setMetamaskInstalled] = useState(true);
-  const [alerts, setAlerts] = useState<AlertMessage>({});
+  const { alerts } = useInfoContext();
+
+  const { handleConnectMetamask } = useHandleConnectMetamask();
 
   const { userState, setUserState } = useUserContext();
   const { sdk, connected, connecting, provider: ethereum, chainId } = useSDK();
@@ -86,74 +89,6 @@ const UserChooseModeModal: React.FC = () => {
     }
   }, []);
 
-  const handleConnectMetamask = async () => {
-    try {
-      const account = ((await sdk?.connect()) as any[])?.[0];
-
-      const chainId = parseInt(
-        (await ethereum?.request({
-          method: 'eth_chainId'
-        })) as string
-      );
-
-      if (chainId !== BVS_CONTRACT.chainId) {
-        setAlerts({
-          ...alerts,
-          incorrectChainId: {
-            severity: 'error',
-            text: `Wrong chain id! Connect to: ${BVS_CONTRACT.chainId}`
-          }
-        });
-
-        setUserState({
-          ...userState,
-          walletAddress: account,
-          chainId
-        });
-        return;
-      } else {
-        delete alerts.incorrectChainId;
-        setAlerts({
-          ...alerts
-        });
-      }
-
-      let contract;
-
-      try {
-        contract = await connectToContract(ethereum);
-
-        if ((await contract.getDeployedCode()) === null) {
-          contract = undefined;
-          throw new Error('No contract found');
-        } else {
-          delete alerts.failedContractConnection;
-          setAlerts({
-            ...alerts
-          });
-        }
-      } catch (err: any) {
-        console.log('error', err);
-        setAlerts({
-          ...alerts,
-          failedContractConnection: {
-            severity: 'error',
-            text: `Something went wrong with BVS_Voting smart contract connection: ${err}`
-          }
-        });
-      }
-
-      setUserState({
-        ...userState,
-        walletAddress: account,
-        contract,
-        chainId
-      });
-    } catch (err) {
-      console.warn('failed to connect..', err);
-    }
-  };
-
   const handleInstallMetamask = async () => {
     sdk?.installer?.startDesktopOnboarding();
   };
@@ -161,19 +96,6 @@ const UserChooseModeModal: React.FC = () => {
   const enterAs = (mode: UserMode) => {
     setUserState({ ...userState, mode });
   };
-
-  useEffect(() => {
-    const callHandleConnectMetamask = async () => {
-      await handleConnectMetamask();
-    };
-    if (
-      !connecting &&
-      connected &&
-      (!userState.contract || !userState.walletAddress)
-    ) {
-      callHandleConnectMetamask();
-    }
-  }, [connecting, connected]);
 
   return (
     <Stack direction='column' spacing={2}>
@@ -219,7 +141,7 @@ const UserChooseModeModal: React.FC = () => {
           <Box fontWeight='bold' display='inline'>
             Current mode:
           </Box>
-          {` ${userState.mode || ''}`}
+          {` ${userState.mode?.toUpperCase() || ''}`}
         </Box>
       </Stack>
       Modes you have access:
