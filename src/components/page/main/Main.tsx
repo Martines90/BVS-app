@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box } from '@mui/material';
 import { MainProps } from './types';
 
-import UserChooseModeModal from '@components/UserChooseModeModal/UserChooseModeModal';
+import ChooseMode from '@components/ChooseMode/ChooseMode';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { useSDK } from '@metamask/sdk-react';
@@ -27,7 +27,7 @@ const Main: React.FC<MainProps> = ({ children }) => {
 
       if ((!isUserSelectedMode || !suceeded) && !isVisible) {
         console.log('show modal:', connected);
-        showModal(<UserChooseModeModal />);
+        showModal(<ChooseMode />);
         setRenderMainContent(false);
       } else {
         if (isVisible) {

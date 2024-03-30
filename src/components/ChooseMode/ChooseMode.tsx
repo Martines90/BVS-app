@@ -6,18 +6,15 @@ import {
   UserMode
 } from '@global/types/user';
 
-import { Alert, Box, Button, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Stack } from '@mui/material';
 
 import { useSDK } from '@metamask/sdk-react';
 import detectEthereumProvider from '@metamask/detect-provider';
 
-import connectToContract from '@hooks/contract/connectToContract';
-import { Bytes } from '@metamask/utils';
-import { BVS_CONTRACT } from '@global/constants/blockchain';
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
-const UserChooseModeModal: React.FC = () => {
+const ChooseMode: React.FC = () => {
   const [metamaskInstalled, setMetamaskInstalled] = useState(true);
   const { alerts } = useInfoContext();
 
@@ -188,4 +185,4 @@ const UserChooseModeModal: React.FC = () => {
   );
 };
 
-export default UserChooseModeModal;
+export default ChooseMode;

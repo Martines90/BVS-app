@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 import ToggleThemeButton from '@components/navigationBar/toggleThemeModeButton/ToggleThemeModeButton';
-import UserChooseModeModal from '@components/UserChooseModeModal/UserChooseModeModal';
+import ChooseMode from '@components/ChooseMode/ChooseMode';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 
 const Header: React.FC = () => {
@@ -13,10 +13,7 @@ const Header: React.FC = () => {
         <Typography variant='h6' style={{ flexGrow: 1 }}>
           BVS App
         </Typography>
-        <Button
-          color='warning'
-          onClick={() => showModal(<UserChooseModeModal />)}
-        >
+        <Button color='warning' onClick={() => showModal(<ChooseMode />)}>
           Manage connection
         </Button>
         <ToggleThemeButton />
