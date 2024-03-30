@@ -1,5 +1,4 @@
-import { BVS_Voting } from '@assets/contract';
-import { Bytes } from '@metamask/utils';
+import { BVS_Voting } from '@blockchain/contract';
 import { AddressLike, Contract } from 'ethers';
 
 export enum USER_ROLES {

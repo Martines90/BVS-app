@@ -1,5 +1,5 @@
-import BVS_VotingJSON from '@assets/contract/BVS_Voting.json';
-import { BVS_Voting } from '@assets/contract';
+import BVS_VotingJSON from 'blockchian/contract/BVS_Voting.json';
+import { BVS_Voting } from 'blockchian/contract';
 import { ethers, Contract } from 'ethers';
 
 import { BVS_CONTRACT } from '@global/constants/blockchain';
