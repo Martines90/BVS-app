@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 import ToggleThemeButton from '@components/navigationBar/toggleThemeModeButton/ToggleThemeModeButton';
-import ChooseMode from '@components/ConnectionAndModeManager/ConnectionAndModeManager';
+import ChooseMode from '@components/connectionAndModeManager/ConnectionAndModeManager';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 
 const Header: React.FC = () => {
