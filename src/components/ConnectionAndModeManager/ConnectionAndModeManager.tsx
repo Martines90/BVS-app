@@ -14,7 +14,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
-const ChooseMode: React.FC = () => {
+const ConnectionAndModeManager: React.FC = () => {
   const [metamaskInstalled, setMetamaskInstalled] = useState(true);
   const { alerts } = useInfoContext();
 
@@ -185,4 +185,4 @@ const ChooseMode: React.FC = () => {
   );
 };
 
-export default ChooseMode;
+export default ConnectionAndModeManager;

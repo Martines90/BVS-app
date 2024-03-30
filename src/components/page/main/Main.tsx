@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box } from '@mui/material';
 import { MainProps } from './types';
 
-import ChooseMode from '@components/ChooseMode/ChooseMode';
+import ChooseMode from '@components/ConnectionAndModeManager/ConnectionAndModeManager';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { useSDK } from '@metamask/sdk-react';
