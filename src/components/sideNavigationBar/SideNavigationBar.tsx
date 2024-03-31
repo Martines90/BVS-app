@@ -78,7 +78,7 @@ const SideNavigationBar = ({
           margin: 0
         }}
       >
-        <ListItem sx={{ padding: 0, margin: 0 }}>BVS</ListItem>
+        <ListItem sx={{ padding: 0, margin: 0, fontWeight: 600 }}>BVS</ListItem>
         <ListItem sx={{ padding: 0, margin: 0, justifyContent: 'end' }}>
           <IconButton onClick={handleDrawer}>
             {isLeftNaveOpen ? (
@@ -92,9 +92,12 @@ const SideNavigationBar = ({
       <Divider />
       <List>
         <List>
-          {menuItems.map(({ label, icon }, index) => (
+          {menuItems.map(({ label, icon, route }, index) => (
             <ListItem
               button
+              onClick={() => {
+                navigate(route);
+              }}
               key={label}
               sx={{
                 display: 'flex',

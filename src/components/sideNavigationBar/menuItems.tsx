@@ -1,6 +1,6 @@
-import PeopleIcon from '@mui/icons-material/People';
-import ImageIcon from '@mui/icons-material/Image';
 import PublicIcon from '@mui/icons-material/Public';
+import ImageIcon from '@mui/icons-material/Image';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
 import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
 import DnsIcon from '@mui/icons-material/Dns';
@@ -8,9 +8,9 @@ import DnsIcon from '@mui/icons-material/Dns';
 const menuItems = [
   {
     id: 0,
-    icon: <PeopleIcon />,
-    label: 'Authentication',
-    route: 'authentication'
+    icon: <HowToVoteIcon />,
+    label: 'Votings',
+    route: 'voting-pool'
   },
   {
     id: 1,

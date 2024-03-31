@@ -11,6 +11,7 @@ import MetamaskContextWrapper from '@hooks/context/metamaskContext/MetamaskConte
 import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
 import SideNavigationBar from '@components/sideNavigationBar/SideNavigationBar';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
+import PageNotFound from '@pages/page-not-found/PageNotFound';
 
 const Dashboard = lazy(() => import('@pages/dashboard/DashboardPage'));
 const VotingPool = lazy(() => import('@pages/voting-pool/VotingPoolPage'));
@@ -74,6 +75,7 @@ const App: React.FC = () => {
                               path='/voting/:votingKey'
                               element={<Voting />}
                             />
+                            <Route path='*' element={<PageNotFound />} />
                           </Routes>
                         </Suspense>
                       </Main>
