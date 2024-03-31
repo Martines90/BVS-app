@@ -9,13 +9,18 @@ import {
 import { Alert, Box, Button, Stack } from '@mui/material';
 
 import { useSDK } from '@metamask/sdk-react';
-import detectEthereumProvider from '@metamask/detect-provider';
 
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
-const ConnectionAndModeManager: React.FC = () => {
-  const [metamaskInstalled, setMetamaskInstalled] = useState(true);
+import MetaMaskOnboarding from '@metamask/onboarding';
+
+type ConnectionAndModeManagerProps = {
+  metamaskInstalled: boolean;
+};
+const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
+  metamaskInstalled
+}) => {
   const { alerts } = useInfoContext();
 
   const { handleConnectMetamask } = useHandleConnectMetamask();
@@ -25,23 +30,7 @@ const ConnectionAndModeManager: React.FC = () => {
 
   const [availableModes, setAvailableModes] = useState([USER_MODES.GUEST]);
 
-  useEffect(() => {
-    detectEthereumProvider().then(async (provider) => {
-      if (provider && provider.isMetaMask) {
-        await ethereum
-          ?.request({ method: 'eth_accounts' })
-          .then((accounts: any) => {
-            if (accounts.length === 0) {
-            } else {
-              //  handleConnectMetamask();
-            }
-          })
-          .catch(console.error);
-      } else {
-        setMetamaskInstalled(false);
-      }
-    });
-  }, []);
+  let onboarding: MetaMaskOnboarding;
 
   React.useEffect(() => {
     const checkAvailableRoles = async () => {
@@ -73,18 +62,22 @@ const ConnectionAndModeManager: React.FC = () => {
   }, [userState, connected]);
 
   React.useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on('chainChanged', (chainId) => {
-        window.location.reload();
-      });
-      window.ethereum.on('accountsChanged', (accounts) => {
-        setUserState({
-          ...userState,
-          walletAddress: (accounts as any[])?.[0]
+    if (metamaskInstalled) {
+      if (window.ethereum) {
+        window.ethereum.on('chainChanged', (chainId) => {
+          window.location.reload();
         });
-      });
+        window.ethereum.on('accountsChanged', (accounts) => {
+          setUserState({
+            ...userState,
+            walletAddress: (accounts as any[])?.[0]
+          });
+        });
+      }
     }
-  }, []);
+  }, [metamaskInstalled]);
+
+  console.log('metamaskInstalled:', metamaskInstalled);
 
   const handleInstallMetamask = async () => {
     sdk?.installer?.startDesktopOnboarding();

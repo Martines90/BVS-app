@@ -68,7 +68,7 @@ const UserActionsMenu: React.FC = () => {
         {/* Add other menu items here */}
         <MenuItem
           onClick={() => {
-            showModal(<ConnectionAndModeManager />);
+            showModal(<ConnectionAndModeManager metamaskInstalled />);
             handleClose();
           }}
         >

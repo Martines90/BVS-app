@@ -12,7 +12,8 @@ const MetamaskContextWrapper: React.FC<MetamaskContextWrapperProps> = ({
         dappMetadata: {
           name: 'Example React Dapp',
           url: window.location.href
-        }
+        },
+        checkInstallationImmediately: false
         // Other options
       }}
     >

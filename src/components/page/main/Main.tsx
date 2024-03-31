@@ -2,48 +2,87 @@ import * as React from 'react';
 import { Box } from '@mui/material';
 import { MainProps } from './types';
 
-import ChooseMode from '@components/connectionAndModeManager/ConnectionAndModeManager';
+import ConnectionAndModeManager from '@components/connectionAndModeManager/ConnectionAndModeManager';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
-import { useSDK } from '@metamask/sdk-react';
+
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 const Main: React.FC<MainProps> = ({ children }) => {
   const { showModal, hideModal, isVisible } = useModalContext();
   const { userState } = useUserContext();
   const { handleConnectMetamask } = useHandleConnectMetamask();
 
-  const [renderMainContent, setRenderMainContent] = React.useState(false);
+  const [metamaskInstalledAndConnected, setMetamaskInstalledAndConnected] =
+    React.useState(true);
 
-  const { sdk, connected, connecting, provider: ethereum, chainId } = useSDK();
+  const [metamaskInstalled, setMetamaskInstalled] = React.useState(true);
+
+  const [renderMainContent, setRenderMainContent] = React.useState(false);
 
   const isUserSelectedMode = !!userState.mode;
 
   // check metamask connection
 
   React.useEffect(() => {
-    const callHandleConnectMetamask = async () => {
-      const suceeded = await handleConnectMetamask();
+    const detectEthereumProviderCall = async () => {
+      const provider = (await detectEthereumProvider()) as any;
 
-      if ((!isUserSelectedMode || !suceeded) && !isVisible) {
-        console.log('show modal:', connected);
-        showModal(<ChooseMode />);
+      const accounts = await provider
+        ?.request({
+          method: 'eth_accounts'
+        })
+        .then((accounts: any) => {
+          console.log('load accounts');
+          setMetamaskInstalled(true);
+          return accounts;
+        })
+        .catch((err: any) => {
+          console.log('ERRR:', err);
+          setMetamaskInstalled(false);
+          setMetamaskInstalledAndConnected(false);
+        });
+      if (!accounts || accounts?.length === 0) {
+        setMetamaskInstalledAndConnected(false);
+      } else {
+        setMetamaskInstalledAndConnected(true);
+      }
+    };
+    detectEthereumProviderCall();
+  }, [isVisible]);
+
+  React.useEffect(() => {
+    const callHandleConnectMetamask = async () => {
+      let suceeded = false;
+      console.log(
+        'metamaskInstalledAndConnected',
+        metamaskInstalledAndConnected
+      );
+      if (metamaskInstalledAndConnected) {
+        suceeded = await handleConnectMetamask();
+      }
+
+      console.log('suceeded:', suceeded);
+
+      if (!suceeded) {
+        showModal(
+          <ConnectionAndModeManager metamaskInstalled={metamaskInstalled} />
+        );
         setRenderMainContent(false);
       } else {
-        if (isVisible) {
-          hideModal();
-        }
         setRenderMainContent(true);
       }
     };
+
     if (
-      !connecting &&
-      connected &&
-      (!userState.contract || !userState.walletAddress)
+      !metamaskInstalledAndConnected &&
+      !isVisible &&
+      (!userState.contract || !userState.walletAddress || !isUserSelectedMode)
     ) {
       callHandleConnectMetamask();
     }
-  }, [connecting, connected]);
+  }, [isVisible, metamaskInstalledAndConnected]);
 
   if (!renderMainContent) {
     return null;
