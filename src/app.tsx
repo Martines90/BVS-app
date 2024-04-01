@@ -1,5 +1,5 @@
-import React, { Suspense, lazy, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { Suspense, useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 
 import { Header, Main, Footer } from '@components/page';
@@ -11,19 +11,7 @@ import MetamaskContextWrapper from '@hooks/context/metamaskContext/MetamaskConte
 import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
 import SideNavigationBar from '@components/sideNavigationBar/SideNavigationBar';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
-import PageNotFound from '@pages/page-not-found/PageNotFound';
-
-const Dashboard = lazy(() => import('@pages/dashboard/DashboardPage'));
-const VotingPool = lazy(() => import('@pages/voting-pool/VotingPoolPage'));
-const Approvals = lazy(() => import('@pages/approvals/ApprovalsPage'));
-const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
-const PoliticalActors = lazy(
-  () => import('@pages/political-actors/PoliticalActorsPage')
-);
-const PoliticalActor = lazy(
-  () => import('@pages/political-actor/PoliticalActorPage')
-);
-const Voting = lazy(() => import('@pages/voting/VotingPage'));
+import Routes from '@components/routes/Routes';
 
 const App: React.FC = () => {
   const [isLeftNavOpen, setIsLeftNaveOpen] = useState(false);
@@ -57,28 +45,7 @@ const App: React.FC = () => {
                     <Container component='main' maxWidth={false}>
                       <Main>
                         <Suspense fallback={<div>Loading...</div>}>
-                          <Routes>
-                            <Route path='/' element={<Dashboard />} />
-                            <Route
-                              path='/voting-pool'
-                              element={<VotingPool />}
-                            />
-                            <Route path='/citizens' element={<Citizens />} />
-                            <Route path='/approvals' element={<Approvals />} />
-                            <Route
-                              path='/political-actors'
-                              element={<PoliticalActors />}
-                            />
-                            <Route
-                              path='/political-actor/:politicalActorKey'
-                              element={<PoliticalActor />}
-                            />
-                            <Route
-                              path='/voting/:votingKey'
-                              element={<Voting />}
-                            />
-                            <Route path='*' element={<PageNotFound />} />
-                          </Routes>
+                          <Routes />
                         </Suspense>
                       </Main>
                     </Container>

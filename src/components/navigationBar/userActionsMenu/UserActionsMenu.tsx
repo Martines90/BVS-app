@@ -12,12 +12,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import ConnectionAndModeManager from '@components/connectionAndModeManager/ConnectionAndModeManager';
+import { useNavigate } from 'react-router-dom';
 
 const UserActionsMenu: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { userState } = useUserContext();
+
+  const navigate = useNavigate();
 
   const { showModal } = useModalContext();
 
@@ -74,7 +77,14 @@ const UserActionsMenu: React.FC = () => {
         >
           Connection/mode
         </MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate('profile');
+            handleClose();
+          }}
+        >
+          My account
+        </MenuItem>
       </Menu>
     </Box>
   );
