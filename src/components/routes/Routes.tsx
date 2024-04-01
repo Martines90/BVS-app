@@ -3,6 +3,7 @@ import { Routes as Routes_, Route } from 'react-router-dom';
 
 const PageNotFound = lazy(() => import('@pages/page-not-found/PageNotFound'));
 const Dashboard = lazy(() => import('@pages/dashboard/DashboardPage'));
+const Community = lazy(() => import('@pages/community/CommunityPage'));
 const VotingPool = lazy(() => import('@pages/voting-pool/VotingPoolPage'));
 const Approvals = lazy(() => import('@pages/approvals/ApprovalsPage'));
 const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
@@ -23,6 +24,7 @@ const Routes = () => {
       <Route path='/voting-pool' element={<VotingPool />} />
       <Route path='/citizens' element={<Citizens />} />
       <Route path='/approvals' element={<Approvals />} />
+      <Route path='/community' element={<Community />} />
       <Route path='/political-actors' element={<PoliticalActors />} />
       <Route
         path='/political-actor/:politicalActorKey'

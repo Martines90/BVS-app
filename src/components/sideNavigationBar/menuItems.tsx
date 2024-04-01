@@ -38,27 +38,27 @@ const menuItems: MenuItem[] = [
   {
     icon: <PublicIcon />,
     label: 'Community',
-    route: 'dashboard',
+    route: 'community',
     modes: [],
     subMenuItems: [
       {
         label: 'Stats',
-        route: 'dashboard#stats',
+        route: 'community#stats',
         modes: []
       },
       {
         label: 'Administrators',
-        route: 'dashboard#administrators',
+        route: 'community#administrators',
         modes: []
       },
       {
         label: 'Political actors',
-        route: 'dashboard#political_actors',
+        route: 'community#political_actors',
         modes: []
       },
       {
         label: 'Citizens',
-        route: 'dashboard#citizens',
+        route: 'community#citizens',
         modes: []
       }
     ]
