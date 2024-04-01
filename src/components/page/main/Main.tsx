@@ -5,6 +5,7 @@ import useRenderMainContentCheck from '@hooks/check/useRenderMainContentCheck';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { USER_MODES } from '@global/types/user';
 import ApplyForCitizenshipWarning from '@components/alerts/applyForCitizenshipWarning/ApplyForCitizenshipWarning';
+import MainBreadcrumbs from './breadcrumbs/mainBreadcrumbs/MainBreadcrumbs';
 
 const Main: React.FC<MainProps> = ({ children }) => {
   const { userState } = useUserContext();
@@ -24,6 +25,7 @@ const Main: React.FC<MainProps> = ({ children }) => {
         alignItems: 'center'
       }}
     >
+      <MainBreadcrumbs />
       {userState.mode === USER_MODES.GUEST && <ApplyForCitizenshipWarning />}
       {children}
     </Box>

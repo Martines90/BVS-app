@@ -10,7 +10,7 @@ const menuItems: MenuItem[] = [
   {
     icon: <ThumbsUpDownIcon />,
     label: 'Approval pool',
-    route: '',
+    route: 'approvals',
     modes: [USER_MODES.ADMINISTRATOR],
     subMenuItems: [
       {
@@ -20,7 +20,7 @@ const menuItems: MenuItem[] = [
       },
       {
         label: 'Scheduled votings',
-        route: 'approvals#citizenship',
+        route: 'approvals#votings',
         modes: []
       },
       {
