@@ -13,11 +13,10 @@ import { useSDK } from '@metamask/sdk-react';
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
-import MetaMaskOnboarding from '@metamask/onboarding';
-
 type ConnectionAndModeManagerProps = {
   metamaskInstalled: boolean;
 };
+
 const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   metamaskInstalled
 }) => {
@@ -29,8 +28,6 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   const { sdk, connected, connecting, provider: ethereum, chainId } = useSDK();
 
   const [availableModes, setAvailableModes] = useState([USER_MODES.GUEST]);
-
-  let onboarding: MetaMaskOnboarding;
 
   React.useEffect(() => {
     const checkAvailableRoles = async () => {
@@ -76,8 +73,6 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
       }
     }
   }, [metamaskInstalled]);
-
-  console.log('metamaskInstalled:', metamaskInstalled);
 
   const handleInstallMetamask = async () => {
     sdk?.installer?.startDesktopOnboarding();

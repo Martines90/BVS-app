@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import Drawer from '@mui/material/Drawer';
 
 import List from '@mui/material/List';
@@ -7,12 +7,67 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import menuItems from './menuItems';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
+import { SubMenuItem } from './types';
+
+const renderSubMenuItems = (
+  subMenuItems: SubMenuItem[],
+  navigate: NavigateFunction,
+  isLeftNaveOpen: boolean,
+  iconTextStyle: any
+) => {
+  if (!subMenuItems.length) {
+    return null;
+  }
+
+  return (
+    <List
+      sx={{
+        width: SIDEBAR_NAV_DIMENSIONS.widthOpen,
+        flexFlow: 'column nowrap',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        ...{ display: isLeftNaveOpen ? 'flex' : 'none' },
+        paddingLeft: '40px',
+        paddingTop: '0px'
+      }}
+    >
+      {subMenuItems.map(({ label, route }, index) => {
+        return (
+          <ListItem
+            button
+            onClick={() => {
+              navigate(route);
+            }}
+            key={`${label}-${index}`}
+            sx={{
+              padding: 0,
+              display: 'flex',
+              justifyContent: 'initial'
+            }}
+          >
+            <ListItemText
+              sx={{
+                ...iconTextStyle.text,
+                '& span': {
+                  marginLeft: '-10px',
+                  fontWeight: '600',
+                  fontSize: '15px'
+                }
+              }}
+              primary={label}
+            />
+          </ListItem>
+        );
+      })}
+    </List>
+  );
+};
 
 const SideNavigationBar = ({
   setIsLeftNaveOpen,
@@ -31,7 +86,7 @@ const SideNavigationBar = ({
     icons: {
       color: 'rgba(255, 255, 255, 0.7)!important',
       minWidth: isLeftNaveOpen ? '56px' : '35px',
-      marginLeft: isLeftNaveOpen ? '20px' : '0px'
+      marginLeft: isLeftNaveOpen ? '0px' : '0px'
     },
     chevronIcon: {
       color: 'rgba(255, 255, 255, 0.7)!important'
@@ -80,7 +135,7 @@ const SideNavigationBar = ({
       >
         <ListItem sx={{ padding: 0, margin: 0, fontWeight: 600 }}>BVS</ListItem>
         <ListItem sx={{ padding: 0, margin: 0, justifyContent: 'end' }}>
-          <IconButton onClick={handleDrawer}>
+          <IconButton sx={{ padding: 0 }} onClick={handleDrawer}>
             {isLeftNaveOpen ? (
               <ChevronLeftIcon sx={iconTextStyle.chevronIcon} />
             ) : (
@@ -91,17 +146,18 @@ const SideNavigationBar = ({
       </List>
       <Divider />
       <List>
-        <List>
-          {menuItems.map(({ label, icon, route }, index) => (
+        {menuItems.map(({ label, icon, route, subMenuItems }, index) => (
+          <React.Fragment key={`${label}-${index}-fragment`}>
             <ListItem
               button
               onClick={() => {
                 navigate(route);
               }}
-              key={label}
+              key={`${label}-${index}`}
               sx={{
+                width: SIDEBAR_NAV_DIMENSIONS.widthOpen,
                 display: 'flex',
-                justifyContent: isLeftNaveOpen ? 'initial' : 'center'
+                justifyContent: isLeftNaveOpen ? 'initial' : 'flex-start'
               }}
             >
               <ListItemIcon sx={iconTextStyle.icons}>{icon}</ListItemIcon>
@@ -113,8 +169,15 @@ const SideNavigationBar = ({
                 primary={label}
               />
             </ListItem>
-          ))}
-        </List>
+
+            {renderSubMenuItems(
+              subMenuItems,
+              navigate,
+              isLeftNaveOpen,
+              iconTextStyle
+            )}
+          </React.Fragment>
+        ))}
       </List>
     </Drawer>
   );

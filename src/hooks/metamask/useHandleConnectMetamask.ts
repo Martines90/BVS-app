@@ -2,17 +2,22 @@ import { BVS_CONTRACT } from '@global/constants/blockchain';
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import connectToContract from '@hooks/contract/connectToContract';
-import { useSDK } from '@metamask/sdk-react';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 const useHandleConnectMetamask = () => {
   const { userState, setUserState } = useUserContext();
   const { alerts, setAlerts } = useInfoContext();
 
-  const { sdk, provider: ethereum } = useSDK();
-
   const handleConnectMetamask = async (): Promise<boolean> => {
     try {
-      const account = ((await sdk?.connect()) as any[])?.[0];
+      // const account = ((await sdk?.connect()) as any[])?.[0];
+      const ethereum = (await detectEthereumProvider()) as any;
+
+      const account = (
+        await ethereum?.request({
+          method: 'eth_accounts'
+        })
+      )[0];
 
       const chainId = parseInt(
         (await ethereum?.request({
@@ -36,10 +41,12 @@ const useHandleConnectMetamask = () => {
         });
         return false;
       } else {
-        delete alerts.incorrectChainId;
-        setAlerts({
-          ...alerts
-        });
+        if (alerts.incorrectChainId) {
+          delete alerts.incorrectChainId;
+          setAlerts({
+            ...alerts
+          });
+        }
       }
 
       let contract;
