@@ -42,7 +42,11 @@ const App: React.FC = () => {
                     }}
                   >
                     <Header />
-                    <Container component='main' maxWidth={false}>
+                    <Container
+                      component='main'
+                      sx={{ pb: '24px' }}
+                      maxWidth={false}
+                    >
                       <Main>
                         <Suspense fallback={<div>Loading...</div>}>
                           <Routes />

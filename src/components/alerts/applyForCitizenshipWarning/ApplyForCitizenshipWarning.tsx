@@ -17,7 +17,7 @@ const ApplyForCitizenshipWarning = () => {
       sx={{ margin: '10px auto' }}
       severity='warning'
       action={
-        <StyledLink onClick={() => navigate('profile')}>
+        <StyledLink onClick={() => navigate('citizens/apply-for-citizenship')}>
           Apply for citizenship
         </StyledLink>
       }
