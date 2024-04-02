@@ -7,13 +7,16 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import menuItems from './menuItems';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
 import { SubMenuItem } from './types';
+import { getFullRoute } from '@global/helpers/routing';
+
+const selectedMenuItemColor = '#c78484';
 
 const renderSubMenuItems = (
   subMenuItems: SubMenuItem[],
@@ -21,6 +24,9 @@ const renderSubMenuItems = (
   isLeftNaveOpen: boolean,
   iconTextStyle: any
 ) => {
+  const location = useLocation();
+  const fullRoute = getFullRoute(location);
+
   if (!subMenuItems.length) {
     return null;
   }
@@ -54,6 +60,9 @@ const renderSubMenuItems = (
             <ListItemText
               sx={{
                 ...iconTextStyle.text,
+                ...{
+                  color: fullRoute === route ? selectedMenuItemColor : 'inherit'
+                },
                 '& span': {
                   marginLeft: '-10px',
                   fontWeight: '600',
@@ -77,6 +86,8 @@ const SideNavigationBar = ({
   isLeftNaveOpen: boolean;
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const fullRoute = getFullRoute(location);
 
   const handleDrawer = () => {
     setIsLeftNaveOpen(!isLeftNaveOpen);
@@ -163,6 +174,10 @@ const SideNavigationBar = ({
               <ListItemIcon sx={iconTextStyle.icons}>{icon}</ListItemIcon>
               <ListItemText
                 sx={{
+                  ...{
+                    color:
+                      fullRoute === route ? selectedMenuItemColor : 'inherit'
+                  },
                   ...iconTextStyle.text,
                   ...{ display: isLeftNaveOpen ? 'block' : 'none' }
                 }}
