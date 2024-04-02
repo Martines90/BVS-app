@@ -50,6 +50,18 @@ const CitizenshipApplicationForm = () => {
     setHash(keccak256('' + accountPublicKey));
   }, []);
 
+  const callContractApplyForCitizenshipFn = async (
+    applicantEmailPubKeyHash: string
+  ) => {
+    await userState.contract?.applyForCitizenshipRole(
+      applicantEmailPubKeyHash,
+      {
+        value: contractInfo.citizenshipApplicationFee,
+        from: userState.walletAddress
+      }
+    );
+  };
+
   return (
     <Box sx={{ width: '100%', maxWidth: 500, m: 'auto' }}>
       <Typography variant='h5' gutterBottom sx={{ textAlign: 'center' }}>
@@ -58,10 +70,23 @@ const CitizenshipApplicationForm = () => {
       <Formik
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
-        onSubmit={(values, actions) => {
-          // Here you would handle form submission
-          console.log(values);
-          actions.setSubmitting(false);
+        onSubmit={(values, { setSubmitting }) => {
+          // Assuming `hash` is the state variable where the hash is stored
+          const applicationHash = keccak256(values.email + accountPublicKey);
+
+          // Call the smart contract function with the application hash
+          callContractApplyForCitizenshipFn(applicationHash)
+            .then((response) => {
+              // Handle the successful smart contract interaction
+              console.log(response);
+            })
+            .catch((error) => {
+              // Handle errors if the smart contract interaction fails
+              console.error(error);
+            })
+            .finally(() => {
+              setSubmitting(false); // Finish the submission process
+            });
         }}
       >
         {({ errors, touched, handleChange, values }) => (
@@ -77,7 +102,7 @@ const CitizenshipApplicationForm = () => {
                     {contractInfo.citizenshipApplicationFee ? (
                       <>
                         {contractInfo.citizenshipApplicationFee}
-                        {' (gwei)'}
+                        {' (wei)'}
                       </>
                     ) : (
                       <CircularProgress size={24} />
