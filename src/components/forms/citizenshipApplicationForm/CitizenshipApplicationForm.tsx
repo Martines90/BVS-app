@@ -9,12 +9,11 @@ import {
   Stack,
   Alert,
   List,
-  ListItem
+  ListItem,
+  CircularProgress
 } from '@mui/material';
 import { keccak256 } from 'js-sha3';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
-
-const citizenshipApplicationFee = '0.5 ETH'; // Example fee
 
 // Yup validation schema
 const validationSchema = Yup.object().shape({
@@ -23,21 +22,37 @@ const validationSchema = Yup.object().shape({
     .required('Email is required')
 });
 
+type ContractInfo = {
+  citizenshipApplicationFee?: number;
+};
+
 const CitizenshipApplicationForm = () => {
   const [hash, setHash] = useState('');
   const [email, setEmail] = useState('');
   const { userState } = useUserContext();
 
+  const [contractInfo, setContractInfo] = useState<ContractInfo>({});
+
   const accountPublicKey = userState.walletAddress as string; // Example public key
 
   useEffect(() => {
+    const loadContractInfo = async () => {
+      const citizenshipApplicationFee = Number(
+        (await userState.contract?.citizenRoleApplicationFee()) || 0
+      );
+
+      setContractInfo({
+        citizenshipApplicationFee
+      });
+    };
     // Pre-generate hash with an empty email
+    loadContractInfo();
     setHash(keccak256('' + accountPublicKey));
   }, []);
 
   return (
     <Box sx={{ width: '100%', maxWidth: 500, m: 'auto' }}>
-      <Typography variant='h5' gutterBottom>
+      <Typography variant='h5' gutterBottom sx={{ textAlign: 'center' }}>
         Citizenship Application Board
       </Typography>
       <Formik
@@ -58,7 +73,15 @@ const CitizenshipApplicationForm = () => {
                 </Typography>
                 <Stack spacing={2}>
                   <Typography>
-                    Citizenship application fee: {citizenshipApplicationFee}
+                    Citizenship application fee:{' '}
+                    {contractInfo.citizenshipApplicationFee ? (
+                      <>
+                        {contractInfo.citizenshipApplicationFee}
+                        {' (gwei)'}
+                      </>
+                    ) : (
+                      <CircularProgress size={24} />
+                    )}
                   </Typography>
                   <Typography>Your public key: {accountPublicKey}</Typography>
                   <Field
@@ -100,8 +123,15 @@ const CitizenshipApplicationForm = () => {
                   Important! Make sure:{' '}
                   <List sx={{ listStyleType: 'disc' }}>
                     <ListItem>
-                      You place in the email ({email}) the following
-                      informations:
+                      <Stack>
+                        <Stack direction={'row'}>
+                          <Typography>The email sent from:</Typography>
+                          <Typography sx={{ color: 'red' }}>{email}</Typography>
+                        </Stack>
+                        <Typography>
+                          and contains the following informations:
+                        </Typography>
+                      </Stack>
                     </ListItem>
                     <ListItem>
                       <Stack>
