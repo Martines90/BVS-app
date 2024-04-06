@@ -10,8 +10,8 @@ import type {
   DeferredTopicFilter,
   EventLog,
   TransactionRequest,
-  LogDescription,
-} from "ethers";
+  LogDescription
+} from 'ethers';
 
 export interface TypedDeferredTopicFilter<_TCEvent extends TypedContractEvent>
   extends DeferredTopicFilter {}
@@ -21,7 +21,9 @@ export interface TypedContractEvent<
   OutputTuple extends Array<any> = any,
   OutputObject = any
 > {
-  (...args: Partial<InputTuple>): TypedDeferredTopicFilter<
+  (
+    ...args: Partial<InputTuple>
+  ): TypedDeferredTopicFilter<
     TypedContractEvent<InputTuple, OutputTuple, OutputObject>
   >;
   name: string;
@@ -29,27 +31,18 @@ export interface TypedContractEvent<
   getFragment(...args: Partial<InputTuple>): EventFragment;
 }
 
-type __TypechainAOutputTuple<T> = T extends TypedContractEvent<
-  infer _U,
-  infer W
->
-  ? W
-  : never;
-type __TypechainOutputObject<T> = T extends TypedContractEvent<
-  infer _U,
-  infer _W,
-  infer V
->
-  ? V
-  : never;
+type __TypechainAOutputTuple<T> =
+  T extends TypedContractEvent<infer _U, infer W> ? W : never;
+type __TypechainOutputObject<T> =
+  T extends TypedContractEvent<infer _U, infer _W, infer V> ? V : never;
 
 export interface TypedEventLog<TCEvent extends TypedContractEvent>
-  extends Omit<EventLog, "args"> {
+  extends Omit<EventLog, 'args'> {
   args: __TypechainAOutputTuple<TCEvent> & __TypechainOutputObject<TCEvent>;
 }
 
 export interface TypedLogDescription<TCEvent extends TypedContractEvent>
-  extends Omit<LogDescription, "args"> {
+  extends Omit<LogDescription, 'args'> {
   args: __TypechainAOutputTuple<TCEvent> & __TypechainOutputObject<TCEvent>;
 }
 
@@ -65,33 +58,28 @@ export type MinEthersFactory<C, ARGS> = {
   deploy(...a: ARGS[]): Promise<C>;
 };
 
-export type GetContractTypeFromFactory<F> = F extends MinEthersFactory<
-  infer C,
-  any
->
-  ? C
-  : never;
-export type GetARGsTypeFromFactory<F> = F extends MinEthersFactory<any, any>
-  ? Parameters<F["deploy"]>
-  : never;
+export type GetContractTypeFromFactory<F> =
+  F extends MinEthersFactory<infer C, any> ? C : never;
+export type GetARGsTypeFromFactory<F> =
+  F extends MinEthersFactory<any, any> ? Parameters<F['deploy']> : never;
 
-export type StateMutability = "nonpayable" | "payable" | "view";
+export type StateMutability = 'nonpayable' | 'payable' | 'view';
 
-export type BaseOverrides = Omit<TransactionRequest, "to" | "data">;
+export type BaseOverrides = Omit<TransactionRequest, 'to' | 'data'>;
 export type NonPayableOverrides = Omit<
   BaseOverrides,
-  "value" | "blockTag" | "enableCcipRead"
+  'value' | 'blockTag' | 'enableCcipRead'
 >;
 export type PayableOverrides = Omit<
   BaseOverrides,
-  "blockTag" | "enableCcipRead"
+  'blockTag' | 'enableCcipRead'
 >;
-export type ViewOverrides = Omit<TransactionRequest, "to" | "data">;
-export type Overrides<S extends StateMutability> = S extends "nonpayable"
+export type ViewOverrides = Omit<TransactionRequest, 'to' | 'data'>;
+export type Overrides<S extends StateMutability> = S extends 'nonpayable'
   ? NonPayableOverrides
-  : S extends "payable"
-  ? PayableOverrides
-  : ViewOverrides;
+  : S extends 'payable'
+    ? PayableOverrides
+    : ViewOverrides;
 
 export type PostfixOverrides<A extends Array<any>, S extends StateMutability> =
   | A
@@ -107,9 +95,11 @@ export type DefaultReturnType<R> = R extends Array<any> ? R[0] : R;
 export interface TypedContractMethod<
   A extends Array<any> = Array<any>,
   R = any,
-  S extends StateMutability = "payable"
+  S extends StateMutability = 'payable'
 > {
-  (...args: ContractMethodArgs<A, S>): S extends "view"
+  (
+    ...args: ContractMethodArgs<A, S>
+  ): S extends 'view'
     ? Promise<DefaultReturnType<R>>
     : Promise<ContractTransactionResponse>;
 
@@ -123,9 +113,9 @@ export interface TypedContractMethod<
     ...args: ContractMethodArgs<A, S>
   ): Promise<ContractTransaction>;
   staticCall(
-    ...args: ContractMethodArgs<A, "view">
+    ...args: ContractMethodArgs<A, 'view'>
   ): Promise<DefaultReturnType<R>>;
   send(...args: ContractMethodArgs<A, S>): Promise<ContractTransactionResponse>;
   estimateGas(...args: ContractMethodArgs<A, S>): Promise<bigint>;
-  staticCallResult(...args: ContractMethodArgs<A, "view">): Promise<R>;
+  staticCallResult(...args: ContractMethodArgs<A, 'view'>): Promise<R>;
 }

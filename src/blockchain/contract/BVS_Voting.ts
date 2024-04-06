@@ -256,7 +256,7 @@ export interface BVS_VotingInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'applyForCitizenshipRole',
-    values: [string]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'applyForElections',
@@ -412,7 +412,7 @@ export interface BVS_VotingInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'grantCitizenRole',
-    values: [AddressLike, boolean]
+    values: [AddressLike, BytesLike, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'hasRole',
@@ -1045,7 +1045,7 @@ export interface BVS_Voting extends BaseContract {
   admins: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
 
   applyForCitizenshipRole: TypedContractMethod<
-    [_emailAddress: string],
+    [_emailPublicKeyCombinedHash: BytesLike],
     [void],
     'payable'
   >;
@@ -1209,7 +1209,11 @@ export interface BVS_Voting extends BaseContract {
   getVotingKeysLength: TypedContractMethod<[], [bigint], 'view'>;
 
   grantCitizenRole: TypedContractMethod<
-    [_account: AddressLike, _revokeCitizenRole: boolean],
+    [
+      _account: AddressLike,
+      _emailPublicKeyHash: BytesLike,
+      _revokeCitizenRole: boolean
+    ],
     [void],
     'nonpayable'
   >;
@@ -1503,7 +1507,11 @@ export interface BVS_Voting extends BaseContract {
   ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
   getFunction(
     nameOrSignature: 'applyForCitizenshipRole'
-  ): TypedContractMethod<[_emailAddress: string], [void], 'payable'>;
+  ): TypedContractMethod<
+    [_emailPublicKeyCombinedHash: BytesLike],
+    [void],
+    'payable'
+  >;
   getFunction(
     nameOrSignature: 'applyForElections'
   ): TypedContractMethod<[], [void], 'payable'>;
@@ -1687,7 +1695,11 @@ export interface BVS_Voting extends BaseContract {
   getFunction(
     nameOrSignature: 'grantCitizenRole'
   ): TypedContractMethod<
-    [_account: AddressLike, _revokeCitizenRole: boolean],
+    [
+      _account: AddressLike,
+      _emailPublicKeyHash: BytesLike,
+      _revokeCitizenRole: boolean
+    ],
     [void],
     'nonpayable'
   >;

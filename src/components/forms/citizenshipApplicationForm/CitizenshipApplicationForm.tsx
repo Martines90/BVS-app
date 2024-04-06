@@ -14,6 +14,11 @@ import {
 } from '@mui/material';
 import { keccak256 } from 'js-sha3';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
+import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { BytesLike } from 'ethers';
+import { ContractRoleskeccak256 } from '@global/types/user';
+import FormContainer from '../components/FormContainer';
+import FormTitle from '../components/FormTitle';
 
 // Yup validation schema
 const validationSchema = Yup.object().shape({
@@ -24,6 +29,8 @@ const validationSchema = Yup.object().shape({
 
 type ContractInfo = {
   citizenshipApplicationFee?: number;
+  appliedForCitizenship?: boolean;
+  hasCitizenRole?: boolean;
 };
 
 const CitizenshipApplicationForm = () => {
@@ -41,17 +48,29 @@ const CitizenshipApplicationForm = () => {
         (await userState.contract?.citizenRoleApplicationFee()) || 0
       );
 
+      const appliedForCitizenship =
+        ((await userState.contract?.citizenshipApplications(
+          accountPublicKey
+        )) || 0) != 0;
+
+      const hasCitizenRole = await userState.contract?.hasRole(
+        ContractRoleskeccak256.CITIZEN,
+        userState.walletAddress || '0x0'
+      );
+
       setContractInfo({
-        citizenshipApplicationFee
+        citizenshipApplicationFee,
+        appliedForCitizenship,
+        hasCitizenRole
       });
     };
     // Pre-generate hash with an empty email
     loadContractInfo();
-    setHash(keccak256('' + accountPublicKey));
+    setHash(keccak256('' + accountPublicKey).slice(0, 31));
   }, []);
 
   const callContractApplyForCitizenshipFn = async (
-    applicantEmailPubKeyHash: string
+    applicantEmailPubKeyHash: BytesLike
   ) => {
     await userState.contract?.applyForCitizenshipRole(
       applicantEmailPubKeyHash,
@@ -62,17 +81,29 @@ const CitizenshipApplicationForm = () => {
     );
   };
 
+  if (contractInfo.hasCitizenRole) {
+    return (
+      <Box sx={{ width: '100%', maxWidth: 500, m: 'auto' }}>
+        <Alert severity='success'>
+          Your citizen role has already been granted!
+        </Alert>
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ width: '100%', maxWidth: 500, m: 'auto' }}>
-      <Typography variant='h5' gutterBottom sx={{ textAlign: 'center' }}>
-        Citizenship Application Board
-      </Typography>
+    <FormContainer>
+      <FormTitle>Citizenship Application Board</FormTitle>
       <Formik
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
           // Assuming `hash` is the state variable where the hash is stored
-          const applicationHash = keccak256(values.email + accountPublicKey);
+          const applicationHash = getBytes32keccak256Hash(
+            values.email + accountPublicKey
+          );
+
+          console.log('applicationHash:', applicationHash);
 
           // Call the smart contract function with the application hash
           callContractApplyForCitizenshipFn(applicationHash)
@@ -94,44 +125,62 @@ const CitizenshipApplicationForm = () => {
             <Stack spacing={2}>
               <Stack spacing={2}>
                 <Typography variant='h6'>
-                  Step 1: Register as applicant
+                  Step 1: Apply for citizenship
                 </Typography>
-                <Stack spacing={2}>
-                  <Typography>
-                    Citizenship application fee:{' '}
-                    {contractInfo.citizenshipApplicationFee ? (
-                      <>
-                        {contractInfo.citizenshipApplicationFee}
-                        {' (wei)'}
-                      </>
-                    ) : (
-                      <CircularProgress size={24} />
-                    )}
-                  </Typography>
-                  <Typography>Your public key: {accountPublicKey}</Typography>
-                  <Field
-                    as={TextField}
-                    name='email'
-                    label='Email address'
-                    fullWidth
-                    error={touched.email && !!errors.email}
-                    helperText={touched.email && errors.email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      handleChange(e);
-                      setEmail(e.target.value);
-                      // Generate the hash whenever the email address changes
-                      setHash(keccak256(e.target.value + accountPublicKey));
-                    }}
-                  />
-                  <TextField
-                    disabled
-                    label='Application hash'
-                    value={hash} // Set the value to the state variable holding the hash
-                    fullWidth
-                  />
-                </Stack>
+                {!contractInfo.appliedForCitizenship ? (
+                  <Stack spacing={2}>
+                    <Typography>
+                      Citizenship application fee:{' '}
+                      {contractInfo.citizenshipApplicationFee ? (
+                        <>
+                          {contractInfo.citizenshipApplicationFee}
+                          {' (wei)'}
+                        </>
+                      ) : (
+                        <CircularProgress size={24} />
+                      )}
+                    </Typography>
+                    <Typography>Your public key: {accountPublicKey}</Typography>
+                    <Field
+                      as={TextField}
+                      name='email'
+                      label='Email address'
+                      fullWidth
+                      error={touched.email && !!errors.email}
+                      helperText={touched.email && errors.email}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        handleChange(e);
+                        setEmail(e.target.value);
+                        // Generate the hash whenever the email address changes
+                        setHash(
+                          keccak256(e.target.value + accountPublicKey).slice(
+                            0,
+                            31
+                          )
+                        );
+                      }}
+                    />
+                    <TextField
+                      disabled
+                      label='Application hash'
+                      value={hash} // Set the value to the state variable holding the hash
+                      fullWidth
+                    />
+                  </Stack>
+                ) : (
+                  <Stack spacing={2}>
+                    <Typography>
+                      You citizenship application in the BVS blockchian contract
+                      already registered.
+                    </Typography>
+                  </Stack>
+                )}
                 <Box>
-                  <Button variant='contained' type='submit'>
+                  <Button
+                    variant='contained'
+                    disabled={contractInfo.appliedForCitizenship}
+                    type='submit'
+                  >
                     Apply for citizenship
                   </Button>
                 </Box>
@@ -186,7 +235,7 @@ const CitizenshipApplicationForm = () => {
           </Form>
         )}
       </Formik>
-    </Box>
+    </FormContainer>
   );
 };
 

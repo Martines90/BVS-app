@@ -6,6 +6,7 @@ const Dashboard = lazy(() => import('@pages/dashboard/DashboardPage'));
 const Community = lazy(() => import('@pages/community/CommunityPage'));
 const VotingPool = lazy(() => import('@pages/voting-pool/VotingPoolPage'));
 const Approvals = lazy(() => import('@pages/approvals/ApprovalsPage'));
+
 const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
 const ApplyForCitizenship = lazy(
   () => import('@pages/citizens/ApplyForCitizenshipPage')
@@ -31,7 +32,10 @@ const Routes = () => {
         path='/citizens/apply-for-citizenship'
         element={<ApplyForCitizenship />}
       />
+
+      {/** Approvals */}
       <Route path='/approvals' element={<Approvals />} />
+
       <Route path='/community' element={<Community />} />
       <Route path='/political-actors' element={<PoliticalActors />} />
       <Route
