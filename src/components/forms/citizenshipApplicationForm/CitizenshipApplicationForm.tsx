@@ -19,6 +19,7 @@ import { BytesLike } from 'ethers';
 import { ContractRoleskeccak256 } from '@global/types/user';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
+import { CircuralProgressM } from '@components/general/Loading/components/CircuralProgress';
 
 // Yup validation schema
 const validationSchema = Yup.object().shape({
@@ -137,7 +138,7 @@ const CitizenshipApplicationForm = () => {
                           {' (wei)'}
                         </>
                       ) : (
-                        <CircularProgress size={24} />
+                        <CircuralProgressM />
                       )}
                     </Typography>
                     <Typography>Your public key: {accountPublicKey}</Typography>

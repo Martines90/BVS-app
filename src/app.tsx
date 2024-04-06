@@ -12,6 +12,7 @@ import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
 import SideNavigationBar from '@components/sideNavigationBar/SideNavigationBar';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
 import Routes from '@components/routes/Routes';
+import Loading from '@components/general/Loading/Loading';
 
 const App: React.FC = () => {
   const [isLeftNavOpen, setIsLeftNaveOpen] = useState(false);
@@ -48,7 +49,7 @@ const App: React.FC = () => {
                       maxWidth={false}
                     >
                       <Main>
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense fallback={<Loading />}>
                           <Routes />
                         </Suspense>
                       </Main>

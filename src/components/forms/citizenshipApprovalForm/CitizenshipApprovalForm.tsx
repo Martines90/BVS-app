@@ -14,6 +14,7 @@ import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { ContractRoleskeccak256 } from '@global/types/user';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
+import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
 
 // Form validation schema
 const validationSchema = Yup.object({
@@ -24,6 +25,8 @@ const validationSchema = Yup.object({
 const CitizenshipApprovalForm = () => {
   const { userState } = useUserContext();
   const [success, setSucess] = useState(false);
+  const [applicationCheckIsInProgress, setApplicationCheckIsInProgress] =
+    useState(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(
     null
   );
@@ -85,12 +88,14 @@ const CitizenshipApprovalForm = () => {
           console.log('Approving applicant:', values);
           // Here you would call the function to approve the applicant
 
-          const applicationPayed = await checkApplicant(
+          setApplicationCheckIsInProgress(true);
+
+          const applicationValid = await checkApplicant(
             values.email,
             values.publicKey
           );
 
-          if (applicationPayed) {
+          if (applicationValid) {
             // grant citizenship role
             await userState.contract
               ?.grantCitizenRole(
@@ -110,6 +115,8 @@ const CitizenshipApprovalForm = () => {
                 setSubmitting(false); // Finish the submission process
               });
           }
+
+          setApplicationCheckIsInProgress(false);
         }}
       >
         {({ errors, touched, values }) => (
@@ -158,6 +165,7 @@ const CitizenshipApprovalForm = () => {
               >
                 Approve applicant
               </Button>
+              {applicationCheckIsInProgress && <CircuralProgressL />}
               {success && (
                 <Alert severity='success'>
                   Citizenship role successfully granted for user:{' '}
