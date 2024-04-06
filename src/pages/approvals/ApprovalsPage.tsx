@@ -1,19 +1,8 @@
-import React, { lazy } from 'react';
-
-import { useLocation } from 'react-router-dom';
-
-const ApproveCitizenshipApplicationPage = lazy(
-  () => import('@pages/approvals/ApproveCitizenshipApplicationPage')
-);
+import HashRoutes from '@components/routes/HashRoutes';
+import React from 'react';
 
 const ApprovalsPage: React.FC = () => {
-  const { hash } = useLocation();
-
-  if (hash === '#citizenship') {
-    return <ApproveCitizenshipApplicationPage />;
-  }
-
-  return <div>Welcome at Approvals ({hash}) page</div>;
+  return <HashRoutes mainPageName='Approvals' />;
 };
 
 export default ApprovalsPage;

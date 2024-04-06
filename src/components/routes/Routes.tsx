@@ -6,6 +6,7 @@ const Dashboard = lazy(() => import('@pages/dashboard/DashboardPage'));
 const Community = lazy(() => import('@pages/community/CommunityPage'));
 const VotingPool = lazy(() => import('@pages/voting-pool/VotingPoolPage'));
 const Approvals = lazy(() => import('@pages/approvals/ApprovalsPage'));
+const Elections = lazy(() => import('@pages/elections/ElectionsPage'));
 
 const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
 const ApplyForCitizenship = lazy(
@@ -35,6 +36,9 @@ const Routes = () => {
 
       {/** Approvals */}
       <Route path='/approvals' element={<Approvals />} />
+
+      {/** Elections */}
+      <Route path='/elections' element={<Elections />} />
 
       <Route path='/community' element={<Community />} />
       <Route path='/political-actors' element={<PoliticalActors />} />

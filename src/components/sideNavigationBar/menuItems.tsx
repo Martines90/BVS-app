@@ -70,6 +70,11 @@ const menuItems: MenuItem[] = [
     modes: [],
     subMenuItems: [
       {
+        label: 'Schedule next elections',
+        route: 'elections#schedule_next_elections',
+        modes: [USER_MODES.ADMINISTRATOR]
+      },
+      {
         label: 'Next elections',
         route: 'elections#next_election',
         modes: []
