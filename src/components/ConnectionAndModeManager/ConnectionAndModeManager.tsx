@@ -58,22 +58,6 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
     }
   }, [userState, connected]);
 
-  React.useEffect(() => {
-    if (metamaskInstalled) {
-      if (window.ethereum) {
-        window.ethereum.on('chainChanged', (chainId) => {
-          window.location.reload();
-        });
-        window.ethereum.on('accountsChanged', (accounts) => {
-          setUserState({
-            ...userState,
-            walletAddress: (accounts as any[])?.[0]
-          });
-        });
-      }
-    }
-  }, [metamaskInstalled]);
-
   const handleInstallMetamask = async () => {
     sdk?.installer?.startDesktopOnboarding();
   };

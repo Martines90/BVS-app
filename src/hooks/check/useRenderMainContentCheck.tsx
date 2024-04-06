@@ -6,11 +6,14 @@ import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { useSDK } from '@metamask/sdk-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
   const { showModal, isVisible } = useModalContext();
   const { userState, setUserState } = useUserContext();
   const { handleConnectMetamask } = useHandleConnectMetamask();
+
+  const navigate = useNavigate();
 
   const [metamaskInstalledAndConnected, setMetamaskInstalledAndConnected] =
     React.useState(true);
@@ -51,10 +54,33 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
   }, [isVisible]);
 
   React.useEffect(() => {
+    if (metamaskInstalledAndConnected) {
+      if (
+        window.ethereum &&
+        !(window.ethereum as any)?._events?.accountsChanged?.length
+      ) {
+        window.ethereum.on('chainChanged', (chainId) => {
+          window.location.reload();
+        });
+        window.ethereum.on('accountsChanged', (accounts) => {
+          setUserState({
+            ...userState,
+            mode: undefined,
+            walletAddress: (accounts as any[])?.[0]
+          });
+
+          navigate(0);
+        });
+      }
+    }
+  }, [metamaskInstalledAndConnected]);
+
+  React.useEffect(() => {
     const callHandleConnectMetamask = async () => {
       let suceeded = false;
 
       if (metamaskInstalledAndConnected) {
+        console.log('call connect to metamask');
         suceeded = await handleConnectMetamask();
       }
 

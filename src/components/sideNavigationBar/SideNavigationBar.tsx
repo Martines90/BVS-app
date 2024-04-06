@@ -87,9 +87,11 @@ const SideNavigationBar = ({
   setIsLeftNaveOpen: Dispatch<SetStateAction<boolean>>;
   isLeftNaveOpen: boolean;
 }) => {
+  const { userState } = useUserContext();
+
   const navigate = useNavigate();
   const location = useLocation();
-  const { userState } = useUserContext();
+
   const fullRoute = getFullRoute(location);
 
   const userModeEnabledMenuItems = getUserModeEnabledMenuItems(
