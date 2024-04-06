@@ -15,6 +15,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
 import { SubMenuItem } from './types';
 import { getFullRoute } from '@global/helpers/routing';
+import { useUserContext } from '@hooks/context/userContext/UserContext';
+import { getUserModeEnabledMenuItems } from './helpers';
 
 const selectedMenuItemColor = '#c78484';
 
@@ -87,7 +89,13 @@ const SideNavigationBar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userState } = useUserContext();
   const fullRoute = getFullRoute(location);
+
+  const userModeEnabledMenuItems = getUserModeEnabledMenuItems(
+    userState.mode,
+    menuItems
+  );
 
   const handleDrawer = () => {
     setIsLeftNaveOpen(!isLeftNaveOpen);
@@ -157,42 +165,44 @@ const SideNavigationBar = ({
       </List>
       <Divider />
       <List>
-        {menuItems.map(({ label, icon, route, subMenuItems }, index) => (
-          <React.Fragment key={`${label}-${index}-fragment`}>
-            <ListItem
-              button
-              onClick={() => {
-                navigate(route);
-              }}
-              key={`${label}-${index}`}
-              sx={{
-                width: SIDEBAR_NAV_DIMENSIONS.widthOpen,
-                display: 'flex',
-                justifyContent: isLeftNaveOpen ? 'initial' : 'flex-start'
-              }}
-            >
-              <ListItemIcon sx={iconTextStyle.icons}>{icon}</ListItemIcon>
-              <ListItemText
-                sx={{
-                  ...{
-                    color:
-                      fullRoute === route ? selectedMenuItemColor : 'inherit'
-                  },
-                  ...iconTextStyle.text,
-                  ...{ display: isLeftNaveOpen ? 'block' : 'none' }
+        {userModeEnabledMenuItems.map(
+          ({ label, icon, route, subMenuItems }, index) => (
+            <React.Fragment key={`${label}-${index}-fragment`}>
+              <ListItem
+                button
+                onClick={() => {
+                  navigate(route);
                 }}
-                primary={label}
-              />
-            </ListItem>
+                key={`${label}-${index}`}
+                sx={{
+                  width: SIDEBAR_NAV_DIMENSIONS.widthOpen,
+                  display: 'flex',
+                  justifyContent: isLeftNaveOpen ? 'initial' : 'flex-start'
+                }}
+              >
+                <ListItemIcon sx={iconTextStyle.icons}>{icon}</ListItemIcon>
+                <ListItemText
+                  sx={{
+                    ...{
+                      color:
+                        fullRoute === route ? selectedMenuItemColor : 'inherit'
+                    },
+                    ...iconTextStyle.text,
+                    ...{ display: isLeftNaveOpen ? 'block' : 'none' }
+                  }}
+                  primary={label}
+                />
+              </ListItem>
 
-            {renderSubMenuItems(
-              subMenuItems,
-              navigate,
-              isLeftNaveOpen,
-              iconTextStyle
-            )}
-          </React.Fragment>
-        ))}
+              {renderSubMenuItems(
+                subMenuItems,
+                navigate,
+                isLeftNaveOpen,
+                iconTextStyle
+              )}
+            </React.Fragment>
+          )
+        )}
       </List>
     </Drawer>
   );
