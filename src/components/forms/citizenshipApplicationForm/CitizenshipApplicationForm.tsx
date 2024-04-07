@@ -20,6 +20,7 @@ import { ContractRoleskeccak256 } from '@global/types/user';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import { CircuralProgressM } from '@components/general/Loading/components/CircuralProgress';
+import useContract from '@hooks/contract/useContract';
 
 // Yup validation schema
 const validationSchema = Yup.object().shape({
@@ -38,6 +39,12 @@ const CitizenshipApplicationForm = () => {
   const [hash, setHash] = useState('');
   const [email, setEmail] = useState('');
   const { userState } = useUserContext();
+  const {
+    getCitizenRoleApplicationFee,
+    isAccountAppliedForCitizenship,
+    hasRole,
+    applyForCitizenshipRole
+  } = useContract();
 
   const [contractInfo, setContractInfo] = useState<ContractInfo>({});
 
@@ -45,18 +52,14 @@ const CitizenshipApplicationForm = () => {
 
   useEffect(() => {
     const loadContractInfo = async () => {
-      const citizenshipApplicationFee = Number(
-        (await userState.contract?.citizenRoleApplicationFee()) || 0
-      );
+      const citizenshipApplicationFee = await getCitizenRoleApplicationFee();
 
       const appliedForCitizenship =
-        ((await userState.contract?.citizenshipApplications(
-          accountPublicKey
-        )) || 0) != 0;
+        await isAccountAppliedForCitizenship(accountPublicKey);
 
-      const hasCitizenRole = await userState.contract?.hasRole(
-        ContractRoleskeccak256.CITIZEN,
-        userState.walletAddress || '0x0'
+      const hasCitizenRole = !!(
+        userState.walletAddress &&
+        (await hasRole(ContractRoleskeccak256.CITIZEN, userState.walletAddress))
       );
 
       setContractInfo({
@@ -73,13 +76,11 @@ const CitizenshipApplicationForm = () => {
   const callContractApplyForCitizenshipFn = async (
     applicantEmailPubKeyHash: BytesLike
   ) => {
-    await userState.contract?.applyForCitizenshipRole(
-      applicantEmailPubKeyHash,
-      {
-        value: contractInfo.citizenshipApplicationFee,
-        from: userState.walletAddress
-      }
-    );
+    contractInfo.citizenshipApplicationFee &&
+      (await applyForCitizenshipRole(
+        applicantEmailPubKeyHash,
+        contractInfo.citizenshipApplicationFee
+      ));
   };
 
   if (contractInfo.hasCitizenRole) {

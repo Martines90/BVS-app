@@ -1,16 +1,17 @@
 import ConnectionAndModeManager from '@components/connectionAndModeManager/ConnectionAndModeManager';
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
+import useContract from '@hooks/contract/useContract';
 
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 import detectEthereumProvider from '@metamask/detect-provider';
-import { useSDK } from '@metamask/sdk-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
   const { showModal, isVisible } = useModalContext();
   const { userState, setUserState } = useUserContext();
+  const { contract } = useContract();
   const { handleConnectMetamask } = useHandleConnectMetamask();
 
   const navigate = useNavigate();
@@ -98,9 +99,7 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
       (!metamaskInstalledAndConnected && !isVisible) ||
       (metamaskInstalledAndConnected &&
         !isVisible &&
-        (!userState.contract ||
-          !userState.walletAddress ||
-          !isUserSelectedMode))
+        (!contract || !userState.walletAddress || !isUserSelectedMode))
     ) {
       callHandleConnectMetamask();
     }
@@ -108,7 +107,7 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
 
   React.useEffect(() => {
     if (
-      userState.contract &&
+      contract &&
       userState.walletAddress &&
       isUserSelectedMode &&
       !renderMainContent

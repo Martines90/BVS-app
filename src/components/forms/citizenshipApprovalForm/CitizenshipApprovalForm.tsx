@@ -15,6 +15,7 @@ import { ContractRoleskeccak256 } from '@global/types/user';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
+import useContract from '@hooks/contract/useContract';
 
 // Form validation schema
 const validationSchema = Yup.object({
@@ -23,7 +24,8 @@ const validationSchema = Yup.object({
 });
 
 const CitizenshipApprovalForm = () => {
-  const { userState } = useUserContext();
+  const { grantCitizenRole } = useContract();
+  const { hasRole, isHashMatchWithCitizenshipApplicationHash } = useContract();
   const [success, setSucess] = useState(false);
   const [applicationCheckIsInProgress, setApplicationCheckIsInProgress] =
     useState(false);
@@ -35,9 +37,9 @@ const CitizenshipApprovalForm = () => {
     // Dummy check for the example - replace this logic with your actual check
 
     if (email && publicKey) {
-      const hasCitizenRole = await userState.contract?.hasRole(
+      const hasCitizenRole = await hasRole(
         ContractRoleskeccak256.CITIZEN,
-        publicKey || '0x0'
+        publicKey
       );
 
       if (hasCitizenRole) {
@@ -71,11 +73,13 @@ const CitizenshipApprovalForm = () => {
   ) => {
     const applicationHash = getBytes32keccak256Hash(email + publicKey);
 
-    const appliedForCitizenship =
-      ((await userState.contract?.citizenshipApplications(publicKey)) || 0) ==
-      applicationHash;
+    const hashMatchesWithApplicationHash =
+      await isHashMatchWithCitizenshipApplicationHash(
+        publicKey,
+        applicationHash
+      );
 
-    return appliedForCitizenship;
+    return hashMatchesWithApplicationHash;
   };
 
   return (
@@ -97,12 +101,10 @@ const CitizenshipApprovalForm = () => {
 
           if (applicationValid) {
             // grant citizenship role
-            await userState.contract
-              ?.grantCitizenRole(
-                values.publicKey,
-                getBytes32keccak256Hash(values.email + values.publicKey),
-                false
-              )
+            await grantCitizenRole(
+              values.publicKey,
+              getBytes32keccak256Hash(values.email + values.publicKey)
+            )
               .then((res) => {
                 setSucess(true);
                 console.log(res);

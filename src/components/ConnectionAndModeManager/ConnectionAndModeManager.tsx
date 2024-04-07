@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import {
   ContractRoleskeccak256,
@@ -12,6 +12,7 @@ import { useSDK } from '@metamask/sdk-react';
 
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
+import useContract from '@hooks/contract/useContract';
 
 type ConnectionAndModeManagerProps = {
   metamaskInstalled: boolean;
@@ -21,6 +22,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   metamaskInstalled
 }) => {
   const { alerts } = useInfoContext();
+  const { hasRole, contract } = useContract();
 
   const { handleConnectMetamask } = useHandleConnectMetamask();
 
@@ -31,12 +33,11 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
 
   React.useEffect(() => {
     const checkAvailableRoles = async () => {
-      const checkRole = async (role: string) => {
-        const hasRole = await userState.contract?.hasRole(
-          role,
-          userState.walletAddress || '0x0'
-        );
-        return hasRole;
+      const checkRole = async (role: ContractRoleskeccak256) => {
+        const _hasRole =
+          userState.walletAddress &&
+          (await hasRole(role, userState.walletAddress));
+        return _hasRole;
       };
       const availableModes = [
         USER_MODES.GUEST,
@@ -53,7 +54,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
       setAvailableModes(availableModes);
     };
 
-    if (userState.contract && userState.walletAddress && connected) {
+    if (contract && userState.walletAddress && connected) {
       checkAvailableRoles();
     }
   }, [userState, connected]);

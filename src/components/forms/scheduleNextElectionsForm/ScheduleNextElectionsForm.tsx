@@ -14,6 +14,7 @@ import FormContainer from '../components/FormContainer';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import LinkInText from '@components/links/LinkInText';
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
+import useContract from '@hooks/contract/useContract';
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -35,6 +36,10 @@ type InitialValues = {
 
 const ScheduleNextElectionsForm = () => {
   const { userState } = useUserContext();
+  const {
+    getElectionStartEndIntervalInDays,
+    isThereOngoingElections: _isThereOngoingElections
+  } = useContract();
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo | null>(null);
   const { electionStartEndInterval, isThereOngoingElections } =
     electionInfo || {};
@@ -54,13 +59,10 @@ const ScheduleNextElectionsForm = () => {
 
   useEffect(() => {
     const getElectionInfo = async () => {
-      const electionStartEndInterval = Number(
-        (((await userState.contract?.ELECTION_START_END_INTERVAL()) ||
-          0) as bigint) / BigInt(60 * 60 * 24)
-      );
+      const electionStartEndInterval =
+        await getElectionStartEndIntervalInDays();
 
-      const isThereOngoingElections =
-        (await userState.contract?.electionsStartDate()) !== BigInt(0);
+      const isThereOngoingElections = await _isThereOngoingElections();
       setElectionInfo({
         isThereOngoingElections,
         electionStartEndInterval
