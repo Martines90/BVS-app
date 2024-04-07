@@ -22,7 +22,7 @@ export const getBreadcrumbMapFromUrl = (
       href += `#${pathName}`;
     }
     pathName = pathName
-      .split('-')
+      .split(/\-|_/)
       .map((str) => str.charAt(0).toUpperCase() + str.slice(1))
       .join(' ');
 

@@ -8,13 +8,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import * as Yup from 'yup';
-import { addDays, addMonths } from 'date-fns';
+import { addDays } from 'date-fns';
 import dayjs, { Dayjs } from 'dayjs';
 import FormContainer from '../components/FormContainer';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
-import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
-import { Link } from 'react-router-dom';
 import LinkInText from '@components/links/LinkInText';
+import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -144,7 +143,7 @@ const ScheduleNextElectionsForm = () => {
             </Alert>
           )
         ) : (
-          <CircuralProgressL />
+          <CommunicationWithContractIsInProgressLoader />
         )}
       </FormContainer>
     </LocalizationProvider>
