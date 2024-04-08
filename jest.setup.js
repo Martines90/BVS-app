@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 
 const metamaskSdkReact = jest.createMockFromModule('@metamask/sdk-react');
 

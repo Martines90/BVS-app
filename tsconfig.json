@@ -16,9 +16,10 @@
       "@hooks/*": ["./hooks/*"],
       "@global/*": ["./global/*"],
       "@blockchain/*": ["./blockchain/*"],
-      "@utils/*": ["./utils/*"],
+      "@utils/*": ["src/utils/*"],
       "@assets/*": ["./assets/*"]
-    }
+    },
+    "types": ["@testing-library/jest-dom"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "src/utils"]
 }

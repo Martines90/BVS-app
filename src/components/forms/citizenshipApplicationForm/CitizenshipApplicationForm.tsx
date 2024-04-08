@@ -9,8 +9,7 @@ import {
   Stack,
   Alert,
   List,
-  ListItem,
-  CircularProgress
+  ListItem
 } from '@mui/material';
 import { keccak256 } from 'js-sha3';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
