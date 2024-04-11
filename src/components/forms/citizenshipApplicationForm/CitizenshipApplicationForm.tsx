@@ -75,13 +75,11 @@ const CitizenshipApplicationForm = () => {
 
   const callContractApplyForCitizenshipFn = async (
     applicantEmailPubKeyHash: BytesLike
-  ) => {
-    contractInfo.citizenshipApplicationFee
+  ) => contractInfo.citizenshipApplicationFee
       && (await applyForCitizenshipRole(
         applicantEmailPubKeyHash,
         contractInfo.citizenshipApplicationFee
       ));
-  };
 
   if (contractInfo.hasCitizenRole) {
     return (
@@ -105,8 +103,6 @@ const CitizenshipApplicationForm = () => {
             values.email + accountPublicKey
           );
 
-          console.log('applicationHash:', applicationHash);
-
           // Call the smart contract function with the application hash
           callContractApplyForCitizenshipFn(applicationHash)
             .then((response) => {
@@ -123,7 +119,7 @@ const CitizenshipApplicationForm = () => {
         }}
       >
         {({
-          errors, touched, handleChange, values
+          errors, touched, handleChange
         }) => (
           <Form>
             <Stack spacing={2}>

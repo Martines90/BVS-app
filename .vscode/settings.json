@@ -5,5 +5,8 @@
     "source.fixAll.eslint": true
   },
   "editor.formatOnSave": true,
-  "eslint.alwaysShowStatus": true
+  "eslint.alwaysShowStatus": true,
+  "prettier.enable": false,
+  "eslint.enable": true,
+  "eslint.formatOnSave": true
 }

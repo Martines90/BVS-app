@@ -37,8 +37,8 @@
       "error",
       {
         "ignoreCase": true,
-        "ignoreDeclarationSort": false,
-        "ignoreMemberSort": false,
+        "ignoreDeclarationSort": true,
+        "ignoreMemberSort": true,
         "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
         "allowSeparatedGroups": false
       }
