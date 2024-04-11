@@ -2,7 +2,8 @@
   "scripts": {
     "start": "webpack serve --open",
     "build": "webpack --mode production",
-    "lint": "eslint \"**/*.tsx\" --ignore-pattern node_modules/ dist/",
+    "lint": "eslint \"**/*.ts?(x)\" --ignore-pattern node_modules/ dist/",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts?(x)' --write",
     "test": "jest"
   },
   "dependencies": {
