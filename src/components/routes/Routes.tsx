@@ -10,7 +10,7 @@ const Elections = lazy(() => import('@pages/elections/ElectionsPage'));
 
 const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
 const ApplyForCitizenship = lazy(
-  () => import('@pages/citizens/ApplyForCitizenshipPage')
+  () => import('@pages/citizens/apply-for-citizenship/ApplyForCitizenshipPage')
 );
 
 const PoliticalActors = lazy(
