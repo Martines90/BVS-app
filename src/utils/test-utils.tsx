@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import * as React from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 
 import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
@@ -19,7 +19,7 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 };
 
 const customRender = (
-  ui: ReactElement,
+  ui: React.ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
