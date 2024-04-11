@@ -1,5 +1,9 @@
+// Place your settings in this file to overwrite default and user settings.
 {
-  "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "editor.codeActionsOnSave": {
+    "source.sortImports": true,
+    "source.fixAll.eslint": true
+  },
   "editor.formatOnSave": true,
   "eslint.alwaysShowStatus": true
 }

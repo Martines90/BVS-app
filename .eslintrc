@@ -8,11 +8,11 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier",
     "airbnb",
     "airbnb-typescript"
   ],
-  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "ignorePatterns": ["dist/*", "node_modules/*"],
+  "plugins": ["react", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": ["./tsconfig.json"],
@@ -24,7 +24,6 @@
   },
   "rules": {
     "no-console": "warn",
-    "prettier/prettier": "error",
     "react/prop-types": "off",
     "semi": ["error", "always"],
     "react/jsx-filename-extension": "off",
@@ -33,10 +32,11 @@
     // disable react import requirement
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "import/order": "off",
     "sort-imports": [
       "error",
       {
-        "ignoreCase": false,
+        "ignoreCase": true,
         "ignoreDeclarationSort": false,
         "ignoreMemberSort": false,
         "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
@@ -82,6 +82,48 @@
               "**/jest.setup.ts"
             ],
             "optionalDependencies": false
+          }
+        ],
+        "indent": [
+          "error",
+          2,
+          {
+            "SwitchCase": 1,
+            "VariableDeclarator": 1,
+            "outerIIFEBody": 1,
+            // MemberExpression: null,
+            "FunctionDeclaration": {
+              "parameters": 1,
+              "body": 1
+            },
+            "FunctionExpression": {
+              "parameters": 1,
+              "body": 1
+            },
+            "CallExpression": {
+              "arguments": 1
+            },
+            "ArrayExpression": 1,
+            "ObjectExpression": 1,
+            "ImportDeclaration": 1,
+            "flatTernaryExpressions": false,
+            // list derived from https://github.com/benjamn/ast-types/blob/HEAD/def/jsx.js
+            "ignoredNodes": [
+              "JSXElement",
+              "JSXElement > *",
+              "JSXAttribute",
+              "JSXIdentifier",
+              "JSXNamespacedName",
+              "JSXMemberExpression",
+              "JSXSpreadAttribute",
+              "JSXExpressionContainer",
+              "JSXOpeningElement",
+              "JSXClosingElement",
+              "JSXText",
+              "JSXEmptyExpression",
+              "JSXSpreadChild"
+            ],
+            "ignoreComments": false
           }
         ]
       }

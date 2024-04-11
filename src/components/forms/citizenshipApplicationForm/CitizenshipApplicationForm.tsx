@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import {
-  TextField,
-  Box,
-  Typography,
-  Button,
-  Stack,
-  Alert,
-  List,
-  ListItem
-} from '@mui/material';
-import { keccak256 } from 'js-sha3';
-import { useUserContext } from '@hooks/context/userContext/UserContext';
+import { CircuralProgressM } from '@components/general/Loading/components/CircuralProgress';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
-import { BytesLike } from 'ethers';
 import { ContractRoleskeccak256 } from '@global/types/user';
+import { useUserContext } from '@hooks/context/userContext/UserContext';
+import useContract from '@hooks/contract/useContract';
+import {
+  Alert,
+  Box,
+  Button,
+  List,
+  ListItem,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
+import { BytesLike } from 'ethers';
+import { Field, Form, Formik } from 'formik';
+import { keccak256 } from 'js-sha3';
+import React, { useEffect, useState } from 'react';
+import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
-import { CircuralProgressM } from '@components/general/Loading/components/CircuralProgress';
-import useContract from '@hooks/contract/useContract';
 
 // Yup validation schema
 const validationSchema = Yup.object().shape({
@@ -53,12 +53,13 @@ const CitizenshipApplicationForm = () => {
     const loadContractInfo = async () => {
       const citizenshipApplicationFee = await getCitizenRoleApplicationFee();
 
-      const appliedForCitizenship =
-        await isAccountAppliedForCitizenship(accountPublicKey);
+      const appliedForCitizenship = await isAccountAppliedForCitizenship(
+        accountPublicKey
+      );
 
       const hasCitizenRole = !!(
-        userState.walletAddress &&
-        (await hasRole(ContractRoleskeccak256.CITIZEN, userState.walletAddress))
+        userState.walletAddress
+        && (await hasRole(ContractRoleskeccak256.CITIZEN, userState.walletAddress))
       );
 
       setContractInfo({
@@ -69,14 +70,14 @@ const CitizenshipApplicationForm = () => {
     };
     // Pre-generate hash with an empty email
     loadContractInfo();
-    setHash(keccak256('' + accountPublicKey).slice(0, 31));
+    setHash(keccak256(`${accountPublicKey}`).slice(0, 31));
   }, []);
 
   const callContractApplyForCitizenshipFn = async (
     applicantEmailPubKeyHash: BytesLike
   ) => {
-    contractInfo.citizenshipApplicationFee &&
-      (await applyForCitizenshipRole(
+    contractInfo.citizenshipApplicationFee
+      && (await applyForCitizenshipRole(
         applicantEmailPubKeyHash,
         contractInfo.citizenshipApplicationFee
       ));
@@ -85,7 +86,7 @@ const CitizenshipApplicationForm = () => {
   if (contractInfo.hasCitizenRole) {
     return (
       <Box sx={{ width: '100%', maxWidth: 500, m: 'auto' }}>
-        <Alert severity='success'>
+        <Alert severity="success">
           Your citizen role has already been granted!
         </Alert>
       </Box>
@@ -121,11 +122,13 @@ const CitizenshipApplicationForm = () => {
             });
         }}
       >
-        {({ errors, touched, handleChange, values }) => (
+        {({
+          errors, touched, handleChange, values
+        }) => (
           <Form>
             <Stack spacing={2}>
               <Stack spacing={2}>
-                <Typography variant='h6'>
+                <Typography variant="h6">
                   Step 1: Apply for citizenship
                 </Typography>
                 {!contractInfo.appliedForCitizenship ? (
@@ -144,8 +147,8 @@ const CitizenshipApplicationForm = () => {
                     <Typography>Your public key: {accountPublicKey}</Typography>
                     <Field
                       as={TextField}
-                      name='email'
-                      label='Email address'
+                      name="email"
+                      label="Email address"
                       fullWidth
                       error={touched.email && !!errors.email}
                       helperText={touched.email && errors.email}
@@ -163,7 +166,7 @@ const CitizenshipApplicationForm = () => {
                     />
                     <TextField
                       disabled
-                      label='Application hash'
+                      label="Application hash"
                       value={hash} // Set the value to the state variable holding the hash
                       fullWidth
                     />
@@ -178,28 +181,28 @@ const CitizenshipApplicationForm = () => {
                 )}
                 <Box>
                   <Button
-                    variant='contained'
+                    variant="contained"
                     disabled={contractInfo.appliedForCitizenship}
-                    type='submit'
+                    type="submit"
                   >
                     Apply for citizenship
                   </Button>
                 </Box>
               </Stack>
               <Stack spacing={2}>
-                <Typography variant='h6'>
+                <Typography variant="h6">
                   Step 2: Send your application hash
                 </Typography>
                 <Typography>
                   Send your application hash to{' '}
-                  <a href='mailto:application@bvs.gov'>application@bvs.gov</a>
+                  <a href="mailto:application@bvs.gov">application@bvs.gov</a>
                 </Typography>
-                <Alert severity='warning'>
+                <Alert severity="warning">
                   Important! Make sure:{' '}
                   <List sx={{ listStyleType: 'disc' }}>
                     <ListItem>
                       <Stack>
-                        <Stack direction={'row'}>
+                        <Stack direction="row">
                           <Typography>The email sent from:</Typography>
                           <Typography sx={{ color: 'red' }}>{email}</Typography>
                         </Stack>
@@ -226,7 +229,7 @@ const CitizenshipApplicationForm = () => {
                 </Alert>
               </Stack>
               <Stack spacing={2}>
-                <Typography variant='h6'>Step 3:</Typography>
+                <Typography variant="h6">Step 3:</Typography>
                 <Typography>
                   One of our administrators will contact you to organise the
                   citizenship application interview process.
