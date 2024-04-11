@@ -3,7 +3,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 
 import { Header, Main, Footer } from '@components/page';
-import { CssBaseline, Container, Box, Stack } from '@mui/material';
+import {
+  CssBaseline, Container, Box, Stack
+} from '@mui/material';
 import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
 import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper';
 import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
@@ -44,7 +46,7 @@ const App: React.FC = () => {
                   >
                     <Header />
                     <Container
-                      component='main'
+                      component="main"
                       sx={{ pb: '24px' }}
                       maxWidth={false}
                     >

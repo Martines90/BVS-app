@@ -34,7 +34,7 @@ const ModalContextWrapper: React.FC<ModalContextWrapperProps> = ({
   return (
     <ModalContext.Provider value={initModalContext}>
       {children}
-      {<Modal modalContent={content} />}
+      <Modal modalContent={content} />
     </ModalContext.Provider>
   );
 };

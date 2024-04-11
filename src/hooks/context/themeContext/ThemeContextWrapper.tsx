@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, {
+  createContext, useContext, useMemo, useState
+} from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ThemeContext } from './ThemeContext';
 import { DEFAULT_THEME_MODE, THEME_MODES } from '@global/constants/page';
@@ -18,11 +20,8 @@ const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({
     () => ({
       // Toggle between 'dark' and 'light'
       toggleTheme: () => {
-        const newMode =
-          mode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
-        setMode((prevMode) =>
-          prevMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT
-        );
+        const newMode = mode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+        setMode((prevMode) => (prevMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT));
         localStorage.setItem('themeMode', newMode);
       },
       mode
@@ -32,12 +31,11 @@ const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({
 
   // Update the theme only if the mode changes
   const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: mode
-        }
-      }),
+    () => createTheme({
+      palette: {
+        mode
+      }
+    }),
     [mode]
   );
 

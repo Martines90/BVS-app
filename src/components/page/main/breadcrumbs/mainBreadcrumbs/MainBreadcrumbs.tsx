@@ -14,20 +14,18 @@ const MainBreadcrumbs = () => {
   const pathnames = getBreadcrumbMapFromUrl(location);
 
   return (
-    <Breadcrumbs maxItems={2} separator='>' aria-label='breadcrumb'>
-      {pathnames.map(({ pathName, href }, index) => {
-        return (
-          <Link
-            sx={{ cursor: 'pointer' }}
-            key={index}
-            underline='hover'
-            color='inherit'
-            onClick={() => handleClick(href || '/')}
-          >
-            {pathName}
-          </Link>
-        );
-      })}
+    <Breadcrumbs maxItems={2} separator=">" aria-label="breadcrumb">
+      {pathnames.map(({ pathName, href }, index) => (
+        <Link
+          sx={{ cursor: 'pointer' }}
+          key={index}
+          underline="hover"
+          color="inherit"
+          onClick={() => handleClick(href || '/')}
+        >
+          {pathName}
+        </Link>
+      ))}
     </Breadcrumbs>
   );
 };

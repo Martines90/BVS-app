@@ -10,9 +10,9 @@ const getSessionStorageItem = (key: string) => {
   // make sure if an object props has a function value at any level then it will set to undefined
   Object.keys(obj).forEach((objKey) => {
     if (
-      typeof obj[objKey] === 'object' &&
-      obj[objKey] !== null &&
-      NO_PERSTISTANT_STATE_PROPS.includes(objKey)
+      typeof obj[objKey] === 'object'
+      && obj[objKey] !== null
+      && NO_PERSTISTANT_STATE_PROPS.includes(objKey)
     ) {
       obj[objKey] = undefined;
     }

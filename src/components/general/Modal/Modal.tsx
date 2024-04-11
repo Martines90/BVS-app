@@ -26,7 +26,7 @@ const ModalComponent: React.FC<ModalProps> = ({ modalContent }) => {
         }}
       >
         <IconButton
-          aria-label='close'
+          aria-label="close"
           onClick={hideModal}
           sx={{
             position: 'absolute',

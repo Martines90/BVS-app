@@ -6,7 +6,9 @@ import {
   UserMode
 } from '@global/types/user';
 
-import { Alert, Box, Button, Stack } from '@mui/material';
+import {
+  Alert, Box, Button, Stack
+} from '@mui/material';
 
 import { useSDK } from '@metamask/sdk-react';
 
@@ -27,16 +29,17 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   const { handleConnectMetamask } = useHandleConnectMetamask();
 
   const { userState, setUserState } = useUserContext();
-  const { sdk, connected, connecting, provider: ethereum, chainId } = useSDK();
+  const {
+    sdk, connected, connecting, provider: ethereum, chainId
+  } = useSDK();
 
   const [availableModes, setAvailableModes] = useState([USER_MODES.GUEST]);
 
   React.useEffect(() => {
     const checkAvailableRoles = async () => {
       const checkRole = async (role: ContractRoleskeccak256) => {
-        const _hasRole =
-          userState.walletAddress &&
-          (await hasRole(role, userState.walletAddress));
+        const _hasRole = userState.walletAddress
+          && (await hasRole(role, userState.walletAddress));
         return _hasRole;
       };
       const availableModes = [
@@ -68,10 +71,10 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   };
 
   return (
-    <Stack direction='column' spacing={2}>
+    <Stack direction="column" spacing={2}>
       {metamaskInstalled ? (
         <Button
-          variant='contained'
+          variant="contained"
           onClick={handleConnectMetamask}
           disabled={!!userState.walletAddress}
         >
@@ -80,7 +83,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
             : 'Connected to metamask 🦊'}
         </Button>
       ) : (
-        <Button variant='contained' onClick={handleInstallMetamask}>
+        <Button variant="contained" onClick={handleInstallMetamask}>
           Click here to install MetaMask 🦊!
         </Button>
       )}
@@ -91,7 +94,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
           </Alert>
         )}
         <Box>
-          <Box fontWeight='bold' display='inline'>
+          <Box fontWeight="bold" display="inline">
             Connected chain:
           </Box>
           {` ${userState.chainId || ''}`}
@@ -102,13 +105,13 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
           </Alert>
         )}
         <Box>
-          <Box fontWeight='bold' display='inline'>
+          <Box fontWeight="bold" display="inline">
             Connected account:
           </Box>
           {` ${userState.walletAddress || ''}`}
         </Box>
         <Box>
-          <Box fontWeight='bold' display='inline'>
+          <Box fontWeight="bold" display="inline">
             Current mode:
           </Box>
           {` ${userState.mode?.toUpperCase() || ''}`}
@@ -116,7 +119,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
       </Stack>
       Modes you have access:
       <Button
-        variant='contained'
+        variant="contained"
         onClick={() => enterAs(USER_MODES.GUEST)}
         disabled={
           !userState.walletAddress || !availableModes.includes(USER_MODES.GUEST)
@@ -125,31 +128,31 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
         Guest
       </Button>
       <Button
-        variant='contained'
+        variant="contained"
         onClick={() => enterAs(USER_MODES.CITIZEN)}
         disabled={
-          !userState.walletAddress ||
-          !availableModes.includes(USER_MODES.CITIZEN)
+          !userState.walletAddress
+          || !availableModes.includes(USER_MODES.CITIZEN)
         }
       >
         Citizen
       </Button>
       <Button
-        variant='contained'
+        variant="contained"
         onClick={() => enterAs(USER_MODES.POLITICAL_ACTOR)}
         disabled={
-          !userState.walletAddress ||
-          !availableModes.includes(USER_MODES.POLITICAL_ACTOR)
+          !userState.walletAddress
+          || !availableModes.includes(USER_MODES.POLITICAL_ACTOR)
         }
       >
         Political actor
       </Button>
       <Button
-        variant='contained'
+        variant="contained"
         onClick={() => enterAs(USER_MODES.ADMINISTRATOR)}
         disabled={
-          !userState.walletAddress ||
-          !availableModes.includes(USER_MODES.ADMINISTRATOR)
+          !userState.walletAddress
+          || !availableModes.includes(USER_MODES.ADMINISTRATOR)
         }
       >
         Administrator

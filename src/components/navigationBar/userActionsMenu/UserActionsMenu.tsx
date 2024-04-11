@@ -35,13 +35,13 @@ const UserActionsMenu: React.FC = () => {
   return (
     <Box>
       <IconButton
-        size='large'
-        edge='end'
-        aria-label='account of current user'
-        aria-controls='menu-appbar'
-        aria-haspopup='true'
+        size="large"
+        edge="end"
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
         onClick={handleMenu}
-        color='inherit'
+        color="inherit"
       >
         <AccountCircleIcon />
         {!isMobile && (
@@ -49,7 +49,7 @@ const UserActionsMenu: React.FC = () => {
         )}
       </IconButton>
       <Menu
-        id='menu-appbar'
+        id="menu-appbar"
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
@@ -65,7 +65,7 @@ const UserActionsMenu: React.FC = () => {
       >
         {isMobile && (
           <MenuItem onClick={handleClose}>
-            <Typography textAlign='center'>Mode: ({userState.mode})</Typography>
+            <Typography textAlign="center">Mode: ({userState.mode})</Typography>
           </MenuItem>
         )}
         {/* Add other menu items here */}

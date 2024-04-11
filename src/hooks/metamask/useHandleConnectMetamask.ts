@@ -40,13 +40,12 @@ const useHandleConnectMetamask = () => {
           chainId
         });
         return false;
-      } else {
-        if (alerts.incorrectChainId) {
-          delete alerts.incorrectChainId;
-          setAlerts({
-            ...alerts
-          });
-        }
+      }
+      if (alerts.incorrectChainId) {
+        delete alerts.incorrectChainId;
+        setAlerts({
+          ...alerts
+        });
       }
 
       let contract;

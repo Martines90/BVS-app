@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Button, Typography, Stack, Alert } from '@mui/material';
+import {
+  Button, Typography, Stack, Alert
+} from '@mui/material';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -41,11 +43,9 @@ const ScheduleNextElectionsForm = () => {
     isThereOngoingElections: _isThereOngoingElections
   } = useContract();
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo | null>(null);
-  const { electionStartEndInterval, isThereOngoingElections } =
-    electionInfo || {};
+  const { electionStartEndInterval, isThereOngoingElections } = electionInfo || {};
 
-  const addVotingIntervalToDate = (date: Dayjs) =>
-    dayjs(addDays(date.toDate(), (electionStartEndInterval || 0) + 1));
+  const addVotingIntervalToDate = (date: Dayjs) => dayjs(addDays(date.toDate(), (electionStartEndInterval || 0) + 1));
 
   const defaultStartDate = dayjs(
     addDays(new Date(), electionStartEndInterval || 0)
@@ -59,8 +59,7 @@ const ScheduleNextElectionsForm = () => {
 
   useEffect(() => {
     const getElectionInfo = async () => {
-      const electionStartEndInterval =
-        await getElectionStartEndIntervalInDays();
+      const electionStartEndInterval = await getElectionStartEndIntervalInDays();
 
       const isThereOngoingElections = await _isThereOngoingElections();
       setElectionInfo({
@@ -75,7 +74,7 @@ const ScheduleNextElectionsForm = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <FormContainer>
-        <Typography variant='h5' gutterBottom textAlign='center'>
+        <Typography variant="h5" gutterBottom textAlign="center">
           Schedule Next Elections
         </Typography>
         {electionInfo ? (
@@ -87,20 +86,22 @@ const ScheduleNextElectionsForm = () => {
                 console.log('Election Dates:', values);
               }}
             >
-              {({ setFieldValue, values, errors, touched }) => (
+              {({
+                setFieldValue, values, errors, touched
+              }) => (
                 <Form>
                   <Stack spacing={2}>
                     <DatePicker
-                      label='Elections start date'
-                      name='electionsStartDate'
+                      label="Elections start date"
+                      name="electionsStartDate"
                       minDate={defaultStartDate}
                       onChange={(value: Dayjs | null) => {
                         if (
-                          !!value &&
-                          ((values.endDate &&
-                            addVotingIntervalToDate(value).toDate().getTime() >
-                              values.endDate?.toDate().getTime()) ||
-                            !values.endDate)
+                          !!value
+                          && ((values.endDate
+                            && addVotingIntervalToDate(value).toDate().getTime()
+                              > values.endDate?.toDate().getTime())
+                            || !values.endDate)
                         ) {
                           console.log('end date');
                           setFieldValue(
@@ -112,21 +113,19 @@ const ScheduleNextElectionsForm = () => {
                       }}
                     />
                     <DatePicker
-                      label='Elections end date'
-                      name='electionsEndDate'
+                      label="Elections end date"
+                      name="electionsEndDate"
                       minDate={
                         values.startDate
                           ? addVotingIntervalToDate(values.startDate)
                           : addVotingIntervalToDate(defaultStartDate)
                       }
-                      onChange={(value: Dayjs | null) =>
-                        setFieldValue('endDate', value)
-                      }
+                      onChange={(value: Dayjs | null) => setFieldValue('endDate', value)}
                     />
                     <Button
-                      type='submit'
-                      variant='contained'
-                      color='error'
+                      type="submit"
+                      variant="contained"
+                      color="error"
                       fullWidth
                       sx={{ mt: 2 }}
                     >
@@ -137,9 +136,9 @@ const ScheduleNextElectionsForm = () => {
               )}
             </Formik>
           ) : (
-            <Alert severity='warning'>
+            <Alert severity="warning">
               There is an already scheduled or ongoing election!{' '}
-              <LinkInText navigateTo='elections/ongoing_scheduled_elections'>
+              <LinkInText navigateTo="elections/ongoing_scheduled_elections">
                 Check out elections
               </LinkInText>
             </Alert>

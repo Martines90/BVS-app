@@ -23,36 +23,34 @@ const Voting = lazy(() => import('@pages/voting/VotingPage'));
 
 const Profile = lazy(() => import('@pages/profile/ProfilePage'));
 
-const Routes = () => {
-  return (
-    <Routes_>
-      <Route path='/' element={<Dashboard />} />
-      <Route path='/voting-pool' element={<VotingPool />} />
-      <Route path='/citizens' element={<Citizens />} />
-      <Route
-        path='/citizens/apply-for-citizenship'
-        element={<ApplyForCitizenship />}
-      />
+const Routes = () => (
+  <Routes_>
+    <Route path="/" element={<Dashboard />} />
+    <Route path="/voting-pool" element={<VotingPool />} />
+    <Route path="/citizens" element={<Citizens />} />
+    <Route
+      path="/citizens/apply-for-citizenship"
+      element={<ApplyForCitizenship />}
+    />
 
-      {/** Approvals */}
-      <Route path='/approvals' element={<Approvals />} />
+    {/** Approvals */}
+    <Route path="/approvals" element={<Approvals />} />
 
-      {/** Elections */}
-      <Route path='/elections' element={<Elections />} />
+    {/** Elections */}
+    <Route path="/elections" element={<Elections />} />
 
-      <Route path='/community' element={<Community />} />
-      <Route path='/political-actors' element={<PoliticalActors />} />
-      <Route
-        path='/political-actor/:politicalActorKey'
-        element={<PoliticalActor />}
-      />
-      <Route path='/voting/:votingKey' element={<Voting />} />
+    <Route path="/community" element={<Community />} />
+    <Route path="/political-actors" element={<PoliticalActors />} />
+    <Route
+      path="/political-actor/:politicalActorKey"
+      element={<PoliticalActor />}
+    />
+    <Route path="/voting/:votingKey" element={<Voting />} />
 
-      <Route path='/profile' element={<Profile />} />
+    <Route path="/profile" element={<Profile />} />
 
-      <Route path='*' element={<PageNotFound />} />
-    </Routes_>
-  );
-};
+    <Route path="*" element={<PageNotFound />} />
+  </Routes_>
+);
 
 export default Routes;

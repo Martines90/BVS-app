@@ -5,7 +5,7 @@ type Props = {
 };
 
 const FormTitle = ({ children }: Props) => (
-  <Typography variant='h5' gutterBottom sx={{ textAlign: 'center' }}>
+  <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
     {children}
   </Typography>
 );

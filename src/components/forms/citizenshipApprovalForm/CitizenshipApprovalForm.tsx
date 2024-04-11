@@ -27,8 +27,7 @@ const CitizenshipApprovalForm = () => {
   const { grantCitizenRole } = useContract();
   const { hasRole, isHashMatchWithCitizenshipApplicationHash } = useContract();
   const [success, setSucess] = useState(false);
-  const [applicationCheckIsInProgress, setApplicationCheckIsInProgress] =
-    useState(false);
+  const [applicationCheckIsInProgress, setApplicationCheckIsInProgress] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(
     null
   );
@@ -73,11 +72,10 @@ const CitizenshipApprovalForm = () => {
   ) => {
     const applicationHash = getBytes32keccak256Hash(email + publicKey);
 
-    const hashMatchesWithApplicationHash =
-      await isHashMatchWithCitizenshipApplicationHash(
-        publicKey,
-        applicationHash
-      );
+    const hashMatchesWithApplicationHash = await isHashMatchWithCitizenshipApplicationHash(
+      publicKey,
+      applicationHash
+    );
 
     return hashMatchesWithApplicationHash;
   };
@@ -126,8 +124,8 @@ const CitizenshipApprovalForm = () => {
             <Stack spacing={2}>
               <Field
                 as={TextField}
-                name='email'
-                label='Applicant email address'
+                name="email"
+                label="Applicant email address"
                 fullWidth
                 error={touched.email && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
@@ -135,16 +133,16 @@ const CitizenshipApprovalForm = () => {
               />
               <Field
                 as={TextField}
-                name='publicKey'
-                label='Applicant public key'
+                name="publicKey"
+                label="Applicant public key"
                 fullWidth
                 error={touched.publicKey && Boolean(errors.publicKey)}
                 helperText={touched.publicKey && errors.publicKey}
                 sx={{ mb: 2 }}
               />
               <Button
-                variant='contained'
-                color='primary'
+                variant="contained"
+                color="primary"
                 sx={{ mb: 2 }}
                 onClick={() => checkApplicant(values.email, values.publicKey)}
               >
@@ -153,14 +151,14 @@ const CitizenshipApprovalForm = () => {
               {validationMessage !== '' && (
                 <Typography>{validationMessage}</Typography>
               )}
-              <Alert severity='warning' sx={{ mb: 2 }}>
+              <Alert severity="warning" sx={{ mb: 2 }}>
                 Only approve applicant if he/she passed all the interviewing
                 processes
               </Alert>
               <Button
-                type='submit'
-                variant='contained'
-                color='error'
+                type="submit"
+                variant="contained"
+                color="error"
                 disabled={
                   validationMessage === null || validationMessage !== ''
                 }
@@ -169,7 +167,7 @@ const CitizenshipApprovalForm = () => {
               </Button>
               {applicationCheckIsInProgress && <CircuralProgressL />}
               {success && (
-                <Alert severity='success'>
+                <Alert severity="success">
                   Citizenship role successfully granted for user:{' '}
                   {values.publicKey}
                 </Alert>

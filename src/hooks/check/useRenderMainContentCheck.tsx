@@ -16,8 +16,7 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
 
   const navigate = useNavigate();
 
-  const [metamaskInstalledAndConnected, setMetamaskInstalledAndConnected] =
-    React.useState(true);
+  const [metamaskInstalledAndConnected, setMetamaskInstalledAndConnected] = React.useState(true);
 
   const [metamaskInstalled, setMetamaskInstalled] = React.useState(true);
 
@@ -57,8 +56,8 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
   React.useEffect(() => {
     if (metamaskInstalledAndConnected) {
       if (
-        window.ethereum &&
-        !(window.ethereum as any)?._events?.accountsChanged?.length
+        window.ethereum
+        && !(window.ethereum as any)?._events?.accountsChanged?.length
       ) {
         window.ethereum.on('chainChanged', (chainId) => {
           window.location.reload();
@@ -96,10 +95,10 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
     };
 
     if (
-      (!metamaskInstalledAndConnected && !isVisible) ||
-      (metamaskInstalledAndConnected &&
-        !isVisible &&
-        (!contract || !userState.walletAddress || !isUserSelectedMode))
+      (!metamaskInstalledAndConnected && !isVisible)
+      || (metamaskInstalledAndConnected
+        && !isVisible
+        && (!contract || !userState.walletAddress || !isUserSelectedMode))
     ) {
       callHandleConnectMetamask();
     }
@@ -107,10 +106,10 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
 
   React.useEffect(() => {
     if (
-      contract &&
-      userState.walletAddress &&
-      isUserSelectedMode &&
-      !renderMainContent
+      contract
+      && userState.walletAddress
+      && isUserSelectedMode
+      && !renderMainContent
     ) {
       setRenderMainContent(true);
     }

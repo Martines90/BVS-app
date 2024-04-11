@@ -5,7 +5,7 @@ import { AddressLike, BytesLike } from 'ethers';
 const useContract = () => {
   const { userState } = useUserContext();
 
-  const contract = userState.contract;
+  const { contract } = userState;
 
   const hasRole = async (
     role: ContractRoleskeccak256,
@@ -15,21 +15,17 @@ const useContract = () => {
     return hasRole;
   };
 
-  const getCitizenRoleApplicationFee = async () => {
-    return Number((await contract?.citizenRoleApplicationFee()) || 0);
-  };
+  const getCitizenRoleApplicationFee = async () => Number((await contract?.citizenRoleApplicationFee()) || 0);
 
   const getElectionStartEndIntervalInDays = async () => {
     const electionStartEndInterval = Number(
-      (((await contract?.ELECTION_START_END_INTERVAL()) || 0) as bigint) /
-        BigInt(60 * 60 * 24)
+      (((await contract?.ELECTION_START_END_INTERVAL()) || 0) as bigint)
+        / BigInt(60 * 60 * 24)
     );
     return electionStartEndInterval;
   };
 
-  const getElectionsStartDate = async () => {
-    return await contract?.electionsStartDate();
-  };
+  const getElectionsStartDate = async () => contract?.electionsStartDate();
 
   const applyForCitizenshipRole = async (
     applicantEmailPubKeyHash: BytesLike,
@@ -47,8 +43,7 @@ const useContract = () => {
   const isAccountAppliedForCitizenship = async (
     accountPublicKey: AddressLike
   ) => {
-    const appliedForCitizenship =
-      ((await contract?.citizenshipApplications(accountPublicKey)) || 0) != 0;
+    const appliedForCitizenship = ((await contract?.citizenshipApplications(accountPublicKey)) || 0) != 0;
     return appliedForCitizenship;
   };
 
@@ -56,16 +51,13 @@ const useContract = () => {
     publicKey: AddressLike,
     applicationHash: BytesLike
   ) => {
-    const hashMatchesWithApplicationHash =
-      ((await contract?.citizenshipApplications(publicKey)) || 0) ==
-      applicationHash;
+    const hashMatchesWithApplicationHash = ((await contract?.citizenshipApplications(publicKey)) || 0)
+      == applicationHash;
 
     return hashMatchesWithApplicationHash;
   };
 
-  const isThereOngoingElections = async () => {
-    return (await contract?.electionsStartDate()) !== BigInt(0);
-  };
+  const isThereOngoingElections = async () => (await contract?.electionsStartDate()) !== BigInt(0);
 
   const grantCitizenRole = async (
     publicKey: AddressLike,

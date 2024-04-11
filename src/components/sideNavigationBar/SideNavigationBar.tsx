@@ -45,37 +45,35 @@ const renderSubMenuItems = (
         paddingTop: '0px'
       }}
     >
-      {subMenuItems.map(({ label, route }, index) => {
-        return (
-          <ListItem
-            button
-            onClick={() => {
-              navigate(route);
-            }}
-            key={`${label}-${index}`}
+      {subMenuItems.map(({ label, route }, index) => (
+        <ListItem
+          button
+          onClick={() => {
+            navigate(route);
+          }}
+          key={`${label}-${index}`}
+          sx={{
+            padding: 0,
+            display: 'flex',
+            justifyContent: 'initial'
+          }}
+        >
+          <ListItemText
             sx={{
-              padding: 0,
-              display: 'flex',
-              justifyContent: 'initial'
+              ...iconTextStyle.text,
+              ...{
+                color: fullRoute === route ? selectedMenuItemColor : 'inherit'
+              },
+              '& span': {
+                marginLeft: '-10px',
+                fontWeight: '600',
+                fontSize: '15px'
+              }
             }}
-          >
-            <ListItemText
-              sx={{
-                ...iconTextStyle.text,
-                ...{
-                  color: fullRoute === route ? selectedMenuItemColor : 'inherit'
-                },
-                '& span': {
-                  marginLeft: '-10px',
-                  fontWeight: '600',
-                  fontSize: '15px'
-                }
-              }}
-              primary={label}
-            />
-          </ListItem>
-        );
-      })}
+            primary={label}
+          />
+        </ListItem>
+      ))}
     </List>
   );
 };
@@ -123,7 +121,7 @@ const SideNavigationBar = ({
 
   return (
     <Drawer
-      variant='permanent'
+      variant="permanent"
       open={isLeftNaveOpen}
       sx={{
         width: isLeftNaveOpen
@@ -136,11 +134,10 @@ const SideNavigationBar = ({
             : SIDEBAR_NAV_DIMENSIONS.widthClosed,
           backgroundColor: '#101F33',
           color: 'rgba(255, 255, 255, 0.7)',
-          transition: (theme) =>
-            theme.transitions.create('width', {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen
-            })
+          transition: (theme) => theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen
+          })
         }
       }}
     >
@@ -168,7 +165,9 @@ const SideNavigationBar = ({
       <Divider />
       <List>
         {userModeEnabledMenuItems.map(
-          ({ label, icon, route, subMenuItems }, index) => (
+          ({
+            label, icon, route, subMenuItems
+          }, index) => (
             <React.Fragment key={`${label}-${index}-fragment`}>
               <ListItem
                 button
