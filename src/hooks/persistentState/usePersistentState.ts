@@ -1,4 +1,3 @@
-import { NO_PERSTISTANT_STATE_PROPS } from '@global/constants/flags';
 import getSessionStorageItem from '@hooks/persistentState/helpers/getSessionStorageItem';
 import { useState } from 'react';
 

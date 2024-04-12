@@ -1,22 +1,22 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import Drawer from '@mui/material/Drawer';
+import React, { Dispatch, SetStateAction } from 'react';
 
-import List from '@mui/material/List';
+import { IconButton } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import menuItems from './menuItems';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
-import { IconButton } from '@mui/material';
+import menuItems from './menuItems';
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
-import { SubMenuItem } from './types';
 import { getFullRoute } from '@global/helpers/routing';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getUserModeEnabledMenuItems } from './helpers';
+import { SubMenuItem } from './types';
 
 const selectedMenuItemColor = '#c78484';
 
@@ -45,13 +45,13 @@ const renderSubMenuItems = (
         paddingTop: '0px'
       }}
     >
-      {subMenuItems.map(({ label, route }, index) => (
+      {subMenuItems.map(({ label, route }) => (
         <ListItem
           button
           onClick={() => {
             navigate(route);
           }}
-          key={`${label}-${index}`}
+          key={`submenu-lvl-${label}`}
           sx={{
             padding: 0,
             display: 'flex',
@@ -167,14 +167,14 @@ const SideNavigationBar = ({
         {userModeEnabledMenuItems.map(
           ({
             label, icon, route, subMenuItems
-          }, index) => (
-            <React.Fragment key={`${label}-${index}-fragment`}>
+          }) => (
+            <React.Fragment key={`${label}-main-lvl`}>
               <ListItem
                 button
                 onClick={() => {
                   navigate(route);
                 }}
-                key={`${label}-${index}`}
+                key={`${label}-main-lvl-list-item`}
                 sx={{
                   width: SIDEBAR_NAV_DIMENSIONS.widthOpen,
                   display: 'flex',

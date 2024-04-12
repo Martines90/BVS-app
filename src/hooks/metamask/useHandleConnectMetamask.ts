@@ -17,12 +17,13 @@ const useHandleConnectMetamask = () => {
         await ethereum?.request({
           method: 'eth_accounts'
         })
-      )[0];
+      )?.[0];
 
       const chainId = parseInt(
-        (await ethereum?.request({
+        ((await ethereum?.request({
           method: 'eth_chainId'
-        })) as string
+        }) || '') as string
+        ), 10
       );
 
       if (chainId !== BVS_CONTRACT.chainId) {

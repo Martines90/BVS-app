@@ -10,12 +10,11 @@ const useContract = () => {
   const hasRole = async (
     role: ContractRoleskeccak256,
     walletAddress: AddressLike
-  ) => {
-    const hasRole = await contract?.hasRole(role, walletAddress);
-    return hasRole;
-  };
+  ) => contract?.hasRole(role, walletAddress);
 
-  const getCitizenRoleApplicationFee = async () => Number((await contract?.citizenRoleApplicationFee()) || 0);
+  const getCitizenRoleApplicationFee = async () => Number(
+    (await contract?.citizenRoleApplicationFee()) || 0
+  );
 
   const getElectionStartEndIntervalInDays = async () => {
     const electionStartEndInterval = Number(
@@ -43,7 +42,9 @@ const useContract = () => {
   const isAccountAppliedForCitizenship = async (
     accountPublicKey: AddressLike
   ) => {
-    const appliedForCitizenship = ((await contract?.citizenshipApplications(accountPublicKey)) || 0) != 0;
+    const appliedForCitizenship = ((
+      await contract?.citizenshipApplications(accountPublicKey)) || 0) !== 0;
+
     return appliedForCitizenship;
   };
 
@@ -51,8 +52,8 @@ const useContract = () => {
     publicKey: AddressLike,
     applicationHash: BytesLike
   ) => {
-    const hashMatchesWithApplicationHash = ((await contract?.citizenshipApplications(publicKey)) || 0)
-      == applicationHash;
+    const hashMatchesWithApplicationHash = (
+      (await contract?.citizenshipApplications(publicKey)) || 0) === applicationHash;
 
     return hashMatchesWithApplicationHash;
   };

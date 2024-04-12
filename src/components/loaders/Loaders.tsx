@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
 import { Box, Stack } from '@mui/material';
 

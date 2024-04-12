@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import {
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Alert,
-  Stack
-} from '@mui/material';
+import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
-import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { ContractRoleskeccak256 } from '@global/types/user';
+import useContract from '@hooks/contract/useContract';
+import {
+  Alert,
+  Button,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
+import { Field, Form, Formik } from 'formik';
+import { useState } from 'react';
+import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
-import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
-import useContract from '@hooks/contract/useContract';
 
 // Form validation schema
 const validationSchema = Yup.object({
@@ -31,6 +29,20 @@ const CitizenshipApprovalForm = () => {
   const [validationMessage, setValidationMessage] = useState<string | null>(
     null
   );
+
+  const validateCitizenshipApplication = async (
+    email: string,
+    publicKey: string
+  ) => {
+    const applicationHash = getBytes32keccak256Hash(email + publicKey);
+
+    const hashMatchesWithApplicationHash = await isHashMatchWithCitizenshipApplicationHash(
+      publicKey,
+      applicationHash
+    );
+
+    return hashMatchesWithApplicationHash;
+  };
 
   const checkApplicant = async (email: string, publicKey: string) => {
     // Dummy check for the example - replace this logic with your actual check
@@ -66,20 +78,6 @@ const CitizenshipApprovalForm = () => {
     return false;
   };
 
-  const validateCitizenshipApplication = async (
-    email: string,
-    publicKey: string
-  ) => {
-    const applicationHash = getBytes32keccak256Hash(email + publicKey);
-
-    const hashMatchesWithApplicationHash = await isHashMatchWithCitizenshipApplicationHash(
-      publicKey,
-      applicationHash
-    );
-
-    return hashMatchesWithApplicationHash;
-  };
-
   return (
     <FormContainer>
       <FormTitle>Citizenship Approval</FormTitle>
@@ -87,7 +85,6 @@ const CitizenshipApprovalForm = () => {
         initialValues={{ email: '', publicKey: '' }}
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          console.log('Approving applicant:', values);
           // Here you would call the function to approve the applicant
 
           setApplicationCheckIsInProgress(true);

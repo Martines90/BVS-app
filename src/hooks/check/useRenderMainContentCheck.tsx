@@ -34,12 +34,12 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
         ?.request({
           method: 'eth_accounts'
         })
-        .then(async (accounts: any) => {
+        .then(async (_accounts: any) => {
           setMetamaskInstalled(true);
-          return accounts;
+          return _accounts;
         })
         .catch((err: any) => {
-          console.log('ERRR:', err);
+          console.error('ERRR:', err);
           setMetamaskInstalled(false);
           setMetamaskInstalledAndConnected(false);
         });
@@ -59,7 +59,7 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
         window.ethereum
         && !(window.ethereum as any)?._events?.accountsChanged?.length
       ) {
-        window.ethereum.on('chainChanged', (chainId) => {
+        window.ethereum.on('chainChanged', () => {
           window.location.reload();
         });
         window.ethereum.on('accountsChanged', (accounts) => {
@@ -80,7 +80,6 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
       let suceeded = false;
 
       if (metamaskInstalledAndConnected) {
-        console.log('call connect to metamask');
         suceeded = await handleConnectMetamask();
       }
 

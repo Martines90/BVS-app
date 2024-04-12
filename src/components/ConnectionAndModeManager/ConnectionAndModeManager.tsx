@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useUserContext } from '@hooks/context/userContext/UserContext';
 import {
   ContractRoleskeccak256,
   USER_MODES,
   UserMode
 } from '@global/types/user';
+import { useUserContext } from '@hooks/context/userContext/UserContext';
+import React, { useState } from 'react';
 
 import {
   Alert, Box, Button, Stack
@@ -13,8 +13,8 @@ import {
 import { useSDK } from '@metamask/sdk-react';
 
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
-import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 import useContract from '@hooks/contract/useContract';
+import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
 type ConnectionAndModeManagerProps = {
   metamaskInstalled: boolean;
@@ -30,7 +30,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
 
   const { userState, setUserState } = useUserContext();
   const {
-    sdk, connected, connecting, provider: ethereum, chainId
+    sdk, connected
   } = useSDK();
 
   const [availableModes, setAvailableModes] = useState([USER_MODES.GUEST]);
@@ -42,7 +42,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
           && (await hasRole(role, userState.walletAddress));
         return _hasRole;
       };
-      const availableModes = [
+      const _availableModes = [
         USER_MODES.GUEST,
         ...((await checkRole(ContractRoleskeccak256.CITIZEN))
           ? [USER_MODES.CITIZEN]
@@ -54,7 +54,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
           ? [USER_MODES.ADMINISTRATOR]
           : [])
       ];
-      setAvailableModes(availableModes);
+      setAvailableModes(_availableModes);
     };
 
     if (contract && userState.walletAddress && connected) {

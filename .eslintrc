@@ -43,6 +43,9 @@
         "allowSeparatedGroups": false
       }
     ],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "no-underscore-dangle": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "max-lines": [
       "error",
@@ -68,6 +71,10 @@
       "files": ["*.ts", "*.tsx"],
       "rules": {
         "comma-dangle": ["error", "never"],
+        "jsx-a11y/anchor-is-valid": [ "error", {
+          "components": [ "Link" ],
+          "specialLink": [ "to" ]
+        }],
         "react/function-component-definition": ["off"],
         "react/jsx-one-expression-per-line": ["off"],
         "@typescript-eslint/comma-dangle": ["error", "never"],

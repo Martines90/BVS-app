@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { UserMode } from '@global/types/user';
 import { MenuItem } from './types';
 

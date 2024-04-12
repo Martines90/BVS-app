@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Routes as Routes_, Route } from 'react-router-dom';
+import { Route, Routes as Routes_ } from 'react-router-dom';
 
 const PageNotFound = lazy(() => import('@pages/page-not-found/PageNotFound'));
 const Dashboard = lazy(() => import('@pages/dashboard/DashboardPage'));
@@ -24,6 +24,7 @@ const Voting = lazy(() => import('@pages/voting/VotingPage'));
 const Profile = lazy(() => import('@pages/profile/ProfilePage'));
 
 const Routes = () => (
+  // eslint-disable-next-line react/jsx-pascal-case
   <Routes_>
     <Route path="/" element={<Dashboard />} />
     <Route path="/voting-pool" element={<VotingPool />} />

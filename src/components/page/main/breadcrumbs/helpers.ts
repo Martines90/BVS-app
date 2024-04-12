@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { Location } from 'react-router-dom';
 import { PathChunk } from './types';
 
@@ -21,14 +22,14 @@ export const getBreadcrumbMapFromUrl = (
     } else {
       href += `#${pathName}`;
     }
-    pathName = pathName
-      .split(/\-|_/)
+    const _pathName = pathName
+      .split(/-|_/)
       .map((str) => str.charAt(0).toUpperCase() + str.slice(1))
       .join(' ');
 
     return {
       isHash,
-      pathName,
+      pathName: _pathName,
       href: href.slice(1)
     };
   });
