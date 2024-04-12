@@ -1,4 +1,5 @@
 {
+  "name": "bvs-api",
   "scripts": {
     "start": "webpack serve --open",
     "build": "webpack --mode production",
