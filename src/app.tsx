@@ -1,20 +1,26 @@
 import React, { Suspense, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import { Header, Main, Footer } from '@components/page';
-import {
-  CssBaseline, Container, Box, Stack
-} from '@mui/material';
-import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
-import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper';
-import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
-import MetamaskContextWrapper from '@hooks/context/metamaskContext/MetamaskContextWrapper';
-import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
+import Loading from '@components/general/Loading/Loading';
+import { Footer, Header, Main } from '@components/page';
+import Routes from '@components/routes/Routes';
 import SideNavigationBar from '@components/sideNavigationBar/SideNavigationBar';
 import { SIDEBAR_NAV_DIMENSIONS } from '@global/constants/page';
-import Routes from '@components/routes/Routes';
-import Loading from '@components/general/Loading/Loading';
+import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
+import MetamaskContextWrapper from '@hooks/context/metamaskContext/MetamaskContextWrapper';
+import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper';
+import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
+import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
+import {
+  Box,
+  Container,
+  CssBaseline,
+  Stack
+} from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   const [isLeftNavOpen, setIsLeftNaveOpen] = useState(false);
@@ -56,6 +62,18 @@ const App: React.FC = () => {
                         </Suspense>
                       </Main>
                     </Container>
+                    <ToastContainer
+                      position="bottom-right"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="light"
+                    />
                     <Footer />
                   </Box>
                 </Stack>

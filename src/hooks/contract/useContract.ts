@@ -12,106 +12,65 @@ const useContract = (): ContractInteractionProps => {
     applicantEmailPubKeyHash: BytesLike,
     applicationFee: number
   ) => {
-    try {
-      await userState.contract?.applyForCitizenshipRole(
-        applicantEmailPubKeyHash,
-        {
-          value: applicationFee,
-          from: userState.walletAddress
-        }
-      );
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
+    await userState.contract?.applyForCitizenshipRole(
+      applicantEmailPubKeyHash,
+      {
+        value: applicationFee,
+        from: userState.walletAddress
+      }
+    );
   };
 
   const grantCitizenRole = async (
     publicKey: AddressLike,
     applicationHash: BytesLike
   ) => {
-    try {
-      await contract?.grantCitizenRole(publicKey, applicationHash, false);
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
+    await contract?.grantCitizenRole(publicKey, applicationHash, false);
   };
 
   const hasRole = async (
     role: ContractRoleskeccak256,
     walletAddress: AddressLike
-  ) => {
-    try {
-      return Boolean(await contract?.hasRole(role, walletAddress));
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
-  };
+  ) => Boolean(await contract?.hasRole(role, walletAddress));
 
   const isAccountAppliedForCitizenship = async (
     accountPublicKey: AddressLike
   ) => {
-    try {
-      return ((
-        await contract?.citizenshipApplications(accountPublicKey)) || 0) !== 0;
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
+    const appliedForCitizenship = ((
+      await contract?.citizenshipApplications(accountPublicKey)) || 0) !== 0;
+
+    return appliedForCitizenship;
   };
 
   const isHashMatchWithCitizenshipApplicationHash = async (
     publicKey: AddressLike,
     applicationHash: BytesLike
   ) => {
-    try {
-      return (
-        (await contract?.citizenshipApplications(publicKey)) || 0) === applicationHash;
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
+    const hashMatchesWithApplicationHash = (
+      (await contract?.citizenshipApplications(publicKey)) || 0) === applicationHash;
+
+    return hashMatchesWithApplicationHash;
   };
 
-  const isThereOngoingElections = async () => {
-    try {
-      return (await contract?.electionsStartDate()) !== BigInt(0);
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
-  };
+  const isThereOngoingElections = async () => (await contract?.electionsStartDate()) !== BigInt(0);
 
   const scheduleNextElections = async (fromDate: number, toDate: number) => {
-    try {
-      await contract?.scheduleNextElections(BigInt(fromDate), BigInt(toDate));
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
+    await contract?.scheduleNextElections(BigInt(fromDate), BigInt(toDate));
   };
 
-  const getCitizenRoleApplicationFee = async () => {
-    try {
-      return Number(await contract?.citizenRoleApplicationFee() || 0);
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
-  };
+  const getCitizenRoleApplicationFee = async () => Number(
+    (await contract?.citizenRoleApplicationFee()) || 0
+  );
 
   const getElectionStartEndIntervalInDays = async () => {
-    try {
-      return Number(
-        (((await contract?.ELECTION_START_END_INTERVAL()) || 0) as bigint)
+    const electionStartEndInterval = Number(
+      (((await contract?.ELECTION_START_END_INTERVAL()) || 0) as bigint)
         / BigInt(60 * 60 * 24)
-      );
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
+    );
+    return electionStartEndInterval;
   };
 
-  const getElectionsStartDate = async () => {
-    try {
-      return Number(await contract?.electionsStartDate());
-    } catch (err) {
-      throw Error(`Err: ${err}`);
-    }
-  };
+  const getElectionsStartDate = async () => Number(await contract?.electionsStartDate());
 
   return {
     contract,

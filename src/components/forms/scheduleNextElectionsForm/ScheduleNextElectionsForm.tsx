@@ -20,6 +20,7 @@ import useContract from '@hooks/contract/useContract';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { addDays } from 'date-fns';
 import dayjs, { Dayjs } from 'dayjs';
+import { Bounce, toast } from 'react-toastify';
 import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 
@@ -41,10 +42,23 @@ type InitialValues = {
   endDate: null | Dayjs;
 };
 
+const showError = (err: any) => toast.error(err, {
+  position: 'bottom-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'light',
+  transition: Bounce
+});
+
 const ScheduleNextElectionsForm = () => {
   const {
     getElectionStartEndIntervalInDays,
-    isThereOngoingElections: _isThereOngoingElections
+    isThereOngoingElections: _isThereOngoingElections,
+    scheduleNextElections
   } = useContract();
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo | null>(null);
   const { electionStartEndInterval, isThereOngoingElections } = electionInfo || {};
@@ -74,6 +88,7 @@ const ScheduleNextElectionsForm = () => {
     };
 
     getElectionInfo();
+    showError('Smtg went so bad!');
   }, []);
 
   return (
@@ -87,8 +102,19 @@ const ScheduleNextElectionsForm = () => {
            <Formik
              initialValues={formInitialValues}
              validationSchema={validationSchema}
-             onSubmit={(values) => {
-               console.log('Election Dates:', values);
+             onSubmit={async (values, { setSubmitting }) => {
+               const startDateTimestamp = values.startDate?.toDate().getTime();
+               const endDateTimestamp = values.endDate?.toDate().getTime();
+
+               if (startDateTimestamp && endDateTimestamp) {
+                 try {
+                   await scheduleNextElections(startDateTimestamp, endDateTimestamp);
+                 } catch (err) {
+                   showError(err);
+                 }
+               }
+
+               setSubmitting(false);
              }}
            >
              {({
