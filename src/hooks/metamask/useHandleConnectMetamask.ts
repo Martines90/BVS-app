@@ -19,11 +19,11 @@ const useHandleConnectMetamask = () => {
         })
       )?.[0];
 
-      const chainId = parseInt(
+      const chainId = Number(
         ((await ethereum?.request({
           method: 'eth_chainId'
         }) || '') as string
-        ), 10
+        )
       );
 
       if (chainId !== BVS_CONTRACT.chainId) {
