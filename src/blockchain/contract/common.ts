@@ -2,15 +2,15 @@
 /* tslint:disable */
 /* eslint-disable */
 import type {
-  FunctionFragment,
-  Typed,
-  EventFragment,
   ContractTransaction,
   ContractTransactionResponse,
   DeferredTopicFilter,
+  EventFragment,
   EventLog,
+  FunctionFragment,
+  LogDescription,
   TransactionRequest,
-  LogDescription
+  Typed
 } from 'ethers';
 
 export interface TypedDeferredTopicFilter<_TCEvent extends TypedContractEvent>
@@ -101,7 +101,7 @@ export interface TypedContractMethod<
     ...args: ContractMethodArgs<A, S>
   ): S extends 'view'
     ? Promise<DefaultReturnType<R>>
-    : Promise<ContractTransactionResponse>;
+    : <ContractTransactionResponse>;
 
   name: string;
 
