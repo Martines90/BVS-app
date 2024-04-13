@@ -37,7 +37,7 @@ const useContract = (): ContractInteractionProps => {
     accountPublicKey: AddressLike
   ) => {
     const appliedForCitizenship = ((
-      await contract?.citizenshipApplications(accountPublicKey)) || 0) !== 0;
+      Number(await contract?.citizenshipApplications(accountPublicKey)) || 0)) !== 0;
 
     return appliedForCitizenship;
   };
