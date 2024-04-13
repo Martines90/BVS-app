@@ -2,7 +2,6 @@ import ConnectionAndModeManager from '@components/connectionAndModeManager/Conne
 import { useModalContext } from '@hooks/context/modalContext/ModalContext';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
-
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 import detectEthereumProvider from '@metamask/detect-provider';
 import React from 'react';
@@ -29,6 +28,8 @@ const useRenderMainContentCheck = (): { renderMainContent: boolean } => {
   React.useEffect(() => {
     const detectEthereumProviderCall = async () => {
       const provider = (await detectEthereumProvider()) as any;
+
+      await window.ethereum?.request({ method: 'eth_requestAccounts' });
 
       const accounts = await provider
         ?.request({
