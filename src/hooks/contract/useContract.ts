@@ -47,7 +47,7 @@ const useContract = (): ContractInteractionProps => {
     applicationHash: BytesLike
   ) => {
     const hashMatchesWithApplicationHash = (
-      (await contract?.citizenshipApplications(publicKey)) || 0) === applicationHash;
+      (await contract?.citizenshipApplications(publicKey)) || '0x0') as BytesLike === applicationHash;
 
     return hashMatchesWithApplicationHash;
   };
