@@ -17,12 +17,12 @@ import { CommunicationWithContractIsInProgressLoader } from '@components/loaders
 
 import useContract from '@hooks/contract/useContract';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { showErrorToast, showSuccessToast } from '@components/toasts/Toasts';
 import { addDays } from 'date-fns';
 import dayjs, { Dayjs } from 'dayjs';
-import { Bounce, toast } from 'react-toastify';
 import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
+import { ElectionsInfo, InitialValues } from './types';
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -30,28 +30,6 @@ const validationSchema = Yup.object().shape({
   endDate: Yup.date()
     .required('End date is required')
     .min(Yup.ref('startDate'), 'End date must be after the start date')
-});
-
-type ElectionsInfo = {
-  isThereOngoingElections?: boolean;
-  electionStartEndInterval?: number;
-};
-
-type InitialValues = {
-  startDate: null | Dayjs;
-  endDate: null | Dayjs;
-};
-
-const showError = (err: any) => toast.error(err, {
-  position: 'bottom-right',
-  autoClose: 5000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: 'light',
-  transition: Bounce
 });
 
 const ScheduleNextElectionsForm = () => {
@@ -81,6 +59,7 @@ const ScheduleNextElectionsForm = () => {
       const _electionStartEndInterval = await getElectionStartEndIntervalInDays();
 
       const __isThereOngoingElections = await _isThereOngoingElections();
+
       setElectionInfo({
         isThereOngoingElections: __isThereOngoingElections,
         electionStartEndInterval: _electionStartEndInterval
@@ -88,7 +67,6 @@ const ScheduleNextElectionsForm = () => {
     };
 
     getElectionInfo();
-    showError('Smtg went so bad!');
   }, []);
 
   return (
@@ -109,8 +87,9 @@ const ScheduleNextElectionsForm = () => {
                if (startDateTimestamp && endDateTimestamp) {
                  try {
                    await scheduleNextElections(startDateTimestamp, endDateTimestamp);
+                   showSuccessToast('New election successfully scheduled!');
                  } catch (err) {
-                   showError(err);
+                   showErrorToast(`Error: ${err}`);
                  }
                }
 
