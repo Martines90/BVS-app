@@ -5,7 +5,8 @@
     "build": "webpack --mode production",
     "lint": "eslint \"**/*.ts?(x)\"",
     "lint:fix": "eslint \"**/*.ts?(x)\" --fix",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
