@@ -1,7 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const DotenvWebpackPlugin = require('dotenv-webpack');
+
 const path = require('path');
+const dotenv = require('dotenv');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+dotenv.config();
 
 module.exports = {
   entry: './src/app.tsx',
@@ -31,9 +37,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new DotenvWebpackPlugin({ systemvars: true }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       favicon: './images/favicon.ico',
+      // 'process.env': JSON.stringify(process.env),
     }),
   ],
   output: {

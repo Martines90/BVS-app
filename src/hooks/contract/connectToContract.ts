@@ -1,8 +1,6 @@
-import BVS_VotingJSON from '@blockchain/contract/BVS_Voting.json';
 import { BVS_Voting } from '@blockchain/contract';
-import { ethers, Contract } from 'ethers';
-
-import { BVS_CONTRACT } from '@global/constants/blockchain';
+import BVS_VotingJSON from '@blockchain/contract/BVS_Voting.json';
+import { Contract, ethers } from 'ethers';
 
 const connectToContract = async (
   ethereum: any
@@ -12,7 +10,7 @@ const connectToContract = async (
   const signer = await provider.getSigner();
 
   const contract = new ethers.Contract(
-    BVS_CONTRACT.address,
+    process.env.CONTRACT_PUBLIC_KEY || process.env.DEV_CONTRACT_PUBLIC_KEY || '',
     BVS_VotingJSON.abi,
     signer
   ) as Contract & BVS_Voting;
