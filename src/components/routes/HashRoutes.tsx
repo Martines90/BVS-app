@@ -9,7 +9,10 @@ const ApproveCitizenshipApplicationPage = lazy(
 
 // elections
 const ScheduleNextElectionsPage = lazy(
-  () => import('@pages/elections/ScheduleNextElectionsPage')
+  () => import('@pages/elections/schedule-next-elections/ScheduleNextElectionsPage')
+);
+const OngoingAndScheduledElections = lazy(
+  () => import('@pages/elections/ongoing-scheduled-elections/OngoingScheduledElectionsPage')
 );
 
 const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
@@ -23,6 +26,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   // elections
   if (hash === '#schedule_next_elections') {
     return <ScheduleNextElectionsPage />;
+  }
+
+  if (hash === '#ongoing_scheduled_elections') {
+    return <OngoingAndScheduledElections />;
   }
 
   return (

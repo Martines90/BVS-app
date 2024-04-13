@@ -19,7 +19,7 @@ const MainBreadcrumbs = () => {
       {pathnames.map(({ pathName, href }) => (
         <Button
           component={Link}
-          sx={{ cursor: 'pointer' }}
+          sx={{ cursor: 'pointer', textTransform: 'unset' }}
           key={`${pathName}-link`}
           underline="hover"
           color="inherit"
