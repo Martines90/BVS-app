@@ -1,9 +1,9 @@
-import { useMemo, SetStateAction, Dispatch } from 'react';
+import { Dispatch, SetStateAction, useMemo } from 'react';
 
+import { UserState } from '@global/types/user';
+import usePersistantState from '@hooks/persistentState/usePersistentState';
 import UserContext, { initialUserContextValue } from './UserContext';
 import { UserContextWrapperProps } from './types';
-import usePersistantState from '@hooks/persistentState/usePersistentState';
-import { UserState } from '@global/types/user';
 
 const UserContextWrapper = ({
   children,

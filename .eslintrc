@@ -32,6 +32,13 @@
     // disable react import requirement
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "react/require-default-props": [
+      "error", 
+      {
+        "forbidDefaultForRequired": true,        
+        "functions": "defaultArguments" //Here
+      }
+    ],
     "import/order": "off",
     "sort-imports": [
       "error",
