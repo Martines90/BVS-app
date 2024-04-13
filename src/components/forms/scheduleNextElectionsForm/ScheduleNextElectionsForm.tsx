@@ -57,7 +57,6 @@ const ScheduleNextElectionsForm = () => {
   useEffect(() => {
     const getElectionInfo = async () => {
       const _electionStartEndInterval = await getElectionStartEndIntervalInDays();
-
       const __isThereOngoingElections = await _isThereOngoingElections();
 
       setElectionInfo({
@@ -88,6 +87,10 @@ const ScheduleNextElectionsForm = () => {
                  try {
                    await scheduleNextElections(startDateTimestamp, endDateTimestamp);
                    showSuccessToast('New election successfully scheduled!');
+                   setElectionInfo({
+                     ...electionInfo,
+                     isThereOngoingElections: true
+                   });
                  } catch (err) {
                    showErrorToast(`Error: ${err}`);
                  }
@@ -113,7 +116,6 @@ const ScheduleNextElectionsForm = () => {
                               > values.endDate?.toDate().getTime())
                             || !values.endDate)
                        ) {
-                         console.log('end date');
                          setFieldValue(
                            'endDate',
                            addVotingIntervalToDate(value)
