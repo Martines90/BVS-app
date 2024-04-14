@@ -38,38 +38,44 @@ describe('useContract', () => {
   });
 
   describe('roles', () => {
-    it('applyForCitizenshipRole', async () => {
-      const { applyForCitizenshipRole } = useContract();
+    describe('applyForCitizenshipRole', () => {
+      it('should call applyForCitizenshipRole with proper values', async () => {
+        const { applyForCitizenshipRole } = useContract();
 
-      await applyForCitizenshipRole(mockApplyForCitizenshipHash, 10000);
+        await applyForCitizenshipRole(mockApplyForCitizenshipHash, 10000);
 
-      expect(mockContract.applyForCitizenshipRole).toHaveBeenCalledWith(
-        mockApplyForCitizenshipHash,
-        { from: mockAccountKey, value: 10000 }
-      );
+        expect(mockContract.applyForCitizenshipRole).toHaveBeenCalledWith(
+          mockApplyForCitizenshipHash,
+          { from: mockAccountKey, value: 10000 }
+        );
+      });
     });
 
-    it('grantCitizenRole', async () => {
-      const { grantCitizenRole } = useContract();
+    describe('grantCitizenRole', () => {
+      it('should call grantCitizenRole with proper values', async () => {
+        const { grantCitizenRole } = useContract();
 
-      await grantCitizenRole(mockAccountKey, mockApplyForCitizenshipHash);
+        await grantCitizenRole(mockAccountKey, mockApplyForCitizenshipHash);
 
-      expect(mockContract.grantCitizenRole).toHaveBeenCalledWith(
-        mockAccountKey,
-        mockApplyForCitizenshipHash,
-        false
-      );
+        expect(mockContract.grantCitizenRole).toHaveBeenCalledWith(
+          mockAccountKey,
+          mockApplyForCitizenshipHash,
+          false
+        );
+      });
     });
 
-    it('hasRole', async () => {
-      const { hasRole } = useContract();
+    describe('hasRole', () => {
+      it('should call hasRole with proper values', async () => {
+        const { hasRole } = useContract();
 
-      await hasRole(USER_ROLES.CITIZEN, mockAccountKey);
+        await hasRole(USER_ROLES.CITIZEN, mockAccountKey);
 
-      expect(mockContract.hasRole).toHaveBeenCalledWith(
-        ContractRoleskeccak256.citizen,
-        mockAccountKey
-      );
+        expect(mockContract.hasRole).toHaveBeenCalledWith(
+          ContractRoleskeccak256.citizen,
+          mockAccountKey
+        );
+      });
     });
 
     describe('isAccountAppliedForCitizenship', () => {
