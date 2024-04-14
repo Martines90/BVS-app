@@ -38,7 +38,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
   return (
     <PageContainer>
       <PageTitle>
-        Ongoing Elections Page
+        Ongoing & next elections
       </PageTitle>
       <Box sx={{ p: 2 }}>
         {electionStartDate && electionEndDate ? (
