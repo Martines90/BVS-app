@@ -3,6 +3,7 @@ import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256 } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
+import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
   Alert,
   Box,
@@ -51,15 +52,17 @@ const CitizenshipApplicationForm = () => {
 
   useEffect(() => {
     const loadContractInfo = async () => {
-      const citizenshipApplicationFee = await getCitizenRoleApplicationFee();
+      const citizenshipApplicationFee = await asyncErrWrapper(getCitizenRoleApplicationFee)();
 
-      const appliedForCitizenship = await isAccountAppliedForCitizenship(
+      if (!citizenshipApplicationFee) return;
+
+      const appliedForCitizenship = await asyncErrWrapper(isAccountAppliedForCitizenship)(
         accountPublicKey
       );
 
       const hasCitizenRole = !!(
         userState.walletAddress
-        && (await hasRole(ContractRoleskeccak256.CITIZEN, userState.walletAddress))
+        && (await asyncErrWrapper(hasRole)(ContractRoleskeccak256.CITIZEN, userState.walletAddress))
       );
 
       setContractInfo({
@@ -76,7 +79,7 @@ const CitizenshipApplicationForm = () => {
   const callContractApplyForCitizenshipFn = async (
     applicantEmailPubKeyHash: BytesLike
   ) => contractInfo.citizenshipApplicationFee
-      && (await applyForCitizenshipRole(
+      && (await asyncErrWrapper(applyForCitizenshipRole)(
         applicantEmailPubKeyHash,
         contractInfo.citizenshipApplicationFee
       ));

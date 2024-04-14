@@ -1,9 +1,9 @@
+import { USER_MODES } from '@global/types/user';
 import ArticleIcon from '@mui/icons-material/Article';
+import BallotIcon from '@mui/icons-material/Ballot';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import PublicIcon from '@mui/icons-material/Public';
 import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
-import HowToVoteIcon from '@mui/icons-material/HowToVote';
-import BallotIcon from '@mui/icons-material/Ballot';
-import { USER_MODES } from '@global/types/user';
 import { MenuItem } from './types';
 
 const menuItems: MenuItem[] = [
@@ -70,24 +70,14 @@ const menuItems: MenuItem[] = [
     modes: [],
     subMenuItems: [
       {
+        label: 'Ongoing & next elections',
+        route: 'elections#ongoing_next_elections',
+        modes: []
+      },
+      {
         label: 'Schedule next elections',
         route: 'elections#schedule_next_elections',
         modes: [USER_MODES.ADMINISTRATOR]
-      },
-      {
-        label: 'Next elections',
-        route: 'elections#next_election',
-        modes: []
-      },
-      {
-        label: 'Onging elections',
-        route: 'elections#ongoing_election',
-        modes: []
-      },
-      {
-        label: 'Past elections',
-        route: 'elections#past_elections',
-        modes: []
       }
     ]
   },

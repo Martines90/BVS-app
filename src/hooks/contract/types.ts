@@ -5,7 +5,7 @@ import { AddressLike, BytesLike, Contract } from 'ethers';
 export interface ContractInteractionProps {
   contract: Contract & BVS_Voting | undefined;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
-    applicationFee: number): void;
+    applicationFee: number): Promise<void>;
   grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): void;
   hasRole(role: ContractRoleskeccak256, walletAddress: AddressLike): Promise<boolean>;
   isAccountAppliedForCitizenship(accountPublicKey: AddressLike): Promise<boolean>;

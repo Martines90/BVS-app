@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import * as React from 'react';
 
+import { MainToastContainer } from '@components/toasts/Toasts';
 import InfoContextWrapper from '@hooks/context/infoContext/InfoContextWrapper';
 import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper';
 import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
@@ -17,7 +18,10 @@ const AllTheProviders = (
   <InfoContextWrapper>
     <ThemeProviderWrapper>
       <UserContextWrapper userState={initUserState}>
-        <ModalContextWrapper>{children}</ModalContextWrapper>
+        <ModalContextWrapper>
+          {children}
+          <MainToastContainer />
+        </ModalContextWrapper>
       </UserContextWrapper>
     </ThemeProviderWrapper>
   </InfoContextWrapper>

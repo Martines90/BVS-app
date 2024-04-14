@@ -4,10 +4,10 @@ import { act, render, screen } from 'test-utils';
 import ApplyForCitizenshipPage from './ApplyForCitizenshipPage';
 
 const mockContractFunctions = {
-  getCitizenRoleApplicationFee: jest.fn(() => 10000),
-  isAccountAppliedForCitizenship: jest.fn(() => false),
-  hasRole: jest.fn(() => false),
-  applyForCitizenshipRole: jest.fn()
+  getCitizenRoleApplicationFee: jest.fn(() => Promise.resolve(10000)),
+  isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
+  hasRole: jest.fn(() => Promise.resolve(false)),
+  applyForCitizenshipRole: jest.fn(() => Promise.resolve())
 };
 
 jest.mock('@hooks/contract/useContract', () => ({
@@ -43,7 +43,7 @@ describe('ApplyForCitizenshipPage', () => {
       const mockWallerAddress = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
       const wrapperProps = { initUserState: { walletAddress: mockWallerAddress } };
 
-      mockContractFunctions.applyForCitizenshipRole.mockImplementation(() => Promise.resolve({}));
+      mockContractFunctions.applyForCitizenshipRole.mockImplementation(() => Promise.resolve());
 
       let container: any;
       await act(async () => {
@@ -70,7 +70,7 @@ describe('ApplyForCitizenshipPage', () => {
     it('should render expected view', async () => {
       const wrapperProps = { initUserState: { walletAddress: '0x0' } };
 
-      mockContractFunctions.hasRole.mockImplementation(() => true);
+      mockContractFunctions.hasRole.mockImplementation(() => Promise.resolve(true));
 
       await act(() => {
         render(<ApplyForCitizenshipPage />, { wrapperProps });

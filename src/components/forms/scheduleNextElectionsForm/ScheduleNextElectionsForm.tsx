@@ -151,7 +151,7 @@ const ScheduleNextElectionsForm = () => {
         {electionInfo && isThereOngoingElections && (
         <Alert severity="warning">
           There is an already scheduled or ongoing election!{' '}
-          <LinkInText navigateTo="/elections#ongoing_scheduled_elections">
+          <LinkInText navigateTo="/elections#ongoing_next_elections">
             Check out elections
           </LinkInText>
         </Alert>

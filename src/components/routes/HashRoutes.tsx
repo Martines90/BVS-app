@@ -28,7 +28,7 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
     return <ScheduleNextElectionsPage />;
   }
 
-  if (hash === '#ongoing_scheduled_elections') {
+  if (hash === '#ongoing_next_elections') {
     return <OngoingAndScheduledElections />;
   }
 

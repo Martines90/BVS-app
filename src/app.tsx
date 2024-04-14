@@ -18,8 +18,8 @@ import {
   CssBaseline,
   Stack
 } from '@mui/material';
-import { ToastContainer } from 'react-toastify';
 
+import { MainToastContainer } from '@components/toasts/Toasts';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
@@ -62,18 +62,7 @@ const App: React.FC = () => {
                         </Suspense>
                       </Main>
                     </Container>
-                    <ToastContainer
-                      position="bottom-right"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="light"
-                    />
+                    <MainToastContainer />
                     <Footer />
                   </Box>
                 </Stack>
