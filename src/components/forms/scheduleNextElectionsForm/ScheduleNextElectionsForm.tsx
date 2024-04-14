@@ -80,8 +80,8 @@ const ScheduleNextElectionsForm = () => {
              initialValues={formInitialValues}
              validationSchema={validationSchema}
              onSubmit={async (values, { setSubmitting }) => {
-               const startDateTimestamp = values.startDate?.toDate().getTime();
-               const endDateTimestamp = values.endDate?.toDate().getTime();
+               const startDateTimestamp = (values.startDate?.toDate().getTime() || 0) / 1000;
+               const endDateTimestamp = (values.endDate?.toDate().getTime() || 0) / 1000;
 
                if (startDateTimestamp && endDateTimestamp) {
                  try {

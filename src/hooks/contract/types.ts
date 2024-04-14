@@ -16,4 +16,5 @@ export interface ContractInteractionProps {
   getCitizenRoleApplicationFee(): Promise<number>;
   getElectionStartEndIntervalInDays(): Promise<number>;
   getElectionsStartDate(): Promise<number>;
+  getElectionsEndDate(): Promise<number>;
 }

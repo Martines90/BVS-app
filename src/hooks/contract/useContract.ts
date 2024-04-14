@@ -75,11 +75,14 @@ const useContract = (): ContractInteractionProps => {
 
   const getElectionsStartDate = async () => Number(await contract?.electionsStartDate());
 
+  const getElectionsEndDate = async () => Number(await contract?.electionsEndDate());
+
   return {
     contract,
     getCitizenRoleApplicationFee,
     getElectionStartEndIntervalInDays,
     getElectionsStartDate,
+    getElectionsEndDate,
     applyForCitizenshipRole,
     grantCitizenRole,
     hasRole,

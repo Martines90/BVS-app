@@ -24,6 +24,7 @@ const mockContract = {
     return Promise.resolve(mockNonExistingAccountAddress);
   }),
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
+  electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(BigInt(mockApplicationFee)))
 };
@@ -219,6 +220,19 @@ describe('useContract', () => {
 
         expect(await getElectionsStartDate()).toBe(mockFutureTimestamp);
         expect(mockContract.electionsStartDate).toHaveBeenCalled();
+      });
+    });
+
+    describe('getElectionsEndDate', () => {
+      it('should call electionsEndDate and return election end date value', async () => {
+        mockContract.electionsEndDate.mockImplementationOnce(
+          () => Promise.resolve(BigInt(mockFutureTimestamp))
+        );
+
+        const { getElectionsEndDate } = useContract();
+
+        expect(await getElectionsEndDate()).toBe(mockFutureTimestamp);
+        expect(mockContract.electionsEndDate).toHaveBeenCalled();
       });
     });
   });
