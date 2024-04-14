@@ -1,4 +1,4 @@
-import { ContractRoleskeccak256 } from '@global/types/user';
+import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
 import { ContractInteractionProps } from './types';
@@ -29,9 +29,9 @@ const useContract = (): ContractInteractionProps => {
   };
 
   const hasRole = async (
-    role: ContractRoleskeccak256,
+    role: USER_ROLES,
     walletAddress: AddressLike
-  ) => Boolean(await contract?.hasRole(role, walletAddress));
+  ) => Boolean(await contract?.hasRole(ContractRoleskeccak256[role], walletAddress));
 
   const isAccountAppliedForCitizenship = async (
     accountPublicKey: AddressLike

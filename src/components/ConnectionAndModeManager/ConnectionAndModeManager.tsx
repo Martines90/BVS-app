@@ -1,6 +1,6 @@
 import {
-  ContractRoleskeccak256,
   USER_MODES,
+  USER_ROLES,
   UserMode
 } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
@@ -37,20 +37,20 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
 
   React.useEffect(() => {
     const checkAvailableRoles = async () => {
-      const checkRole = async (role: ContractRoleskeccak256) => {
+      const checkRole = async (role: USER_ROLES) => {
         const _hasRole = userState.walletAddress
           && (await hasRole(role, userState.walletAddress));
         return _hasRole;
       };
       const _availableModes = [
         USER_MODES.GUEST,
-        ...((await checkRole(ContractRoleskeccak256.CITIZEN))
+        ...((await checkRole(USER_ROLES.CITIZEN))
           ? [USER_MODES.CITIZEN]
           : []),
-        ...((await checkRole(ContractRoleskeccak256.POLITICAL_ACTOR))
+        ...((await checkRole(USER_ROLES.POLITICAL_ACTOR))
           ? [USER_MODES.POLITICAL_ACTOR]
           : []),
-        ...((await checkRole(ContractRoleskeccak256.ADMINISTRATOR))
+        ...((await checkRole(USER_ROLES.ADMINISTRATOR))
           ? [USER_MODES.ADMINISTRATOR]
           : [])
       ];
