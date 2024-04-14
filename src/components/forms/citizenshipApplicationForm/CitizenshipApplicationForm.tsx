@@ -1,6 +1,6 @@
 import { CircuralProgressM } from '@components/general/Loading/components/CircuralProgress';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
-import { ContractRoleskeccak256 } from '@global/types/user';
+import { USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
@@ -62,7 +62,7 @@ const CitizenshipApplicationForm = () => {
 
       const hasCitizenRole = !!(
         userState.walletAddress
-        && (await asyncErrWrapper(hasRole)(ContractRoleskeccak256.CITIZEN, userState.walletAddress))
+        && (await asyncErrWrapper(hasRole)(USER_ROLES.CITIZEN, userState.walletAddress))
       );
 
       setContractInfo({

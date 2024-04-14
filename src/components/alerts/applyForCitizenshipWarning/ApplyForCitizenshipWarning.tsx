@@ -11,7 +11,7 @@ const ApplyForCitizenshipWarning = () => (
       </LinkInText>
       )}
   >
-    You need cizizenship to be part of the community!
+    You need citizenship to be part of the community!
   </Alert>
 );
 
