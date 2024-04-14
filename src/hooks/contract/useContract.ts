@@ -1,3 +1,4 @@
+import { TimeQuantities } from '@global/constants/general';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
@@ -58,6 +59,8 @@ const useContract = (): ContractInteractionProps => {
     await contract?.scheduleNextElections(BigInt(fromDate), BigInt(toDate));
   };
 
+  // ********* GETTERS ***********
+
   const getCitizenRoleApplicationFee = async () => Number(
     (await contract?.citizenRoleApplicationFee()) || 0
   );
@@ -65,7 +68,7 @@ const useContract = (): ContractInteractionProps => {
   const getElectionStartEndIntervalInDays = async () => {
     const electionStartEndInterval = Number(
       (((await contract?.ELECTION_START_END_INTERVAL()) || 0) as bigint)
-        / BigInt(60 * 60 * 24)
+        / BigInt(TimeQuantities.DAY)
     );
     return electionStartEndInterval;
   };

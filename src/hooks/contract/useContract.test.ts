@@ -1,7 +1,9 @@
+import { TimeQuantities } from '@global/constants/general';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import useContract from './useContract';
 
+const mockApplicationFee = 10000;
 const mockFutureTimestamp = 2533566483;
 const mockNonExistingAccountAddress = '0x0000000000000000000000000000000000000000';
 const mockAccountKey = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
@@ -11,6 +13,7 @@ const mockApplyForCitizenshipHash = getBytes32keccak256Hash(
 );
 
 const mockContract = {
+  ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
@@ -20,7 +23,9 @@ const mockContract = {
     }
     return Promise.resolve(mockNonExistingAccountAddress);
   }),
-  electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0)))
+  electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
+  scheduleNextElections: jest.fn(() => Promise.resolve()),
+  citizenRoleApplicationFee: jest.fn(() => Promise.resolve(BigInt(mockApplicationFee)))
 };
 
 jest.mock('@hooks/context/userContext/UserContext', () => ({
@@ -42,11 +47,11 @@ describe('useContract', () => {
       it('should call applyForCitizenshipRole with proper values', async () => {
         const { applyForCitizenshipRole } = useContract();
 
-        await applyForCitizenshipRole(mockApplyForCitizenshipHash, 10000);
+        await applyForCitizenshipRole(mockApplyForCitizenshipHash, mockApplicationFee);
 
         expect(mockContract.applyForCitizenshipRole).toHaveBeenCalledWith(
           mockApplyForCitizenshipHash,
-          { from: mockAccountKey, value: 10000 }
+          { from: mockAccountKey, value: mockApplicationFee }
         );
       });
     });
@@ -147,6 +152,7 @@ describe('useContract', () => {
         const { isThereOngoingElections } = useContract();
 
         expect(await isThereOngoingElections()).toBe(false);
+        expect(mockContract.electionsStartDate).toHaveBeenCalled();
       });
 
       it('should return true when electionsStartDate is not 0', async () => {
@@ -157,6 +163,62 @@ describe('useContract', () => {
         const { isThereOngoingElections } = useContract();
 
         expect(await isThereOngoingElections()).toBe(true);
+      });
+    });
+
+    describe('scheduleNextElections', () => {
+      it('should call scheduleNextElections with proper values', async () => {
+        const { scheduleNextElections } = useContract();
+
+        const electionDates = {
+          startDate: mockFutureTimestamp,
+          endDate: mockFutureTimestamp + TimeQuantities.MONTH
+        };
+
+        await scheduleNextElections(
+          electionDates.startDate,
+          electionDates.endDate
+        );
+
+        expect(mockContract.scheduleNextElections).toHaveBeenCalledWith(
+          BigInt(electionDates.startDate),
+          BigInt(electionDates.endDate)
+        );
+      });
+    });
+  });
+
+  describe('getters', () => {
+    describe('getCitizenRoleApplicationFee', () => {
+      it('should call citizenRoleApplicationFee and return application fee', async () => {
+        const { getCitizenRoleApplicationFee } = useContract();
+
+        expect(await getCitizenRoleApplicationFee()).toBe(mockApplicationFee);
+        expect(mockContract.scheduleNextElections).toHaveBeenCalled();
+      });
+    });
+
+    describe('getElectionStartEndIntervalInDays', () => {
+      it('should  call ELECTION_START_END_INTERVAL and get day format', async () => {
+        const { getElectionStartEndIntervalInDays } = useContract();
+
+        expect(await getElectionStartEndIntervalInDays()).toBe(
+          TimeQuantities.MONTH / TimeQuantities.DAY
+        );
+        expect(mockContract.ELECTION_START_END_INTERVAL).toHaveBeenCalled();
+      });
+    });
+
+    describe('getElectionsStartDate', () => {
+      it('should call electionsStartDate and return election start date value', async () => {
+        mockContract.electionsStartDate.mockImplementationOnce(
+          () => Promise.resolve(BigInt(mockFutureTimestamp))
+        );
+
+        const { getElectionsStartDate } = useContract();
+
+        expect(await getElectionsStartDate()).toBe(mockFutureTimestamp);
+        expect(mockContract.electionsStartDate).toHaveBeenCalled();
       });
     });
   });
