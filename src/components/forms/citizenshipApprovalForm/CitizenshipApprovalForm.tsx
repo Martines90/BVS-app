@@ -1,7 +1,8 @@
 import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
-import { ContractRoleskeccak256 } from '@global/types/user';
+import { USER_ROLES } from '@global/types/user';
 import useContract from '@hooks/contract/useContract';
+import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
   Alert,
   Button,
@@ -36,7 +37,9 @@ const CitizenshipApprovalForm = () => {
   ) => {
     const applicationHash = getBytes32keccak256Hash(email + publicKey);
 
-    const hashMatchesWithApplicationHash = await isHashMatchWithCitizenshipApplicationHash(
+    const hashMatchesWithApplicationHash = await asyncErrWrapper(
+      isHashMatchWithCitizenshipApplicationHash
+    )(
       publicKey,
       applicationHash
     );
@@ -48,8 +51,8 @@ const CitizenshipApprovalForm = () => {
     // Dummy check for the example - replace this logic with your actual check
 
     if (email && publicKey) {
-      const hasCitizenRole = await hasRole(
-        ContractRoleskeccak256.CITIZEN,
+      const hasCitizenRole = await asyncErrWrapper(hasRole)(
+        USER_ROLES.CITIZEN,
         publicKey
       );
 
@@ -96,16 +99,15 @@ const CitizenshipApprovalForm = () => {
 
           if (applicationValid) {
             // grant citizenship role
-            await grantCitizenRole(
+            await asyncErrWrapper(grantCitizenRole)(
               values.publicKey,
               getBytes32keccak256Hash(values.email + values.publicKey)
-            )
-              .then((res) => {
-                setSucess(true);
-                console.log(res);
-              })
+            ).then((res) => {
+              setSucess(true);
+              console.log(res);
+            })
               .catch((error) => {
-                // Handle errors if the smart contract interaction fails
+              // Handle errors if the smart contract interaction fails
                 console.error(error);
               })
               .finally(() => {

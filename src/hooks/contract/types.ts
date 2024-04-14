@@ -6,7 +6,7 @@ export interface ContractInteractionProps {
   contract: Contract & BVS_Voting | undefined;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
     applicationFee: number): Promise<void>;
-  grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): void;
+  grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): Promise<void>;
   hasRole(role: USER_ROLES, walletAddress: AddressLike): Promise<boolean>;
   isAccountAppliedForCitizenship(accountPublicKey: AddressLike): Promise<boolean>;
   isHashMatchWithCitizenshipApplicationHash(

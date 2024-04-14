@@ -14,6 +14,7 @@ import { useSDK } from '@metamask/sdk-react';
 
 import { useInfoContext } from '@hooks/context/infoContext/InfoContext';
 import useContract from '@hooks/contract/useContract';
+import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import useHandleConnectMetamask from '@hooks/metamask/useHandleConnectMetamask';
 
 type ConnectionAndModeManagerProps = {
@@ -39,7 +40,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
     const checkAvailableRoles = async () => {
       const checkRole = async (role: USER_ROLES) => {
         const _hasRole = userState.walletAddress
-          && (await hasRole(role, userState.walletAddress));
+          && (await asyncErrWrapper(hasRole)(role, userState.walletAddress));
         return _hasRole;
       };
       const _availableModes = [
