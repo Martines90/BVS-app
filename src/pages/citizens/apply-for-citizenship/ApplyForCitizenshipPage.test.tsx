@@ -43,6 +43,8 @@ describe('ApplyForCitizenshipPage', () => {
       const mockWallerAddress = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
       const wrapperProps = { initUserState: { walletAddress: mockWallerAddress } };
 
+      mockContractFunctions.applyForCitizenshipRole.mockImplementation(() => Promise.resolve({}));
+
       let container: any;
       await act(async () => {
         ({ container } = render(<ApplyForCitizenshipPage />, { wrapperProps }));
@@ -59,6 +61,8 @@ describe('ApplyForCitizenshipPage', () => {
       expect(
         mockContractFunctions.applyForCitizenshipRole
       ).toHaveBeenCalledWith(expectedHash, 10000);
+
+      expect(screen.queryByText('You citizenship application in the BVS blockchain contract already registered.')).toBeInTheDocument();
     });
   });
 

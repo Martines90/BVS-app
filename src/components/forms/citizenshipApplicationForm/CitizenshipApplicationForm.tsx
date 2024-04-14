@@ -105,9 +105,11 @@ const CitizenshipApplicationForm = () => {
 
           // Call the smart contract function with the application hash
           callContractApplyForCitizenshipFn(applicationHash)
-            .then((response) => {
-              // Handle the successful smart contract interaction
-              console.log(response);
+            .then(() => {
+              setContractInfo({
+                ...contractInfo,
+                appliedForCitizenship: true
+              });
             })
             .catch((error) => {
               // Handle errors if the smart contract interaction fails
@@ -170,7 +172,7 @@ const CitizenshipApplicationForm = () => {
                 ) : (
                   <Stack spacing={2}>
                     <Typography>
-                      You citizenship application in the BVS blockchian contract
+                      You citizenship application in the BVS blockchain contract
                       already registered.
                     </Typography>
                   </Stack>
