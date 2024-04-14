@@ -174,10 +174,10 @@ const CitizenshipApplicationForm = () => {
                   </Stack>
                 ) : (
                   <Stack spacing={2}>
-                    <Typography>
+                    <Alert severity="info">
                       You citizenship application in the BVS blockchain contract
                       already registered.
-                    </Typography>
+                    </Alert>
                   </Stack>
                 )}
                 <Box>

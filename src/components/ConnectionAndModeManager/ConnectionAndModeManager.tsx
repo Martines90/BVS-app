@@ -71,93 +71,95 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   };
 
   return (
-    <Stack direction="column" spacing={2}>
-      {metamaskInstalled ? (
-        <Button
-          variant="contained"
-          onClick={handleConnectMetamask}
-          disabled={!!userState.walletAddress}
-        >
-          {!userState.walletAddress
-            ? 'Connect to MetaMask 🦊'
-            : 'Connected to metamask 🦊'}
-        </Button>
-      ) : (
-        <Button variant="contained" onClick={handleInstallMetamask}>
-          Click here to install MetaMask 🦊!
-        </Button>
-      )}
-      <Stack>
-        {alerts.failedContractConnection && (
+    <Box sx={{ p: '10px' }}>
+      <Stack direction="column" spacing={2}>
+        {metamaskInstalled ? (
+          <Button
+            variant="contained"
+            onClick={handleConnectMetamask}
+            disabled={!!userState.walletAddress}
+          >
+            {!userState.walletAddress
+              ? 'Connect to MetaMask 🦊'
+              : 'Connected to metamask 🦊'}
+          </Button>
+        ) : (
+          <Button variant="contained" onClick={handleInstallMetamask}>
+            Click here to install MetaMask 🦊!
+          </Button>
+        )}
+        <Stack>
+          {alerts.failedContractConnection && (
           <Alert severity={alerts.failedContractConnection.severity}>
             {alerts.failedContractConnection.text}
           </Alert>
-        )}
-        <Box>
-          <Box fontWeight="bold" display="inline">
-            Connected chain:
+          )}
+          <Box>
+            <Box fontWeight="bold" display="inline">
+              Connected chain:
+            </Box>
+            {` ${userState.chainId || ''}`}
           </Box>
-          {` ${userState.chainId || ''}`}
-        </Box>
-        {alerts.incorrectChainId && (
+          {alerts.incorrectChainId && (
           <Alert severity={alerts.incorrectChainId.severity}>
             {alerts.incorrectChainId.text}
           </Alert>
-        )}
-        <Box>
-          <Box fontWeight="bold" display="inline">
-            Connected account:
+          )}
+          <Box>
+            <Box fontWeight="bold" display="inline">
+              Connected account:
+            </Box>
+            {` ${userState.walletAddress || ''}`}
           </Box>
-          {` ${userState.walletAddress || ''}`}
-        </Box>
-        <Box>
-          <Box fontWeight="bold" display="inline">
-            Current mode:
+          <Box>
+            <Box fontWeight="bold" display="inline">
+              Current mode:
+            </Box>
+            {` ${userState.mode?.toUpperCase() || ''}`}
           </Box>
-          {` ${userState.mode?.toUpperCase() || ''}`}
-        </Box>
-      </Stack>
-      Modes you have access:
-      <Button
-        variant="contained"
-        onClick={() => enterAs(USER_MODES.GUEST)}
-        disabled={
+        </Stack>
+        Modes you have access:
+        <Button
+          variant="contained"
+          onClick={() => enterAs(USER_MODES.GUEST)}
+          disabled={
           !userState.walletAddress || !availableModes.includes(USER_MODES.GUEST)
         }
-      >
-        Guest
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => enterAs(USER_MODES.CITIZEN)}
-        disabled={
+        >
+          Guest
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => enterAs(USER_MODES.CITIZEN)}
+          disabled={
           !userState.walletAddress
           || !availableModes.includes(USER_MODES.CITIZEN)
         }
-      >
-        Citizen
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => enterAs(USER_MODES.POLITICAL_ACTOR)}
-        disabled={
+        >
+          Citizen
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => enterAs(USER_MODES.POLITICAL_ACTOR)}
+          disabled={
           !userState.walletAddress
           || !availableModes.includes(USER_MODES.POLITICAL_ACTOR)
         }
-      >
-        Political actor
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => enterAs(USER_MODES.ADMINISTRATOR)}
-        disabled={
+        >
+          Political actor
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => enterAs(USER_MODES.ADMINISTRATOR)}
+          disabled={
           !userState.walletAddress
           || !availableModes.includes(USER_MODES.ADMINISTRATOR)
         }
-      >
-        Administrator
-      </Button>
-    </Stack>
+        >
+          Administrator
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 
