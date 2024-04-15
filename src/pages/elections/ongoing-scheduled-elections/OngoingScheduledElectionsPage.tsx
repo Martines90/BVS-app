@@ -2,12 +2,12 @@ import PageContainer from '@components/pages/components/PageContainer';
 import PageTitle from '@components/pages/components/PageTitle';
 import React, { useEffect, useState } from 'react';
 
+import { formatContractDateTime } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
   Alert, Box, Button, CircularProgress, List, ListItem, Stack, Typography
 } from '@mui/material';
-import dayjs from 'dayjs';
 
 // Placeholder for blockchain interaction
 const getNumberOfCandidates = async () => new Promise(
@@ -70,8 +70,8 @@ const OngoingScheduledElectionsPage: React.FC = () => {
       <Box sx={{ p: 2 }}>
         {electionsStartDate && electionsEndDate ? (
           <Stack spacing={2}>
-            <Typography>Elections start: {dayjs(electionsStartDate).format('DD/MM/YYYY')}</Typography>
-            <Typography>Elections close: {dayjs(electionsEndDate).format('DD/MM/YYYY')}</Typography>
+            <Typography>Elections start: {formatContractDateTime(electionsStartDate)}</Typography>
+            <Typography>Elections close: {formatContractDateTime(electionsEndDate)}</Typography>
             <Button onClick={handleShowCandidates} disabled={loading}>
               {loading ? <CircularProgress size={24} /> : 'Show Number of Candidates'}
             </Button>

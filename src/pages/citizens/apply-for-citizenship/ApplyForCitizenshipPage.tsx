@@ -1,5 +1,5 @@
+import CitizenshipApplicationForm from '@components/forms/citizenship-application-form/CitizenshipApplicationForm';
 import React from 'react';
-import CitizenshipApplicationForm from '@components/forms/citizenshipApplicationForm/CitizenshipApplicationForm';
 
 const ApplyForCitizenshipPage: React.FC = () => <CitizenshipApplicationForm />;
 

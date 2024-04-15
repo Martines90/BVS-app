@@ -78,6 +78,11 @@ const menuItems: MenuItem[] = [
         label: 'Schedule next elections',
         route: 'elections#schedule_next_elections',
         modes: [USER_MODES.ADMINISTRATOR]
+      },
+      {
+        label: 'Register as candidate',
+        route: 'elections#register_as_candidate',
+        modes: [USER_MODES.CITIZEN, USER_MODES.ADMINISTRATOR]
       }
     ]
   },

@@ -11,8 +11,11 @@ const ApproveCitizenshipApplicationPage = lazy(
 const ScheduleNextElectionsPage = lazy(
   () => import('@pages/elections/schedule-next-elections/ScheduleNextElectionsPage')
 );
-const OngoingAndScheduledElections = lazy(
+const OngoingAndScheduledElectionsPage = lazy(
   () => import('@pages/elections/ongoing-scheduled-elections/OngoingScheduledElectionsPage')
+);
+const RegisterAsCandidatePage = lazy(
+  () => import('@pages/elections/register-as-candidate/RegisterAsCandidatePage')
 );
 
 const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
@@ -29,7 +32,11 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   }
 
   if (hash === '#ongoing_next_elections') {
-    return <OngoingAndScheduledElections />;
+    return <OngoingAndScheduledElectionsPage />;
+  }
+
+  if (hash === '#register_as_candidate') {
+    return <RegisterAsCandidatePage />;
   }
 
   return (

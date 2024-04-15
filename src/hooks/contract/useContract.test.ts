@@ -218,7 +218,7 @@ describe('useContract', () => {
 
         const { getElectionsStartDate } = useContract();
 
-        expect(await getElectionsStartDate()).toBe(mockFutureTimestamp);
+        expect(await getElectionsStartDate()).toBe(mockFutureTimestamp * 1000);
         expect(mockContract.electionsStartDate).toHaveBeenCalled();
       });
     });
@@ -231,7 +231,7 @@ describe('useContract', () => {
 
         const { getElectionsEndDate } = useContract();
 
-        expect(await getElectionsEndDate()).toBe(mockFutureTimestamp);
+        expect(await getElectionsEndDate()).toBe(mockFutureTimestamp * 1000);
         expect(mockContract.electionsEndDate).toHaveBeenCalled();
       });
     });

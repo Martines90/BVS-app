@@ -180,7 +180,7 @@ const CitizenshipApplicationForm = () => {
                     </Alert>
                   </Stack>
                 )}
-                <Box>
+                <Box textAlign="center">
                   <Button
                     variant="contained"
                     disabled={contractInfo.appliedForCitizenship}
@@ -232,7 +232,7 @@ const CitizenshipApplicationForm = () => {
               <Stack spacing={2}>
                 <Typography variant="h6">Step 3:</Typography>
                 <Typography>
-                  One of our administrators will contact you to organise the
+                  One of our administrators will contact you to organize the
                   citizenship application interview process.
                 </Typography>
               </Stack>

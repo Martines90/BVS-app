@@ -9,6 +9,8 @@ const useContract = (): ContractInteractionProps => {
 
   const { contract } = userState;
 
+  // Roles
+
   const applyForCitizenshipRole = async (
     applicantEmailPubKeyHash: BytesLike,
     applicationFee: number
@@ -53,7 +55,24 @@ const useContract = (): ContractInteractionProps => {
     return hashMatchesWithApplicationHash;
   };
 
+  // Elections
+
+  const applyForElectionsAsCandidate = async (
+    applicationFee: number
+  ) => {
+    await userState.contract?.applyForElections(
+      {
+        value: applicationFee,
+        from: userState.walletAddress
+      }
+    );
+  };
+
   const isThereOngoingElections = async () => (await contract?.electionsStartDate()) !== BigInt(0);
+
+  const isCandidateAlreadyApplied = async (candidatePublicKey: AddressLike) => (
+    Number(await contract?.electionCandidateScores(candidatePublicKey)) > 0
+  );
 
   const scheduleNextElections = async (fromDate: number, toDate: number) => {
     await contract?.scheduleNextElections(BigInt(fromDate), BigInt(toDate));
@@ -65,6 +84,10 @@ const useContract = (): ContractInteractionProps => {
     (await contract?.citizenRoleApplicationFee()) || 0
   );
 
+  const getElectionCandidateApplicationFee = async () => Number(
+    (await contract?.electionsCandidateApplicationFee()) || 0
+  );
+
   const getElectionStartEndIntervalInDays = async () => {
     const electionStartEndInterval = Number(
       (((await contract?.ELECTION_START_END_INTERVAL()) || 0) as bigint)
@@ -73,9 +96,9 @@ const useContract = (): ContractInteractionProps => {
     return electionStartEndInterval;
   };
 
-  const getElectionsStartDate = async () => Number(await contract?.electionsStartDate());
+  const getElectionsStartDate = async () => Number(await contract?.electionsStartDate()) * 1000;
 
-  const getElectionsEndDate = async () => Number(await contract?.electionsEndDate());
+  const getElectionsEndDate = async () => Number(await contract?.electionsEndDate()) * 1000;
 
   return {
     contract,
@@ -83,10 +106,13 @@ const useContract = (): ContractInteractionProps => {
     getElectionStartEndIntervalInDays,
     getElectionsStartDate,
     getElectionsEndDate,
+    getElectionCandidateApplicationFee,
     applyForCitizenshipRole,
     grantCitizenRole,
+    applyForElectionsAsCandidate,
     hasRole,
     isAccountAppliedForCitizenship,
+    isCandidateAlreadyApplied,
     isHashMatchWithCitizenshipApplicationHash,
     isThereOngoingElections,
     scheduleNextElections
