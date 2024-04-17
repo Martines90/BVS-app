@@ -4,7 +4,7 @@ import {
   UserMode
 } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Alert, Box, Button, Stack
@@ -30,8 +30,9 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
   const { handleConnectMetamask } = useHandleConnectMetamask();
 
   const { userState, setUserState } = useUserContext();
+  const [connected, setConnected] = useState(false);
   const {
-    sdk, connected
+    sdk
   } = useSDK();
 
   const [availableModes, setAvailableModes] = useState([USER_MODES.GUEST]);
@@ -41,6 +42,7 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
       const checkRole = async (role: USER_ROLES) => {
         const _hasRole = userState.walletAddress
           && (await asyncErrWrapper(hasRole)(role, userState.walletAddress));
+        console.log('role:', role, '_hasRole:', _hasRole);
         return _hasRole;
       };
       const _availableModes = [
@@ -62,6 +64,22 @@ const ConnectionAndModeManager: React.FC<ConnectionAndModeManagerProps> = ({
       checkAvailableRoles();
     }
   }, [userState, connected]);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      window.ethereum?.request({ method: 'eth_accounts' }).then((accounts: any) => {
+        if (accounts.length > 0 && accounts[0] === userState.walletAddress) {
+          setConnected(true);
+        } else {
+          setConnected(false);
+        }
+      }).catch(console.error);
+    };
+
+    if (userState.walletAddress) {
+      checkConnection();
+    }
+  }, [userState]);
 
   const handleInstallMetamask = async () => {
     sdk?.installer?.startDesktopOnboarding();
