@@ -1,14 +1,8 @@
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { MOCK_CITIZENSHIP_APPLICATION_FEE, mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import { act, render, screen } from 'test-utils';
 import ApplyForCitizenshipPage from './ApplyForCitizenshipPage';
-
-const mockContractFunctions = {
-  getCitizenRoleApplicationFee: jest.fn(() => Promise.resolve(10000)),
-  isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
-  hasRole: jest.fn(() => Promise.resolve(false)),
-  applyForCitizenshipRole: jest.fn(() => Promise.resolve())
-};
 
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
@@ -60,7 +54,7 @@ describe('ApplyForCitizenshipPage', () => {
 
       expect(
         mockContractFunctions.applyForCitizenshipRole
-      ).toHaveBeenCalledWith(expectedHash, 10000);
+      ).toHaveBeenCalledWith(expectedHash, MOCK_CITIZENSHIP_APPLICATION_FEE);
 
       expect(screen.queryByText('You citizenship application in the BVS blockchain contract already registered.')).toBeInTheDocument();
     });

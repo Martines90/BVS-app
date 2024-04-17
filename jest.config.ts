@@ -20,6 +20,7 @@ const config: Config.InitialOptions = {
     '^@global(.*)$': ['<rootDir>/src/global$1'],
     '^@blockchain(.*)$': ['<rootDir>/src/blockchain$1'],
     '^@utils(.*)$': ['<rootDir>/src/utils$1'],
+    '^@mocks(.*)$': ['<rootDir>/src/mocks$1'],
     '^@assets(.*)$': ['<rootDir>/src/assets$1']
   }
 };

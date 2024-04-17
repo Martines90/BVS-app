@@ -86,11 +86,11 @@ const CandidateRegistrationForm = () => {
     );
   }
 
-  if (contractInfo.electionStartDate && contractInfo.electionStartDate < getNow()) {
+  if (contractInfo.electionStartDate && contractInfo.electionStartDate / 1000 < getNow()) {
     return (
       <FormContainer>
         <Alert severity="info">
-          Elections already stared ({nextElectionsStartDate}).
+          {`Elections already stared (${nextElectionsStartDate}).`}
           Candidate registration is not anymore open.
         </Alert>
       </FormContainer>

@@ -17,6 +17,7 @@
       "@global/*": ["./global/*"],
       "@blockchain/*": ["./blockchain/*"],
       "@utils/*": ["src/utils/*"],
+      "@mocks/*": ["./mocks/*"],
       "@assets/*": ["./assets/*"]
     },
     "types": ["@testing-library/jest-dom"]
