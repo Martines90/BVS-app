@@ -1,9 +1,9 @@
 import { TimeQuantities } from '@global/constants/general';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
+import { MOCK_CITIZENSHIP_APPLICATION_FEE, MOCK_REGISTER_AS_CANDIDATE_FEE } from '@mocks/contract-mocks';
 import useContract from './useContract';
 
-const mockApplicationFee = 10000;
 const mockFutureTimestamp = 2533566483;
 const mockNonExistingAccountAddress = '0x0000000000000000000000000000000000000000';
 const mockAccountKey = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
@@ -15,6 +15,16 @@ const mockApplyForCitizenshipHash = getBytes32keccak256Hash(
 const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
+  applyForElections: jest.fn(() => Promise.resolve()),
+  electionsCandidateApplicationFee: jest.fn(
+    () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
+  ),
+  electionCandidateScores: jest.fn((accountKey) => {
+    if (accountKey === mockAccountKey) {
+      return Promise.resolve(1);
+    }
+    return Promise.resolve(0);
+  }),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
   citizenshipApplications: jest.fn((publicKey) => {
@@ -26,7 +36,9 @@ const mockContract = {
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
-  citizenRoleApplicationFee: jest.fn(() => Promise.resolve(BigInt(mockApplicationFee)))
+  citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
+    BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
+  ))
 };
 
 jest.mock('@hooks/context/userContext/UserContext', () => ({
@@ -48,11 +60,14 @@ describe('useContract', () => {
       it('should call applyForCitizenshipRole with proper values', async () => {
         const { applyForCitizenshipRole } = useContract();
 
-        await applyForCitizenshipRole(mockApplyForCitizenshipHash, mockApplicationFee);
+        await applyForCitizenshipRole(
+          mockApplyForCitizenshipHash,
+          MOCK_CITIZENSHIP_APPLICATION_FEE
+        );
 
         expect(mockContract.applyForCitizenshipRole).toHaveBeenCalledWith(
           mockApplyForCitizenshipHash,
-          { from: mockAccountKey, value: mockApplicationFee }
+          { from: mockAccountKey, value: MOCK_CITIZENSHIP_APPLICATION_FEE }
         );
       });
     });
@@ -144,6 +159,35 @@ describe('useContract', () => {
   });
 
   describe('elections', () => {
+    describe('applyForElectionsAsCandidate', () => {
+      it('should call applyForElections contract function', async () => {
+        const { applyForElectionsAsCandidate } = useContract();
+
+        await applyForElectionsAsCandidate(MOCK_REGISTER_AS_CANDIDATE_FEE);
+        expect(mockContract.applyForElections).toHaveBeenCalled();
+      });
+    });
+
+    describe('isCandidateAlreadyApplied', () => {
+      it('should call electionCandidateScores and return false when account not applied as candidate', async () => {
+        const { isCandidateAlreadyApplied } = useContract();
+
+        expect(await isCandidateAlreadyApplied(mockNonExistingAccountAddress)).toBe(false);
+        expect(mockContract.electionCandidateScores).toHaveBeenCalledWith(
+          mockNonExistingAccountAddress
+        );
+      });
+
+      it('should call electionCandidateScores and return false when account is applied as candidate', async () => {
+        const { isCandidateAlreadyApplied } = useContract();
+
+        expect(await isCandidateAlreadyApplied(mockAccountKey)).toBe(true);
+        expect(mockContract.electionCandidateScores).toHaveBeenCalledWith(
+          mockAccountKey
+        );
+      });
+    });
+
     describe('isThereOngoingElections', () => {
       it('should return false when electionsStartDate value is 0', async () => {
         mockContract.electionsStartDate.mockImplementationOnce(
@@ -187,6 +231,15 @@ describe('useContract', () => {
         );
       });
     });
+
+    describe('getCitizenRoleApplicationFee', () => {
+      it('should call electionsCandidateApplicationFee and return application fee', async () => {
+        const { getElectionCandidateApplicationFee } = useContract();
+
+        expect(await getElectionCandidateApplicationFee()).toBe(MOCK_REGISTER_AS_CANDIDATE_FEE);
+        expect(mockContract.electionsCandidateApplicationFee).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('getters', () => {
@@ -194,13 +247,13 @@ describe('useContract', () => {
       it('should call citizenRoleApplicationFee and return application fee', async () => {
         const { getCitizenRoleApplicationFee } = useContract();
 
-        expect(await getCitizenRoleApplicationFee()).toBe(mockApplicationFee);
+        expect(await getCitizenRoleApplicationFee()).toBe(MOCK_CITIZENSHIP_APPLICATION_FEE);
         expect(mockContract.scheduleNextElections).toHaveBeenCalled();
       });
     });
 
     describe('getElectionStartEndIntervalInDays', () => {
-      it('should  call ELECTION_START_END_INTERVAL and get day format', async () => {
+      it('should call ELECTION_START_END_INTERVAL and get day format', async () => {
         const { getElectionStartEndIntervalInDays } = useContract();
 
         expect(await getElectionStartEndIntervalInDays()).toBe(
