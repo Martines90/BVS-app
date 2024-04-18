@@ -86,7 +86,7 @@ const CandidateRegistrationForm = () => {
     );
   }
 
-  if (contractInfo.electionStartDate && contractInfo.electionStartDate / 1000 < getNow()) {
+  if (contractInfo.electionStartDate && contractInfo.electionStartDate < getNow()) {
     return (
       <FormContainer>
         <Alert severity="info">

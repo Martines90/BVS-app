@@ -1,16 +1,17 @@
 import {
   Alert,
   Button,
+  IconButton,
+  InputAdornment,
   Stack,
+  TextField,
   Typography
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import LinkInText from '@components/links/LinkInText';
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
@@ -18,11 +19,15 @@ import { CommunicationWithContractIsInProgressLoader } from '@components/loaders
 import useContract from '@hooks/contract/useContract';
 
 import { showErrorToast, showSuccessToast } from '@components/toasts/Toasts';
+import { getNow } from '@global/helpers/date';
+import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import { addDays } from 'date-fns';
 import dayjs, { Dayjs } from 'dayjs';
 import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 import { ElectionsInfo, InitialValues } from './types';
+
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -31,6 +36,52 @@ const validationSchema = Yup.object().shape({
     .required('End date is required')
     .min(Yup.ref('startDate'), 'End date must be after the start date')
 });
+
+const DateTextField = (props: any) => {
+  const {
+    id,
+    label,
+    value,
+    setOpen,
+    helperText,
+    error,
+    name,
+    dataTestId,
+    InputProps: { ref } = { ref: null }
+  } = props;
+
+  return (
+    <TextField
+      data-testid={dataTestId}
+      id={id}
+      ref={ref}
+      label={label}
+      value={value}
+      name={name}
+      helperText={helperText}
+      error={error}
+      autoComplete="off"
+      onClick={() => setOpen?.((prev: any) => !prev)}
+      sx={{
+        '& > .MuiOutlinedInput-root input': {
+          caretColor: 'transparent',
+          cursor: 'pointer'
+        },
+        '& > .MuiOutlinedInput-root input::selection': {
+          background: 'transparent'
+        }
+      }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton sx={{ marginRight: '-10px' }}>
+              <CalendarTodayOutlinedIcon />
+            </IconButton>
+          </InputAdornment>)
+      }}
+    />
+  );
+};
 
 const ScheduleNextElectionsForm = () => {
   const {
@@ -41,12 +92,15 @@ const ScheduleNextElectionsForm = () => {
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo | null>(null);
   const { electionStartEndInterval, isThereOngoingElections } = electionInfo || {};
 
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
+
   const addVotingIntervalToDate = (date: Dayjs) => dayjs(
     addDays(date.toDate(), (electionStartEndInterval || 0) + 1)
   );
 
   const defaultStartDate = dayjs(
-    addDays(new Date(), electionStartEndInterval || 0)
+    addDays(getNow(), electionStartEndInterval || 0)
   );
 
   const formInitialValues: InitialValues = {
@@ -56,8 +110,8 @@ const ScheduleNextElectionsForm = () => {
 
   useEffect(() => {
     const getElectionInfo = async () => {
-      const _electionStartEndInterval = await getElectionStartEndIntervalInDays();
-      const __isThereOngoingElections = await _isThereOngoingElections();
+      const _electionStartEndInterval = await asyncErrWrapper(getElectionStartEndIntervalInDays)();
+      const __isThereOngoingElections = await asyncErrWrapper(_isThereOngoingElections)();
 
       setElectionInfo({
         isThereOngoingElections: __isThereOngoingElections,
@@ -85,7 +139,11 @@ const ScheduleNextElectionsForm = () => {
 
                if (startDateTimestamp && endDateTimestamp) {
                  try {
-                   await scheduleNextElections(startDateTimestamp, endDateTimestamp);
+                   await asyncErrWrapper(scheduleNextElections)(
+                     startDateTimestamp,
+                     endDateTimestamp
+                   );
+
                    showSuccessToast('New election successfully scheduled!');
                    setElectionInfo({
                      ...electionInfo,
@@ -100,11 +158,14 @@ const ScheduleNextElectionsForm = () => {
              }}
            >
              {({
-               setFieldValue, values
+               setFieldValue, values, errors
              }) => (
                <Form>
                  <Stack spacing={2}>
-                   <DatePicker
+                   <DesktopDatePicker
+                     open={startDateOpen}
+                     onClose={() => setStartDateOpen(false)}
+                     onOpen={() => setStartDateOpen(true)}
                      label="Elections start date"
                      name="electionsStartDate"
                      minDate={defaultStartDate}
@@ -123,8 +184,25 @@ const ScheduleNextElectionsForm = () => {
                        }
                        setFieldValue('startDate', value);
                      }}
+                     slots={{
+                       field: DateTextField
+                     }}
+                     slotProps={{
+                       field: {
+                         ...{
+                           setOpen: setStartDateOpen,
+                           dataTestId: 'start-date',
+                           value: values.startDate?.format('DD/MM/YYYY') || '',
+                           name: 'start-date-field',
+                           error: errors.startDate
+                         } as any
+                       }
+                     }}
                    />
-                   <DatePicker
+                   <DesktopDatePicker
+                     open={endDateOpen}
+                     onClose={() => setEndDateOpen(false)}
+                     onOpen={() => setEndDateOpen(true)}
                      label="Elections end date"
                      name="electionsEndDate"
                      minDate={
@@ -133,6 +211,19 @@ const ScheduleNextElectionsForm = () => {
                           : addVotingIntervalToDate(defaultStartDate)
                       }
                      onChange={(value: Dayjs | null) => setFieldValue('endDate', value)}
+                     slots={{
+                       field: DateTextField
+                     }}
+                     slotProps={{
+                       field: {
+                         ...{
+                           setOpen: setEndDateOpen,
+                           dataTestId: 'end-date',
+                           value: values.endDate?.format('DD/MM/YYYY') || '',
+                           name: 'end-date-field'
+                         } as any
+                       }
+                     }}
                    />
                    <Button
                      type="submit"

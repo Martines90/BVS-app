@@ -14,7 +14,7 @@ export interface ContractInteractionProps {
   isHashMatchWithCitizenshipApplicationHash(
     publicKey: AddressLike, applicationHash: BytesLike): Promise<boolean>;
   isThereOngoingElections(): Promise<boolean>;
-  scheduleNextElections(fromDate: number, toDate: number): void;
+  scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getElectionCandidateApplicationFee(): Promise<number>;
   getElectionStartEndIntervalInDays(): Promise<number>;
