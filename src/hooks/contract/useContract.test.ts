@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { TimeQuantities } from '@global/constants/general';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
@@ -7,6 +8,7 @@ import useContract from './useContract';
 const mockFutureTimestamp = 2533566483;
 const mockNonExistingAccountAddress = '0x0000000000000000000000000000000000000000';
 const mockAccountKey = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+const mockNotRegisteredAccountKey = '0x914a73ad0b138eedf80704f9ccd81be56f33bbd5f8b371c82de3b6b6a5a23ff7';
 
 const mockApplyForCitizenshipHash = getBytes32keccak256Hash(
   `test@email.com${mockAccountKey}`
@@ -25,8 +27,15 @@ const mockContract = {
     }
     return Promise.resolve(0);
   }),
+  electionCandidates: jest.fn((index) => {
+    if (index === BigInt(1)) {
+      return Promise.resolve(mockAccountKey);
+    }
+    return Promise.resolve(mockNonExistingAccountAddress);
+  }),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
+  getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   citizenshipApplications: jest.fn((publicKey) => {
     if (publicKey === mockAccountKey) {
       return Promise.resolve(mockApplyForCitizenshipHash);
@@ -232,12 +241,54 @@ describe('useContract', () => {
       });
     });
 
-    describe('getCitizenRoleApplicationFee', () => {
+    describe('getElectionCandidateApplicationFee', () => {
       it('should call electionsCandidateApplicationFee and return application fee', async () => {
         const { getElectionCandidateApplicationFee } = useContract();
 
         expect(await getElectionCandidateApplicationFee()).toBe(MOCK_REGISTER_AS_CANDIDATE_FEE);
         expect(mockContract.electionsCandidateApplicationFee).toHaveBeenCalled();
+      });
+    });
+
+    describe('getElectionsCandidatePublicKeyAtIndex', () => {
+      it('should call electionCandidates with provided index and return candidate public key when there is an registered candidate at the index', async () => {
+        const { getElectionsCandidatePublicKeyAtIndex } = useContract();
+
+        expect(await getElectionsCandidatePublicKeyAtIndex(1)).toBe(mockAccountKey);
+        expect(mockContract.electionCandidates).toHaveBeenCalledWith(BigInt(1));
+      });
+
+      it('should return empty address like public key when there is no registered candidate at the index', async () => {
+        const { getElectionsCandidatePublicKeyAtIndex } = useContract();
+
+        expect(await getElectionsCandidatePublicKeyAtIndex(2)).toBe(mockNonExistingAccountAddress);
+        expect(mockContract.electionCandidates).toHaveBeenCalledWith(BigInt(2));
+      });
+    });
+
+    describe('getElectionCandidateScore', () => {
+      it('should call electionCandidateScores with provided address and return candidate score', async () => {
+        const { getElectionCandidateScore } = useContract();
+
+        expect(await getElectionCandidateScore(mockAccountKey)).toBe(1);
+        expect(mockContract.electionCandidateScores).toHaveBeenCalledWith(mockAccountKey);
+      });
+
+      it('should return zero score if candidate not exists in the contract', async () => {
+        const { getElectionCandidateScore } = useContract();
+
+        expect(await getElectionCandidateScore(mockNotRegisteredAccountKey)).toBe(0);
+      });
+    });
+
+    describe('getNumberOfElectionCandidates', () => {
+      it('should call getElectionCandidatesSize and return the number of candidates', async () => {
+        const { getNumberOfElectionCandidates } = useContract();
+
+        mockContract.getElectionCandidatesSize.mockImplementationOnce(() => Promise.resolve(4));
+
+        expect(await getNumberOfElectionCandidates()).toBe(4);
+        expect(mockContract.getElectionCandidatesSize).toHaveBeenCalled();
       });
     });
   });

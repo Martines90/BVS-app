@@ -10,6 +10,7 @@ export const mockContractFunctions = {
     () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
   ),
   getElectionsStartDate: jest.fn(() => Promise.resolve(0)),
+  getElectionsEndDate: jest.fn(() => Promise.resolve(0)),
   getElectionStartEndIntervalInDays: jest.fn(
     () => Promise.resolve(MOCK_ELECTIONS_START_END_INTERVAL_IN_DAYS)
   ),

@@ -9,30 +9,27 @@ import {
   Alert, Box, Button, CircularProgress, List, ListItem, Stack, Typography
 } from '@mui/material';
 
-// Placeholder for blockchain interaction
-const getNumberOfCandidates = async () => new Promise(
-  (resolve) => {
-    setTimeout(() => resolve(5), 2000);
-  }
-);
-const getCandidates = async () => new Promise((resolve) => {
-  setTimeout(() => resolve([
-    { name: 'Candidate A', votes: 120, percentage: '30%' },
-    { name: 'Candidate B', votes: 90, percentage: '22.5%' },
-    { name: 'Candidate C', votes: 150, percentage: '37.5%' }
-  ]), 2000);
-});
-
 type ElectionsInfo = {
   electionsStartDate?: number,
   electionsEndDate?: number
 };
 
+type Candidate = {
+  publicKey: string,
+  score: number,
+  percentage: number
+};
+
 const OngoingScheduledElectionsPage: React.FC = () => {
-  const { getElectionsEndDate, getElectionsStartDate } = useContract();
+  const {
+    getElectionsEndDate,
+    getElectionsStartDate,
+    getNumberOfElectionCandidates,
+    getElectionsCandidatePublicKeyAtIndex,
+    getElectionCandidateScore
+  } = useContract();
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo>({});
-  const [numberOfCandidates, setNumberOfCandidates] = useState(null);
-  const [candidates, setCandidates] = useState([]);
+  const [candidatesData, setCandidatesData] = useState<Candidate[] | undefined>();
   const [loading, setLoading] = useState(false);
 
   const { electionsStartDate, electionsEndDate } = electionInfo;
@@ -55,10 +52,41 @@ const OngoingScheduledElectionsPage: React.FC = () => {
 
   const handleShowCandidates = async () => {
     setLoading(true);
-    const numCandidates = await getNumberOfCandidates();
-    setNumberOfCandidates(numCandidates);
-    const candidateData = await getCandidates();
-    setCandidates(candidateData);
+    const numCandidates = await asyncErrWrapper(getNumberOfElectionCandidates)() || 0;
+
+    const candidates = [];
+    let totalVotes = 0;
+    for (let i = 0; i < numCandidates; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      const candidatePublicKey = await asyncErrWrapper(
+        getElectionsCandidatePublicKeyAtIndex
+      )(i) as string;
+
+      if (!candidatePublicKey) {
+        continue;
+      }
+      // eslint-disable-next-line no-await-in-loop
+      const candidateScore = await asyncErrWrapper(getElectionCandidateScore)(candidatePublicKey);
+
+      if (!candidateScore) {
+        continue;
+      }
+
+      totalVotes += candidateScore;
+
+      candidates.push({
+        publicKey: candidatePublicKey,
+        score: candidateScore
+      });
+    }
+
+    // calculate percentage prop
+    const candidatesWithPercentage = candidates.map((candidate) => (
+      { ...candidate, percentage: ((candidate.score / totalVotes) * 1000) / 10 }
+    ));
+
+    setCandidatesData(candidatesWithPercentage);
+
     setLoading(false);
   };
 
@@ -71,17 +99,17 @@ const OngoingScheduledElectionsPage: React.FC = () => {
         {electionsStartDate && electionsEndDate ? (
           <Stack spacing={2}>
             <Typography>Elections start: {formatContractDateTime(electionsStartDate)}</Typography>
-            <Typography>Elections close: {formatContractDateTime(electionsEndDate)}</Typography>
+            <Typography>Elections end: {formatContractDateTime(electionsEndDate)}</Typography>
             <Button onClick={handleShowCandidates} disabled={loading}>
               {loading ? <CircularProgress size={24} /> : 'Show Number of Candidates'}
             </Button>
-            {numberOfCandidates !== null
-            && <Typography>Number of candidates: {numberOfCandidates}</Typography>}
-            {candidates.length > 0 && (
+            {candidatesData
+            && <Typography>Number of candidates: {candidatesData.length}</Typography>}
+            {candidatesData && candidatesData.length > 0 && (
               <List>
-                {candidates.map((candidate, index) => (
-                  <ListItem key={index}>
-                    {candidate.name} | Votes: {candidate.votes} | {candidate.percentage}
+                {candidatesData.map((candidate) => (
+                  <ListItem key={candidate.publicKey}>
+                    {candidate.publicKey} | Votes: {candidate.score} | {candidate.percentage} %
                   </ListItem>
                 ))}
               </List>

@@ -80,6 +80,18 @@ const useContract = (): ContractInteractionProps => {
 
   // ********* GETTERS ***********
 
+  const getNumberOfElectionCandidates = async () => Number(
+    (await contract?.getElectionCandidatesSize()) || 0
+  );
+
+  const getElectionsCandidatePublicKeyAtIndex = async (index: number) => (
+    (await contract?.electionCandidates(BigInt(index)) || '0x0')
+  ) as AddressLike;
+
+  const getElectionCandidateScore = async (accountAddress: AddressLike) => Number(
+    (await contract?.electionCandidateScores(accountAddress) || 0)
+  );
+
   const getCitizenRoleApplicationFee = async () => Number(
     (await contract?.citizenRoleApplicationFee()) || 0
   );
@@ -107,6 +119,9 @@ const useContract = (): ContractInteractionProps => {
     getElectionsStartDate,
     getElectionsEndDate,
     getElectionCandidateApplicationFee,
+    getElectionsCandidatePublicKeyAtIndex,
+    getElectionCandidateScore,
+    getNumberOfElectionCandidates,
     applyForCitizenshipRole,
     grantCitizenRole,
     applyForElectionsAsCandidate,

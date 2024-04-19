@@ -1,9 +1,3 @@
-/*
-getElectionStartEndIntervalInDays,
-    isThereOngoingElections: _isThereOngoingElections,
-    scheduleNextElections
-*/
-
 import { mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import {
@@ -11,15 +5,9 @@ import {
 } from 'test-utils';
 import ScheduleNextElectionsPage from './ScheduleNextElectionsPage';
 
-const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
-
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions
-}));
-
-jest.mock('@global/helpers/date', () => ({
-  getNow: () => mockNowTimestamp
 }));
 
 jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
