@@ -1,4 +1,5 @@
 import { TimeQuantities } from '@global/constants/general';
+import { isValidAddress } from '@global/helpers/validators';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
@@ -70,6 +71,8 @@ const useContract = (): ContractInteractionProps => {
 
   const isThereOngoingElections = async () => (await contract?.electionsStartDate()) !== BigInt(0);
 
+  const isAccountAlreadyVoted = async () => isValidAddress(await contract?.electionVotes(userState.walletAddress || '0x0'));
+
   const isCandidateAlreadyApplied = async (candidatePublicKey: AddressLike) => (
     Number(await contract?.electionCandidateScores(candidatePublicKey)) > 0
   );
@@ -112,6 +115,8 @@ const useContract = (): ContractInteractionProps => {
 
   const getElectionsEndDate = async () => Number(await contract?.electionsEndDate()) * 1000;
 
+  const getVotedOnCandidatePublicKey = async () => await contract?.electionVotes(userState.walletAddress || '0x0') as AddressLike;
+
   return {
     contract,
     getCitizenRoleApplicationFee,
@@ -122,10 +127,12 @@ const useContract = (): ContractInteractionProps => {
     getElectionsCandidatePublicKeyAtIndex,
     getElectionCandidateScore,
     getNumberOfElectionCandidates,
+    getVotedOnCandidatePublicKey,
     applyForCitizenshipRole,
     grantCitizenRole,
     applyForElectionsAsCandidate,
     hasRole,
+    isAccountAlreadyVoted,
     isAccountAppliedForCitizenship,
     isCandidateAlreadyApplied,
     isHashMatchWithCitizenshipApplicationHash,

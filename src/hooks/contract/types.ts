@@ -9,6 +9,7 @@ export interface ContractInteractionProps {
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
   grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): Promise<void>;
   hasRole(role: USER_ROLES, walletAddress: AddressLike): Promise<boolean>;
+  isAccountAlreadyVoted(): Promise<boolean>;
   isAccountAppliedForCitizenship(accountPublicKey: AddressLike): Promise<boolean>;
   isCandidateAlreadyApplied(candidatePublicKey: AddressLike): Promise<boolean>;
   isHashMatchWithCitizenshipApplicationHash(
@@ -23,4 +24,5 @@ export interface ContractInteractionProps {
   getElectionsStartDate(): Promise<number>;
   getElectionsEndDate(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
+  getVotedOnCandidatePublicKey(): Promise<AddressLike>;
 }

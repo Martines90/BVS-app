@@ -33,6 +33,7 @@ const mockContract = {
     }
     return Promise.resolve(mockNonExistingAccountAddress);
   }),
+  electionVotes: jest.fn(() => Promise.resolve(mockNonExistingAccountAddress)),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
@@ -174,6 +175,26 @@ describe('useContract', () => {
 
         await applyForElectionsAsCandidate(MOCK_REGISTER_AS_CANDIDATE_FEE);
         expect(mockContract.applyForElections).toHaveBeenCalled();
+      });
+    });
+
+    describe('isAccountAlreadyVoted', () => {
+      it('should call electionVotes and return true when account already voted', async () => {
+        mockContract.electionVotes.mockImplementationOnce(
+          () => Promise.resolve(mockAccountKey)
+        );
+
+        const { isAccountAlreadyVoted } = useContract();
+
+        expect(await isAccountAlreadyVoted()).toBe(true);
+        expect(mockContract.electionVotes).toHaveBeenCalled();
+      });
+
+      it('should call return false when not voted', async () => {
+        const { isAccountAlreadyVoted } = useContract();
+
+        expect(await isAccountAlreadyVoted()).toBe(false);
+        expect(mockContract.electionVotes).toHaveBeenCalled();
       });
     });
 
@@ -337,6 +358,30 @@ describe('useContract', () => {
 
         expect(await getElectionsEndDate()).toBe(mockFutureTimestamp * 1000);
         expect(mockContract.electionsEndDate).toHaveBeenCalled();
+      });
+    });
+
+    it('should call electionVotes and return true when account already voted', async () => {
+      mockContract.electionVotes.mockImplementationOnce(
+        () => Promise.resolve(mockAccountKey)
+      );
+
+      const { isAccountAlreadyVoted } = useContract();
+
+      expect(await isAccountAlreadyVoted()).toBe(true);
+      expect(mockContract.electionVotes).toHaveBeenCalled();
+    });
+
+    describe('getVotedOnCandidatePublicKey', () => {
+      it('should call electionVotes and return the candidate address', async () => {
+        mockContract.electionVotes.mockImplementationOnce(
+          () => Promise.resolve(mockAccountKey)
+        );
+
+        const { getVotedOnCandidatePublicKey } = useContract();
+
+        expect(await getVotedOnCandidatePublicKey()).toBe(mockAccountKey);
+        expect(mockContract.electionVotes).toHaveBeenCalled();
       });
     });
   });

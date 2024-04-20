@@ -6,7 +6,7 @@ const asyncErrWrapper = <A extends any[], R>
       return await fn(...a);
     } catch (err: any) {
       showErrorToast(`Err: ${err}`);
-      return undefined;
+      throw Error(err);
     }
   };
 

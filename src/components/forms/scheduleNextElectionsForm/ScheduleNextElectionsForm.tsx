@@ -18,7 +18,7 @@ import { CommunicationWithContractIsInProgressLoader } from '@components/loaders
 
 import useContract from '@hooks/contract/useContract';
 
-import { showErrorToast, showSuccessToast } from '@components/toasts/Toasts';
+import { showSuccessToast } from '@components/toasts/Toasts';
 import { getNow } from '@global/helpers/date';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import { addDays } from 'date-fns';
@@ -138,20 +138,16 @@ const ScheduleNextElectionsForm = () => {
                const endDateTimestamp = (values.endDate?.toDate().getTime() || 0) / 1000;
 
                if (startDateTimestamp && endDateTimestamp) {
-                 try {
-                   await asyncErrWrapper(scheduleNextElections)(
-                     startDateTimestamp,
-                     endDateTimestamp
-                   );
-
+                 await asyncErrWrapper(scheduleNextElections)(
+                   startDateTimestamp,
+                   endDateTimestamp
+                 ).then(() => {
                    showSuccessToast('New election successfully scheduled!');
                    setElectionInfo({
                      ...electionInfo,
                      isThereOngoingElections: true
                    });
-                 } catch (err) {
-                   showErrorToast(`Error: ${err}`);
-                 }
+                 });
                }
 
                setSubmitting(false);
