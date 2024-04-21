@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import LabelText from '@components/general/LabelText/LabelText';
 import { formatContractDateTime, getNow } from '@global/helpers/date';
-import { isValidAddress } from '@global/helpers/validators';
+import { compare2Address, isValidAddress } from '@global/helpers/validators';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
@@ -14,6 +14,7 @@ import { AddressLike } from 'ethers';
 
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { showSuccessToast } from '@components/toasts/Toasts';
+import { useUserContext } from '@hooks/context/userContext/UserContext';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 type ElectionsInfo = {
@@ -24,7 +25,7 @@ type ElectionsInfo = {
 };
 
 type Candidate = {
-  publicKey: string,
+  publicKey: AddressLike,
   score: number,
   percentage: number
 };
@@ -39,6 +40,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
     getVotedOnCandidatePublicKey,
     voteOnElectionsCandidate
   } = useContract();
+  const { userState } = useUserContext();
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo>({});
   const [candidatesData, setCandidatesData] = useState<Candidate[] | undefined>();
 
@@ -48,7 +50,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
 
   const now = getNow();
 
-  const voteOnCandidateClick = async (candidatePublicKey: string) => {
+  const voteOnCandidateClick = async (candidatePublicKey: AddressLike) => {
     await asyncErrWrapper(voteOnElectionsCandidate)(candidatePublicKey).then(() => {
       showSuccessToast(`You successfully voted on candidate ${candidatePublicKey}`);
     });
@@ -79,7 +81,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
         // eslint-disable-next-line no-await-in-loop
         const candidatePublicKey = await asyncErrWrapper(
           getElectionsCandidatePublicKeyAtIndex
-        )(i) as string;
+        )(i) as AddressLike;
 
         if (!candidatePublicKey) {
           continue;
@@ -140,7 +142,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                       {candidatesData.sort(
                         (a) => (a.publicKey === votedOnCandidatePublicKey ? 1 : 0)
                       ).map((candidate, index) => (
-                        <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey}>
+                        <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey as string}>
                           <Stack spacing={1} sx={{ width: '100%' }}>
                             <Stack direction="row">
                               <Typography variant="h6">{`Candidate ${index + 1}`}</Typography>
@@ -153,7 +155,13 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                                 )
                                 : (
                                   <Button
-                                    disabled={!votingIsEnabled}
+                                    disabled={
+                                      !votingIsEnabled
+                                      || compare2Address(
+                                        candidate.publicKey,
+                                        userState.walletAddress
+                                      )
+                                    }
                                     onClick={() => { voteOnCandidateClick(candidate.publicKey); }}
                                     variant="contained"
                                     sx={{ ml: 'auto' }}
@@ -162,7 +170,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                                   </Button>
                                 )}
                             </Stack>
-                            <LabelText label="Public Key:" text={candidate.publicKey} />
+                            <LabelText label="Public Key:" text={candidate.publicKey as string} />
                             <LabelText label="Votes score:" text={candidate.score} />
                             <LabelText label="Votes (%):" text={candidate.percentage} />
                           </Stack>
