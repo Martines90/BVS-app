@@ -13,10 +13,10 @@ import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper
 import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
 import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
 import {
-    Box,
-    Container,
-    CssBaseline,
-    Stack
+  Box,
+  Container,
+  CssBaseline,
+  Stack
 } from '@mui/material';
 
 import { MainToastContainer } from '@components/toasts/Toasts';
