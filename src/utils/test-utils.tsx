@@ -7,16 +7,6 @@ import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper
 import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
 import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
 
-const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
-
-jest.mock('@global/helpers/date', () => {
-  const actual = jest.requireActual('@global/helpers/date');
-  return {
-    ...actual,
-    getNow: () => mockNowTimestamp
-  };
-});
-
 type ProviderProps = {
   children: React.ReactNode,
   initUserState?: any

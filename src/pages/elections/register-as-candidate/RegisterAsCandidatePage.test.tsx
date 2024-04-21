@@ -1,9 +1,9 @@
+import { MOCK_FUTURE_TIMESTAMP } from '@mocks/common-mocks';
 import { MOCK_REGISTER_AS_CANDIDATE_FEE, mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import { act, render, screen } from 'test-utils';
 import RegisterAsCandidatePage from './RegisterAsCandidatePage';
 
-const mockFutureTimestamp = 2533566483000; // 2050. April 14.
 const mockPastTimestamp = 1672531200000;
 
 jest.mock('@hooks/contract/useContract', () => ({
@@ -19,7 +19,7 @@ describe('RegisterAsCandidatePage', () => {
   describe('there is upcoming elections and user not yet registered as a candidate', () => {
     it('should render expected content and call contract functions', async () => {
       mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
-        () => Promise.resolve(mockFutureTimestamp)
+        () => Promise.resolve(MOCK_FUTURE_TIMESTAMP)
       );
 
       await act(() => {
@@ -71,7 +71,7 @@ describe('RegisterAsCandidatePage', () => {
   describe('there is an upcoming election and user already registered as a candidate', () => {
     it('should render expected content', async () => {
       mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
-        () => Promise.resolve(mockFutureTimestamp)
+        () => Promise.resolve(MOCK_FUTURE_TIMESTAMP)
       );
 
       mockContractFunctions.isCandidateAlreadyApplied.mockImplementationOnce(

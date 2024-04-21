@@ -5,7 +5,43 @@ import {
 } from 'test-utils';
 import OngoingScheduledElectionsPage from './OngoingScheduledElectionsPage';
 
-const mockFutureTimestamp = 2533566483000; // 2050. April 14.
+import * as dateHelpers from '@global/helpers/date';
+import { MOCK_FUTURE_TIMESTAMP } from '@mocks/common-mocks';
+import userEvent from '@testing-library/user-event';
+
+const mockTotalScore = Object.keys(MOCK_CANDIDATE_SCORES).reduce(
+  (previousValue, currentValue) => previousValue + MOCK_CANDIDATE_SCORES[currentValue],
+  0
+);
+
+const mockRegisteredCandidates = [
+  {
+    publicKey: MOCK_CANDIDATE_ACCOUNT_KEYS[0],
+    score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[0]]
+  },
+  {
+    publicKey: MOCK_CANDIDATE_ACCOUNT_KEYS[1],
+    score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[1]]
+  },
+  {
+    publicKey: MOCK_CANDIDATE_ACCOUNT_KEYS[2],
+    score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[2]]
+  }
+].map((candidateData) => (
+  { ...candidateData, percentage: ((candidateData.score / mockTotalScore) * 1000) / 10 }
+));
+
+/*
+  const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
+
+  jest.mock('@global/helpers/date', () => {
+    const actual = jest.requireActual('@global/helpers/date');
+    return {
+      ...actual,
+      getNow: () => mockNowTimestamp
+    };
+  });
+*/
 
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
@@ -15,6 +51,10 @@ jest.mock('@hooks/contract/useContract', () => ({
 jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
 describe('OngoingScheduledElectionsPage', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
   it('Should exist', () => {
     expect(OngoingScheduledElectionsPage).toBeDefined();
   });
@@ -31,34 +71,12 @@ describe('OngoingScheduledElectionsPage', () => {
   });
 
   it('should render elections info when there is ongoing/upcoming elections', async () => {
-    const totalScore = Object.keys(MOCK_CANDIDATE_SCORES).reduce(
-      (previousValue, currentValue) => previousValue + MOCK_CANDIDATE_SCORES[currentValue],
-      0
-    );
-
-    const mockRegisteredCandidates = [
-      {
-        publicKey: MOCK_CANDIDATE_ACCOUNT_KEYS[0],
-        score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[0]]
-      },
-      {
-        publicKey: MOCK_CANDIDATE_ACCOUNT_KEYS[1],
-        score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[1]]
-      },
-      {
-        publicKey: MOCK_CANDIDATE_ACCOUNT_KEYS[2],
-        score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[2]]
-      }
-    ].map((candidateData) => (
-      { ...candidateData, percentage: ((candidateData.score / totalScore) * 1000) / 10 }
-    ));
-
     mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
-      () => Promise.resolve(Math.ceil(mockFutureTimestamp))
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP))
     );
 
     mockContractFunctions.getElectionsEndDate.mockImplementationOnce(
-      () => Promise.resolve(Math.ceil(mockFutureTimestamp + TimeQuantities.MONTH * 1000))
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP + TimeQuantities.MONTH * 1000))
     );
 
     await act(async () => {
@@ -78,6 +96,109 @@ describe('OngoingScheduledElectionsPage', () => {
       expect(screen.queryByText(mockRegisteredCandidates[i].publicKey)).toBeInTheDocument();
       expect(screen.queryByText(mockRegisteredCandidates[i].score)).toBeInTheDocument();
       expect(screen.queryByText(mockRegisteredCandidates[i].percentage)).toBeInTheDocument();
+      expect(screen.getAllByText(/Vote on candidate/i)[i].closest('button')).toBeDisabled();
     }
+  });
+
+  it('should show candidates vote on button enabled when elections is active', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => MOCK_FUTURE_TIMESTAMP + TimeQuantities.DAY * 1000);
+
+    mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP))
+    );
+
+    mockContractFunctions.getElectionsEndDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP + TimeQuantities.MONTH * 1000))
+    );
+
+    const mockWallerAddress = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+    const wrapperProps = { initUserState: { walletAddress: mockWallerAddress } };
+
+    await act(async () => {
+      render(<OngoingScheduledElectionsPage />, { wrapperProps });
+    });
+
+    for (let i = 0; i < mockRegisteredCandidates.length; i++) {
+      expect(screen.queryByText(mockRegisteredCandidates[i].publicKey)).toBeInTheDocument();
+      expect(screen.queryByText(mockRegisteredCandidates[i].score)).toBeInTheDocument();
+      expect(screen.queryByText(mockRegisteredCandidates[i].percentage)).toBeInTheDocument();
+      expect(screen.getAllByText(/Vote on candidate/i)[i].closest('button')).toBeEnabled();
+    }
+  });
+
+  it('should show candidate with disabled vote on button when it\'s address is the same as the user\'s', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => MOCK_FUTURE_TIMESTAMP + TimeQuantities.DAY * 1000);
+
+    mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP))
+    );
+
+    mockContractFunctions.getElectionsEndDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP + TimeQuantities.MONTH * 1000))
+    );
+
+    const mockWallerAddress = MOCK_CANDIDATE_ACCOUNT_KEYS[1];
+    const wrapperProps = { initUserState: { walletAddress: mockWallerAddress } };
+
+    await act(async () => {
+      render(<OngoingScheduledElectionsPage />, { wrapperProps });
+    });
+
+    expect(screen.getAllByText(/Vote on candidate/i)[0].closest('button')).toBeEnabled();
+    expect(screen.getAllByText(/Vote on candidate/i)[1].closest('button')).toBeDisabled();
+    expect(screen.getAllByText(/Vote on candidate/i)[2].closest('button')).toBeEnabled();
+  });
+
+  it('should disable all vote on button when i already voted and also has to show candidate at first place with extra information', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => MOCK_FUTURE_TIMESTAMP + TimeQuantities.DAY * 1000);
+
+    mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP))
+    );
+
+    mockContractFunctions.getElectionsEndDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP + TimeQuantities.MONTH * 1000))
+    );
+
+    mockContractFunctions.getVotedOnCandidatePublicKey.mockImplementationOnce(
+      () => Promise.resolve(MOCK_CANDIDATE_ACCOUNT_KEYS[2])
+    );
+
+    const mockWallerAddress = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+    const wrapperProps = { initUserState: { walletAddress: mockWallerAddress } };
+
+    await act(async () => {
+      render(<OngoingScheduledElectionsPage />, { wrapperProps });
+    });
+    expect(screen.queryByText('You voted on this candidate')).toBeInTheDocument();
+
+    expect(screen.getAllByText(/Vote on candidate/i)[0].closest('button')).toBeDisabled();
+    expect(screen.getAllByText(/Vote on candidate/i)[1].closest('button')).toBeDisabled();
+  });
+
+  it('should call voteOnElectionsCandidate function when user click on vote on button', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => MOCK_FUTURE_TIMESTAMP + TimeQuantities.DAY * 1000);
+
+    mockContractFunctions.getElectionsStartDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP))
+    );
+
+    mockContractFunctions.getElectionsEndDate.mockImplementationOnce(
+      () => Promise.resolve(Math.ceil(MOCK_FUTURE_TIMESTAMP + TimeQuantities.MONTH * 1000))
+    );
+
+    const mockWallerAddress = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+    const wrapperProps = { initUserState: { walletAddress: mockWallerAddress } };
+
+    await act(async () => {
+      render(<OngoingScheduledElectionsPage />, { wrapperProps });
+    });
+
+    const firstVoteOnButton = screen.getAllByText(/Vote on candidate/i)[0].closest('button');
+    if (firstVoteOnButton) await userEvent.click(firstVoteOnButton);
+
+    expect(
+      mockContractFunctions.voteOnElectionsCandidate
+    ).toHaveBeenCalledWith(MOCK_CANDIDATE_ACCOUNT_KEYS[0]);
   });
 });

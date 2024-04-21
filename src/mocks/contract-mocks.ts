@@ -42,5 +42,6 @@ export const mockContractFunctions = {
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElectionsAsCandidate: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
-  hasRole: jest.fn(() => Promise.resolve(false))
+  hasRole: jest.fn(() => Promise.resolve(false)),
+  voteOnElectionsCandidate: jest.fn(() => Promise.resolve())
 };

@@ -57,7 +57,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const callElectionsStarsEndDate = async () => {
+    const callGetElectionsState = async () => {
       const eStartDate = await asyncErrWrapper(getElectionsStartDate)();
       const eEndDate = await asyncErrWrapper(getElectionsEndDate)();
       const _votedOnCandidatePublicKey = await asyncErrWrapper(getVotedOnCandidatePublicKey)();
@@ -70,12 +70,10 @@ const OngoingScheduledElectionsPage: React.FC = () => {
         votedOnCandidatePublicKey: _votedOnCandidatePublicKey,
         accountAlreadyVoted: _accountAlreadyVoted
       });
-    };
 
-    const callRenderCandidatesInfo = async () => {
       const numCandidates = await asyncErrWrapper(getNumberOfElectionCandidates)() || 0;
 
-      const candidates = [];
+      const candidates: { publicKey: AddressLike, score: number }[] = [];
       let totalScore = 0;
       for (let i = 0; i < numCandidates; i++) {
         // eslint-disable-next-line no-await-in-loop
@@ -102,6 +100,13 @@ const OngoingScheduledElectionsPage: React.FC = () => {
       }
 
       // calculate percentage prop
+      candidates.forEach((item, i) => {
+        if (item.publicKey === _votedOnCandidatePublicKey) {
+          candidates.splice(i, 1);
+          candidates.unshift(item);
+        }
+      });
+
       const candidatesWithPercentage = candidates.map((candidate) => (
         { ...candidate, percentage: ((candidate.score / totalScore) * 1000) / 10 }
       ));
@@ -109,8 +114,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
       setCandidatesData(candidatesWithPercentage);
     };
 
-    callElectionsStarsEndDate();
-    callRenderCandidatesInfo();
+    callGetElectionsState();
   }, []);
 
   const electionsInfoIsLoading = electionsStartDate === undefined;
@@ -139,9 +143,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                   <Stack spacing={2}>
                     <LabelText label="Number of candidates:" text={candidatesData.length} />
                     <List>
-                      {candidatesData.sort(
-                        (a) => (a.publicKey === votedOnCandidatePublicKey ? 1 : 0)
-                      ).map((candidate, index) => (
+                      {candidatesData.map((candidate, index) => (
                         <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey as string}>
                           <Stack spacing={1} sx={{ width: '100%' }}>
                             <Stack direction="row">
