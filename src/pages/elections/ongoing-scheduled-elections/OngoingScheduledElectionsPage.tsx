@@ -59,16 +59,15 @@ const OngoingScheduledElectionsPage: React.FC = () => {
       const eStartDate = await asyncErrWrapper(getElectionsStartDate)();
       const eEndDate = await asyncErrWrapper(getElectionsEndDate)();
       const _votedOnCandidatePublicKey = await asyncErrWrapper(getVotedOnCandidatePublicKey)();
+
       const _accountAlreadyVoted = isValidAddress(_votedOnCandidatePublicKey);
 
-      if (eStartDate && eEndDate) {
-        setElectionInfo({
-          electionsStartDate: eStartDate,
-          electionsEndDate: eEndDate,
-          votedOnCandidatePublicKey: _votedOnCandidatePublicKey,
-          accountAlreadyVoted: _accountAlreadyVoted
-        });
-      }
+      setElectionInfo({
+        electionsStartDate: eStartDate,
+        electionsEndDate: eEndDate,
+        votedOnCandidatePublicKey: _votedOnCandidatePublicKey,
+        accountAlreadyVoted: _accountAlreadyVoted
+      });
     };
 
     const callRenderCandidatesInfo = async () => {

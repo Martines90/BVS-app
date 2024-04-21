@@ -2,11 +2,14 @@
 import { TimeQuantities } from '@global/constants/general';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
-import { MOCK_CITIZENSHIP_APPLICATION_FEE, MOCK_REGISTER_AS_CANDIDATE_FEE } from '@mocks/contract-mocks';
+import {
+  MOCK_CITIZENSHIP_APPLICATION_FEE,
+  MOCK_NON_EXISTING_ADDRESS,
+  MOCK_REGISTER_AS_CANDIDATE_FEE
+} from '@mocks/contract-mocks';
 import useContract from './useContract';
 
 const mockFutureTimestamp = 2533566483;
-const mockNonExistingAccountAddress = '0x0000000000000000000000000000000000000000';
 const mockAccountKey = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 const mockNotRegisteredAccountKey = '0x914a73ad0b138eedf80704f9ccd81be56f33bbd5f8b371c82de3b6b6a5a23ff7';
 
@@ -31,9 +34,9 @@ const mockContract = {
     if (index === BigInt(1)) {
       return Promise.resolve(mockAccountKey);
     }
-    return Promise.resolve(mockNonExistingAccountAddress);
+    return Promise.resolve(MOCK_NON_EXISTING_ADDRESS);
   }),
-  electionVotes: jest.fn(() => Promise.resolve(mockNonExistingAccountAddress)),
+  electionVotes: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
@@ -41,7 +44,7 @@ const mockContract = {
     if (publicKey === mockAccountKey) {
       return Promise.resolve(mockApplyForCitizenshipHash);
     }
-    return Promise.resolve(mockNonExistingAccountAddress);
+    return Promise.resolve(MOCK_NON_EXISTING_ADDRESS);
   }),
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
@@ -203,9 +206,9 @@ describe('useContract', () => {
       it('should call electionCandidateScores and return false when account not applied as candidate', async () => {
         const { isCandidateAlreadyApplied } = useContract();
 
-        expect(await isCandidateAlreadyApplied(mockNonExistingAccountAddress)).toBe(false);
+        expect(await isCandidateAlreadyApplied(MOCK_NON_EXISTING_ADDRESS)).toBe(false);
         expect(mockContract.electionCandidateScores).toHaveBeenCalledWith(
-          mockNonExistingAccountAddress
+          MOCK_NON_EXISTING_ADDRESS
         );
       });
 
@@ -293,7 +296,7 @@ describe('useContract', () => {
       it('should return empty address like public key when there is no registered candidate at the index', async () => {
         const { getElectionsCandidatePublicKeyAtIndex } = useContract();
 
-        expect(await getElectionsCandidatePublicKeyAtIndex(2)).toBe(mockNonExistingAccountAddress);
+        expect(await getElectionsCandidatePublicKeyAtIndex(2)).toBe(MOCK_NON_EXISTING_ADDRESS);
         expect(mockContract.electionCandidates).toHaveBeenCalledWith(BigInt(2));
       });
     });

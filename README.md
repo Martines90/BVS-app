@@ -1,0 +1,40 @@
+## Setup local environment and test accounts
+
+
+### setup blockchain environment (blockchain network with deployed BVS smart contract)
+
+<ol>
+  <li>Clone repository: https://github.com/Martines90/bvs-v0</li>
+  <li>Run: yarn</li>
+  <li>Run: yarn hardhat node</li>
+</ol>
+
+### Add Metamask
+
+<ol>
+  <li>Install Metamask Chrome/Firefox extension on desktop</li>
+  <li>Add network (RPC url: http://127.0.0.1:8545/ ,Chain id: 31337, symbol: ETH)</li>
+  <li>Import accounts (check your running hardhat network listed accounts - 0th account is ADMIN)</li>
+</ol>
+
+### Start local dev server
+
+<ol>
+  <li>Run: yarn</li>
+  <li>Run: yarn start</li>
+  <li>Visit http://localhost:8080/</li>
+</ol>
+
+
+## How to test application:
+
+
+### Run unit tests
+
+- Run: yarn test
+- Run: yarn test:coverage
+
+### Manual testing
+
+- 0th step: setup local environment and add test accounts to Metamask
+- Add to cookies => FAKE_NOW=[timestamp in milliseconds]
