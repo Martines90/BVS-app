@@ -1,4 +1,4 @@
-import { CircuralProgressL } from '@components/general/Loading/components/CircuralProgress';
+import { CircularProgressL } from '@components/general/Loaders/components/CircularProgress';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { USER_ROLES } from '@global/types/user';
 import useContract from '@hooks/contract/useContract';
@@ -164,7 +164,7 @@ const CitizenshipApprovalForm = () => {
               >
                 Approve applicant
               </Button>
-              {applicationCheckIsInProgress && <CircuralProgressL />}
+              {applicationCheckIsInProgress && <CircularProgressL />}
               {success && (
                 <Alert severity="success">
                   Citizenship role successfully granted for user:{' '}

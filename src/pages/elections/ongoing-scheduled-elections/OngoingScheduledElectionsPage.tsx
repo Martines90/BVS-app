@@ -3,15 +3,16 @@ import PageTitle from '@components/pages/components/PageTitle';
 import React, { useEffect, useState } from 'react';
 
 import LabelText from '@components/general/LabelText/LabelText';
-import { formatContractDateTime } from '@global/helpers/date';
+import { formatContractDateTime, getNow } from '@global/helpers/date';
 import { isValidAddress } from '@global/helpers/validators';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
-  Alert, Box, Button, CircularProgress, List, ListItem, Stack, Typography
+  Alert, Box, Button, List, ListItem, Stack, Typography
 } from '@mui/material';
 import { AddressLike } from 'ethers';
 
+import LoadContent from '@components/general/Loaders/LoadContent';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 type ElectionsInfo = {
@@ -42,6 +43,8 @@ const OngoingScheduledElectionsPage: React.FC = () => {
   const {
     electionsStartDate, electionsEndDate, accountAlreadyVoted, votedOnCandidatePublicKey
   } = electionInfo;
+
+  const now = getNow();
 
   useEffect(() => {
     const callElectionsStarsEndDate = async () => {
@@ -101,56 +104,67 @@ const OngoingScheduledElectionsPage: React.FC = () => {
     callRenderCandidatesInfo();
   }, []);
 
+  const electionsInfoIsLoading = electionsStartDate === undefined;
+  const candidatesDataIsLoading = candidatesData === undefined;
+  const thereIsUpcomingOrNotYetClosedElections = electionsStartDate && electionsEndDate;
+
+  const votingIsEnabled = !accountAlreadyVoted
+  && electionsStartDate && electionsStartDate < now
+  && electionsEndDate && electionsEndDate > now;
+
   return (
     <PageContainer>
       <PageTitle>
         Ongoing & next elections
       </PageTitle>
       <Box sx={{ p: 2 }}>
-        {electionsStartDate && electionsEndDate ? (
-          <Stack spacing={2}>
-            <Stack spacing={2} direction="row">
-              <LabelText label="Elections start:" text={formatContractDateTime(electionsStartDate)} />
-              <LabelText label="Elections end:" text={formatContractDateTime(electionsEndDate)} />
-            </Stack>
-            {!candidatesData && <CircularProgress />}
-            {candidatesData && candidatesData.length > 0 && (
-              <Stack spacing={2}>
-                <LabelText label="Number of candidates:" text={candidatesData.length} />
-                <List>
-                  {candidatesData.sort(
-                    (a) => (a.publicKey === votedOnCandidatePublicKey ? 1 : 0)
-                  ).map((candidate, index) => (
-                    <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey}>
-                      <Stack spacing={1} sx={{ width: '100%' }}>
-                        <Stack direction="row">
-                          <Typography variant="h6">{`Candidate ${index + 1}`}</Typography>
-                          {candidate.publicKey === votedOnCandidatePublicKey
-                            ? (
-                              <Stack direction="row" sx={{ ml: 'auto' }}>
-                                <Typography sx={{ color: 'green' }}>You voted on this candidate</Typography>
-                                <HowToRegIcon color="success" />
-                              </Stack>
-                            )
-                            : (
-                              <Button disabled={accountAlreadyVoted} variant="contained" sx={{ ml: 'auto' }}>
-                                Vote on candidate
-                              </Button>
-                            )}
-                        </Stack>
-                        <LabelText label="Public Key:" text={candidate.publicKey} />
-                        <LabelText label="Votes score:" text={candidate.score} />
-                        <LabelText label="Votes (%):" text={candidate.percentage} />
-                      </Stack>
-                    </ListItem>
-                  ))}
-                </List>
+        <LoadContent condition={electionsInfoIsLoading}>
+          {thereIsUpcomingOrNotYetClosedElections ? (
+            <Stack spacing={2}>
+              <Stack spacing={2} direction="row">
+                <LabelText label="Elections start:" text={formatContractDateTime(electionsStartDate)} />
+                <LabelText label="Elections end:" text={formatContractDateTime(electionsEndDate)} />
               </Stack>
-            )}
-          </Stack>
-        ) : (
-          <Alert severity="info">There is no ongoing or upcoming elections.</Alert>
-        )}
+              <LoadContent condition={candidatesDataIsLoading}>
+                {candidatesData && candidatesData.length > 0 ? (
+                  <Stack spacing={2}>
+                    <LabelText label="Number of candidates:" text={candidatesData.length} />
+                    <List>
+                      {candidatesData.sort(
+                        (a) => (a.publicKey === votedOnCandidatePublicKey ? 1 : 0)
+                      ).map((candidate, index) => (
+                        <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey}>
+                          <Stack spacing={1} sx={{ width: '100%' }}>
+                            <Stack direction="row">
+                              <Typography variant="h6">{`Candidate ${index + 1}`}</Typography>
+                              {candidate.publicKey === votedOnCandidatePublicKey
+                                ? (
+                                  <Stack direction="row" sx={{ ml: 'auto' }}>
+                                    <Typography sx={{ color: 'green' }}>You voted on this candidate</Typography>
+                                    <HowToRegIcon color="success" />
+                                  </Stack>
+                                )
+                                : (
+                                  <Button disabled={!votingIsEnabled} variant="contained" sx={{ ml: 'auto' }}>
+                                    Vote on candidate
+                                  </Button>
+                                )}
+                            </Stack>
+                            <LabelText label="Public Key:" text={candidate.publicKey} />
+                            <LabelText label="Votes score:" text={candidate.score} />
+                            <LabelText label="Votes (%):" text={candidate.percentage} />
+                          </Stack>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Stack>
+                ) : <Typography>No candidate registered yet</Typography>}
+              </LoadContent>
+            </Stack>
+          ) : (
+            <Alert severity="info">There is no ongoing or upcoming elections.</Alert>
+          )}
+        </LoadContent>
       </Box>
     </PageContainer>
   );

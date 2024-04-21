@@ -1,18 +1,18 @@
-import { CircuralProgressM } from '@components/general/Loading/components/CircuralProgress';
+import { CircularProgressM } from '@components/general/Loaders/components/CircularProgress';
 import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
 import { USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
-  Alert,
-  Box,
-  Button,
-  List,
-  ListItem,
-  Stack,
-  TextField,
-  Typography
+    Alert,
+    Box,
+    Button,
+    List,
+    ListItem,
+    Stack,
+    TextField,
+    Typography
 } from '@mui/material';
 import { BytesLike } from 'ethers';
 import { Field, Form, Formik } from 'formik';
@@ -142,7 +142,7 @@ const CitizenshipApplicationForm = () => {
                           {' (wei)'}
                         </>
                       ) : (
-                        <CircuralProgressM />
+                        <CircularProgressM />
                       )}
                     </Typography>
                     <Typography>Your public key: {accountPublicKey}</Typography>

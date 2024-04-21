@@ -2,7 +2,7 @@ import React, { Suspense, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import Loading from '@components/general/Loading/Loading';
+import Loading from '@components/general/Loaders/Loading';
 import { Footer, Header, Main } from '@components/page';
 import Routes from '@components/routes/Routes';
 import SideNavigationBar from '@components/sideNavigationBar/SideNavigationBar';
@@ -13,10 +13,10 @@ import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper
 import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
 import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
 import {
-  Box,
-  Container,
-  CssBaseline,
-  Stack
+    Box,
+    Container,
+    CssBaseline,
+    Stack
 } from '@mui/material';
 
 import { MainToastContainer } from '@components/toasts/Toasts';
