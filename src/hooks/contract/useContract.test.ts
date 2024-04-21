@@ -46,6 +46,7 @@ const mockContract = {
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
+  voteOnElections: jest.fn(() => Promise.resolve()),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
     BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
   ))
@@ -259,6 +260,16 @@ describe('useContract', () => {
           BigInt(electionDates.startDate),
           BigInt(electionDates.endDate)
         );
+      });
+    });
+
+    describe('voteOnElectionsCandidate', () => {
+      it('should call voteOnElections with proper values', async () => {
+        const { voteOnElectionsCandidate } = useContract();
+
+        await voteOnElectionsCandidate(mockAccountKey);
+
+        expect(mockContract.voteOnElections).toHaveBeenCalledWith(mockAccountKey);
       });
     });
 

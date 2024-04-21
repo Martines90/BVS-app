@@ -81,6 +81,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.scheduleNextElections(BigInt(fromDate), BigInt(toDate));
   };
 
+  const voteOnElectionsCandidate = async (candidatePuplicKey: AddressLike) => {
+    await contract?.voteOnElections(candidatePuplicKey);
+  };
+
   // ********* GETTERS ***********
 
   const getNumberOfElectionCandidates = async () => Number(
@@ -132,12 +136,13 @@ const useContract = (): ContractInteractionProps => {
     grantCitizenRole,
     applyForElectionsAsCandidate,
     hasRole,
+    scheduleNextElections,
+    voteOnElectionsCandidate,
     isAccountAlreadyVoted,
     isAccountAppliedForCitizenship,
     isCandidateAlreadyApplied,
     isHashMatchWithCitizenshipApplicationHash,
-    isThereOngoingElections,
-    scheduleNextElections
+    isThereOngoingElections
   };
 };
 

@@ -13,6 +13,7 @@ import {
 import { AddressLike } from 'ethers';
 
 import LoadContent from '@components/general/Loaders/LoadContent';
+import { showSuccessToast } from '@components/toasts/Toasts';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 type ElectionsInfo = {
@@ -35,7 +36,8 @@ const OngoingScheduledElectionsPage: React.FC = () => {
     getNumberOfElectionCandidates,
     getElectionsCandidatePublicKeyAtIndex,
     getElectionCandidateScore,
-    getVotedOnCandidatePublicKey
+    getVotedOnCandidatePublicKey,
+    voteOnElectionsCandidate
   } = useContract();
   const [electionInfo, setElectionInfo] = useState<ElectionsInfo>({});
   const [candidatesData, setCandidatesData] = useState<Candidate[] | undefined>();
@@ -45,6 +47,12 @@ const OngoingScheduledElectionsPage: React.FC = () => {
   } = electionInfo;
 
   const now = getNow();
+
+  const voteOnCandidateClick = async (candidatePublicKey: string) => {
+    await asyncErrWrapper(voteOnElectionsCandidate)(candidatePublicKey).then(() => {
+      showSuccessToast(`You successfully voted on candidate ${candidatePublicKey}`);
+    });
+  };
 
   useEffect(() => {
     const callElectionsStarsEndDate = async () => {
@@ -145,7 +153,12 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                                   </Stack>
                                 )
                                 : (
-                                  <Button disabled={!votingIsEnabled} variant="contained" sx={{ ml: 'auto' }}>
+                                  <Button
+                                    disabled={!votingIsEnabled}
+                                    onClick={() => { voteOnCandidateClick(candidate.publicKey); }}
+                                    variant="contained"
+                                    sx={{ ml: 'auto' }}
+                                  >
                                     Vote on candidate
                                   </Button>
                                 )}

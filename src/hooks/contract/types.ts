@@ -16,6 +16,7 @@ export interface ContractInteractionProps {
     publicKey: AddressLike, applicationHash: BytesLike): Promise<boolean>;
   isThereOngoingElections(): Promise<boolean>;
   scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
+  voteOnElectionsCandidate(candidatePublicKey: AddressLike): Promise<void>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getElectionCandidateApplicationFee(): Promise<number>;
   getElectionsCandidatePublicKeyAtIndex(index: number): Promise<AddressLike>;
