@@ -31,6 +31,17 @@ type Candidate = {
   percentage: number
 };
 
+type CanidateData = { publicKey: AddressLike, score: number };
+
+const moveToTopIfPkeyMatch = (candidates: CanidateData[], pKeyMatch: AddressLike) => {
+  candidates.forEach((cd, i) => {
+    if (cd.publicKey === pKeyMatch) {
+      candidates.splice(i, 1);
+      candidates.unshift(cd);
+    }
+  });
+};
+
 const OngoingScheduledElectionsPage: React.FC = () => {
   const {
     getElectionsEndDate,
@@ -54,7 +65,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
   const callGetElectionsState = async () => {
     const eStartDate = await asyncErrWrapper(getElectionsStartDate)();
     const eEndDate = await asyncErrWrapper(getElectionsEndDate)();
-    const _votedOnCandidatePublicKey = await asyncErrWrapper(getVotedOnCandidatePublicKey)();
+    const _votedOnCandidatePublicKey = await asyncErrWrapper(getVotedOnCandidatePublicKey)() || '';
 
     const _accountAlreadyVoted = isValidAddress(_votedOnCandidatePublicKey);
 
@@ -67,7 +78,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
 
     const numCandidates = await asyncErrWrapper(getNumberOfElectionCandidates)() || 0;
 
-    const candidates: { publicKey: AddressLike, score: number }[] = [];
+    const candidates: CanidateData[] = [];
     let totalScore = 0;
     for (let i = 0; i < numCandidates; i++) {
       // eslint-disable-next-line no-await-in-loop
@@ -94,12 +105,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
     }
 
     // calculate percentage prop
-    candidates.forEach((item, i) => {
-      if (item.publicKey === _votedOnCandidatePublicKey) {
-        candidates.splice(i, 1);
-        candidates.unshift(item);
-      }
-    });
+    moveToTopIfPkeyMatch(candidates, _votedOnCandidatePublicKey);
 
     const candidatesWithPercentage = candidates.map((candidate) => (
       { ...candidate, percentage: to2DecimalFixed(candidate.score / totalScore) }
@@ -167,7 +173,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                         <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey as string}>
                           <Stack spacing={1} sx={{ width: '100%' }}>
                             <Stack direction="row">
-                              <Typography variant="h6">{`Candidate ${index + 1}`}</Typography>
+                              <Typography variant="h6">{`${index + 1}.`}</Typography>
                               {candidate.publicKey === votedOnCandidatePublicKey
                                 ? (
                                   <Stack direction="row" sx={{ ml: 'auto' }}>
