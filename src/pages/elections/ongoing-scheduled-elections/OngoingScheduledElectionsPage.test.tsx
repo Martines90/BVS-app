@@ -5,6 +5,7 @@ import {
 } from 'test-utils';
 import OngoingScheduledElectionsPage from './OngoingScheduledElectionsPage';
 
+import { to2DecimalFixed } from '@global/helpers/calculation';
 import * as dateHelpers from '@global/helpers/date';
 import { MOCK_FUTURE_TIMESTAMP } from '@mocks/common-mocks';
 import userEvent from '@testing-library/user-event';
@@ -28,7 +29,7 @@ const mockRegisteredCandidates = [
     score: MOCK_CANDIDATE_SCORES[MOCK_CANDIDATE_ACCOUNT_KEYS[2]]
   }
 ].map((candidateData) => (
-  { ...candidateData, percentage: ((candidateData.score / mockTotalScore) * 1000) / 10 }
+  { ...candidateData, percentage: to2DecimalFixed(candidateData.score / mockTotalScore) }
 ));
 
 /*
@@ -195,6 +196,8 @@ describe('OngoingScheduledElectionsPage', () => {
     });
 
     expect(screen.getAllByText(/Vote on candidate/i).length).toBe(3);
+    expect(screen.queryByText('133')).toBeInTheDocument();
+    expect(screen.queryByText('61.86')).toBeInTheDocument();
 
     const firstVoteOnButton = screen.getAllByText(/Vote on candidate/i)[0].closest('button');
     if (firstVoteOnButton) await userEvent.click(firstVoteOnButton);
@@ -205,5 +208,7 @@ describe('OngoingScheduledElectionsPage', () => {
 
     expect(screen.queryByText('You voted on this candidate')).toBeInTheDocument();
     expect(screen.getAllByText(/Vote on candidate/i).length).toBe(2);
+    expect(screen.queryByText('134')).toBeInTheDocument();
+    expect(screen.queryByText('62.04')).toBeInTheDocument();
   });
 });

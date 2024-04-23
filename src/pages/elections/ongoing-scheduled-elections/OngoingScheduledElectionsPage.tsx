@@ -14,6 +14,7 @@ import { AddressLike } from 'ethers';
 
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { showSuccessToast } from '@components/toasts/Toasts';
+import { to2DecimalFixed } from '@global/helpers/calculation';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
@@ -101,7 +102,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
     });
 
     const candidatesWithPercentage = candidates.map((candidate) => (
-      { ...candidate, percentage: ((candidate.score / totalScore) * 1000) / 10 }
+      { ...candidate, percentage: to2DecimalFixed(candidate.score / totalScore) }
     ));
 
     setCandidatesData(candidatesWithPercentage);
@@ -119,6 +120,20 @@ const OngoingScheduledElectionsPage: React.FC = () => {
         votedOnCandidatePublicKey: candidatePublicKey,
         accountAlreadyVoted: true
       });
+      const updatedCandidateIndex = candidatesData?.findIndex(
+        (candidate) => candidate.publicKey === candidatePublicKey
+      ) || 0;
+      const f_candidates = [...(candidatesData || [])];
+      f_candidates[updatedCandidateIndex].score += 1;
+      const totalScore = f_candidates.reduce(
+        (accumulator, candidate) => accumulator + candidate.score,
+        0
+      );
+
+      setCandidatesData(f_candidates.map((candidate) => ({
+        ...candidate,
+        percentage: to2DecimalFixed(candidate.score / totalScore)
+      })));
     });
   };
 
