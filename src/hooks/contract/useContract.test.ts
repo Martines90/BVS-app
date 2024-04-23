@@ -21,6 +21,7 @@ const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElections: jest.fn(() => Promise.resolve()),
+  closeElections: jest.fn(() => Promise.resolve()),
   electionsCandidateApplicationFee: jest.fn(
     () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
   ),
@@ -179,6 +180,15 @@ describe('useContract', () => {
 
         await applyForElectionsAsCandidate(MOCK_REGISTER_AS_CANDIDATE_FEE);
         expect(mockContract.applyForElections).toHaveBeenCalled();
+      });
+    });
+
+    describe('closeElection', () => {
+      it('should call closeElection contract function', async () => {
+        const { closeElections } = useContract();
+
+        await closeElections();
+        expect(mockContract.closeElections).toHaveBeenCalled();
       });
     });
 

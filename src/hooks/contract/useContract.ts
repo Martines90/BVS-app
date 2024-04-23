@@ -69,6 +69,10 @@ const useContract = (): ContractInteractionProps => {
     );
   };
 
+  const closeElections = async () => {
+    await contract?.closeElections();
+  };
+
   const isThereOngoingElections = async () => (await contract?.electionsStartDate()) !== BigInt(0);
 
   const isAccountAlreadyVoted = async () => isValidAddress(await contract?.electionVotes(userState.walletAddress || '0x0'));
@@ -133,6 +137,7 @@ const useContract = (): ContractInteractionProps => {
     getNumberOfElectionCandidates,
     getVotedOnCandidatePublicKey,
     applyForCitizenshipRole,
+    closeElections,
     grantCitizenRole,
     applyForElectionsAsCandidate,
     hasRole,

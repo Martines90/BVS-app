@@ -1,5 +1,5 @@
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
-import { formatContractDateTime, getNow } from '@global/helpers/date';
+import { formatDateTime, getNow } from '@global/helpers/date';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
@@ -64,7 +64,7 @@ const CandidateRegistrationForm = () => {
         contractInfo.candidateApplicationFee
       ));
 
-  const nextElectionsStartDate = formatContractDateTime(contractInfo.electionStartDate || 0);
+  const nextElectionsStartDate = formatDateTime(contractInfo.electionStartDate || 0);
 
   if (contractInfo.electionStartDate === 0) {
     return (

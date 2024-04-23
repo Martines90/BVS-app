@@ -7,6 +7,7 @@ export interface ContractInteractionProps {
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
     applicationFee: number): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
+  closeElections(): Promise<void>,
   grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): Promise<void>;
   hasRole(role: USER_ROLES, walletAddress: AddressLike): Promise<boolean>;
   isAccountAlreadyVoted(): Promise<boolean>;

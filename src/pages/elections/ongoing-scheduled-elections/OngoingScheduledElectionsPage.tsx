@@ -3,7 +3,7 @@ import PageTitle from '@components/pages/components/PageTitle';
 import React, { useEffect, useState } from 'react';
 
 import LabelText from '@components/general/LabelText/LabelText';
-import { formatContractDateTime, getNow } from '@global/helpers/date';
+import { formatDateTime, getNow } from '@global/helpers/date';
 import { compare2Address, isValidAddress } from '@global/helpers/validators';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
@@ -161,8 +161,8 @@ const OngoingScheduledElectionsPage: React.FC = () => {
           {thereIsUpcomingOrNotYetClosedElections ? (
             <Stack spacing={2}>
               <Stack spacing={2} direction="row">
-                <LabelText label="Elections start:" text={formatContractDateTime(electionsStartDate)} />
-                <LabelText label="Elections end:" text={formatContractDateTime(electionsEndDate)} />
+                <LabelText label="Elections start:" text={formatDateTime(electionsStartDate)} />
+                <LabelText label="Elections end:" text={formatDateTime(electionsEndDate)} />
               </Stack>
               <LoadContent condition={candidatesDataIsLoading}>
                 {candidatesData && candidatesData.length > 0 ? (
