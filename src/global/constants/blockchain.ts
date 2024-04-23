@@ -5,6 +5,6 @@ export type BVS_Contract = {
 
 // hardhat local network
 export const BVS_CONTRACT = {
-  chainId: 31337,
+  chainId: 1337, // 31337,
   chainIdHex: 0x7a69
 };

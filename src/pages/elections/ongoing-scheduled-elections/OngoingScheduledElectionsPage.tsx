@@ -56,7 +56,12 @@ const OngoingScheduledElectionsPage: React.FC = () => {
     });
   };
 
+  console.log('electionsStartDate:', electionsStartDate);
+
   useEffect(() => {
+    const callContractDate = async () => {
+      console.log('blockTime:', await userState.contract?.getBlockTime());
+    };
     const callGetElectionsState = async () => {
       const eStartDate = await asyncErrWrapper(getElectionsStartDate)();
       const eEndDate = await asyncErrWrapper(getElectionsEndDate)();
@@ -113,6 +118,8 @@ const OngoingScheduledElectionsPage: React.FC = () => {
 
       setCandidatesData(candidatesWithPercentage);
     };
+
+    callContractDate();
 
     callGetElectionsState();
   }, []);

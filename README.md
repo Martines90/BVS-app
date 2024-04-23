@@ -26,15 +26,45 @@
 </ol>
 
 
-## How to test application:
-
-
-### Run unit tests
+## Run unit tests
 
 - Run: yarn test
 - Run: yarn test:coverage
 
-### Manual testing
+## Manual testing
 
-- 0th step: setup local environment and add test accounts to Metamask
-- Add to cookies => FAKE_NOW=[timestamp in milliseconds]
+
+### setup environment
+
+Using Ganache + Truffle
+
+Installation:
+download and install ganache from: https://archive.trufflesuite.com/ganache/
+npm install -g truffle
+
+- Start Ganache custom network
+- Add Truffle config file path
+
+- Deploy BVS_Roles / BVS_Voting smart contract
+- Run: truffle console
+
+### Time manipulation
+
+In truffle console
+
+Add time amount (in seconds)
+Run: ```new Promise((resolve, reject) => {web3.currentProvider.send({jsonrpc: '2.0', method: 'evm_increaseTime', params: [5157652], id: new Date().getTime()}, (error, result) => {return resolve(result);})});```
+
+Mine new block (this updates block.timestamp)
+Run: ```new Promise((resolve, reject) => {web3.currentProvider.send({jsonrpc: '2.0', method: 'evm_mine', id: new Date().getTime()}, (err, result) => {const newBlockHash = web3.eth.getBlock('latest').hash; return resolve(newBlockHash);})})```
+
+To check latest block timestamp:
+
+Run: blockNum = await web3.eth.getBlockNumber()
+Run: block = await web3.eth.getBlock(blockNum)
+Run: block.timestamp
+
+in browser you can "change" system time using a cookie variable
+
+First install and connect to metamask
+Add cookie FAKE_NOW=[timestamp in milliseconds]

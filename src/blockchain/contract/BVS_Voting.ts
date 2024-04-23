@@ -2,26 +2,26 @@
 /* tslint:disable */
 /* eslint-disable */
 import type {
+  AddressLike,
   BaseContract,
   BigNumberish,
   BytesLike,
-  FunctionFragment,
-  Result,
-  Interface,
-  EventFragment,
-  AddressLike,
-  ContractRunner,
   ContractMethod,
-  Listener
-} from 'ethers';
+  ContractRunner,
+  EventFragment,
+  FunctionFragment,
+  Interface,
+  Listener,
+  Result,
+} from "ethers";
 import type {
   TypedContractEvent,
+  TypedContractMethod,
   TypedDeferredTopicFilter,
   TypedEventLog,
-  TypedLogDescription,
   TypedListener,
-  TypedContractMethod
-} from './common';
+  TypedLogDescription,
+} from "./common";
 
 export declare namespace BVS_Voting {
   export type VotingStruct = {
@@ -68,778 +68,787 @@ export declare namespace BVS_Voting {
 export interface BVS_VotingInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | 'ADMINISTRATOR'
-      | 'APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT'
-      | 'ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS'
-      | 'ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS'
-      | 'CITIZEN'
-      | 'ELECTION_START_END_INTERVAL'
-      | 'MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE'
-      | 'MINIMUM_PERCENTAGE_OF_ELECTION_VOTES'
-      | 'MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED'
-      | 'MIN_PERCENTAGE_OF_VOTES'
-      | 'MIN_TOTAL_CONTENT_READ_CHECK_ANSWER'
-      | 'MIN_VOTE_SCORE'
-      | 'NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME'
-      | 'POLITICAL_ACTOR'
-      | 'VOTING_CHECK_ASKED_NUM_OF_QUESTIONS'
-      | 'VOTING_CYCLE_INTERVAL'
-      | 'VOTING_DURATION'
-      | 'addKeccak256HashedAnswersToArticle'
-      | 'addKeccak256HashedAnswersToArticleResponse'
-      | 'addKeccak256HashedAnswersToVotingContent'
-      | 'adminApprovalSentToAccount'
-      | 'adminRoleGrantApprovals'
-      | 'admins'
-      | 'applyForCitizenshipRole'
-      | 'applyForElections'
-      | 'approveVoting'
-      | 'articleContentReadCheckAnswers'
-      | 'articleContentResponseReadCheckAnswers'
-      | 'articleKeys'
-      | 'articlesCompleted'
-      | 'articlesResponseCompleted'
-      | 'assignQuizIpfsHashToArticleOrResponse'
-      | 'assignQuizIpfsHashToVoting'
-      | 'calculateVoteScore'
-      | 'checkIfAccounthasRole'
-      | 'citizenRoleApplicationFee'
-      | 'citizens'
-      | 'citizenshipApplications'
-      | 'closeElections'
-      | 'completeContentReadQuiz'
-      | 'creationDate'
-      | 'dailyCitizenRoleModifyCredit'
-      | 'electionCandidateScores'
-      | 'electionCandidates'
-      | 'electionVoters'
-      | 'electionVotes'
-      | 'electionsCandidateApplicationFee'
-      | 'electionsEndDate'
-      | 'electionsStartDate'
-      | 'firstVotingCycleStartDate'
-      | 'getAccountArticleQuizAnswerIndexes'
-      | 'getAccountArticleResponseQuizAnswerIndexes'
-      | 'getAccountVotingQuizAnswerIndexes'
-      | 'getAdminsSize'
-      | 'getArticleKeysLength'
-      | 'getCitizensSize'
-      | 'getElectionCandidatesSize'
-      | 'getElectionVotersSize'
-      | 'getPoliticalActorsSize'
-      | 'getVotinCycleIndexesSize'
-      | 'getVoting'
-      | 'getVotingKeysLength'
-      | 'grantCitizenRole'
-      | 'hasRole'
-      | 'isContentReadQuizCorrect'
-      | 'isEmptyString'
-      | 'isVotingWon'
-      | 'politicalActorVotingCredits'
-      | 'politicalActors'
-      | 'proConArticles'
-      | 'publishArticleToVotingsCount'
-      | 'publishProConArticle'
-      | 'publishProConArticleResponse'
-      | 'revokeAdminRoleApproval'
-      | 'scheduleNewVoting'
-      | 'scheduleNextElections'
-      | 'sendGrantAdministratorRoleApproval'
-      | 'setFirstVotingCycleStartDate'
-      | 'unlockVotingBudget'
-      | 'updateCitizenshipRoleApplicationFee'
-      | 'voteOnElections'
-      | 'voteOnVoting'
-      | 'votes'
-      | 'votingContentReadCheckAnswers'
-      | 'votingCycleIndexes'
-      | 'votingCycleStartVoteCount'
-      | 'votingKeys'
-      | 'votings'
+      | "ADMINISTRATOR"
+      | "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT"
+      | "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS"
+      | "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS"
+      | "CITIZEN"
+      | "ELECTION_START_END_INTERVAL"
+      | "MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE"
+      | "MINIMUM_PERCENTAGE_OF_ELECTION_VOTES"
+      | "MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED"
+      | "MIN_PERCENTAGE_OF_VOTES"
+      | "MIN_TOTAL_CONTENT_READ_CHECK_ANSWER"
+      | "MIN_VOTE_SCORE"
+      | "NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME"
+      | "POLITICAL_ACTOR"
+      | "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS"
+      | "VOTING_CYCLE_INTERVAL"
+      | "VOTING_DURATION"
+      | "addKeccak256HashedAnswersToArticle"
+      | "addKeccak256HashedAnswersToArticleResponse"
+      | "addKeccak256HashedAnswersToVotingContent"
+      | "adminApprovalSentToAccount"
+      | "adminRoleGrantApprovals"
+      | "admins"
+      | "applyForCitizenshipRole"
+      | "applyForElections"
+      | "approveVoting"
+      | "articleContentReadCheckAnswers"
+      | "articleContentResponseReadCheckAnswers"
+      | "articleKeys"
+      | "articlesCompleted"
+      | "articlesResponseCompleted"
+      | "assignQuizIpfsHashToArticleOrResponse"
+      | "assignQuizIpfsHashToVoting"
+      | "calculateVoteScore"
+      | "checkIfAccounthasRole"
+      | "citizenRoleApplicationFee"
+      | "citizens"
+      | "citizenshipApplications"
+      | "closeElections"
+      | "completeContentReadQuiz"
+      | "creationDate"
+      | "dailyCitizenRoleModifyCredit"
+      | "electionCandidateScores"
+      | "electionCandidates"
+      | "electionVoters"
+      | "electionVotes"
+      | "electionsCandidateApplicationFee"
+      | "electionsEndDate"
+      | "electionsStartDate"
+      | "firstVotingCycleStartDate"
+      | "getAccountArticleQuizAnswerIndexes"
+      | "getAccountArticleResponseQuizAnswerIndexes"
+      | "getAccountVotingQuizAnswerIndexes"
+      | "getAdminsSize"
+      | "getArticleKeysLength"
+      | "getBlockTime"
+      | "getCitizensSize"
+      | "getElectionCandidatesSize"
+      | "getElectionVotersSize"
+      | "getPoliticalActorsSize"
+      | "getVotinCycleIndexesSize"
+      | "getVoting"
+      | "getVotingKeysLength"
+      | "grantCitizenRole"
+      | "hasRole"
+      | "isContentReadQuizCorrect"
+      | "isEmptyString"
+      | "isVotingWon"
+      | "politicalActorVotingCredits"
+      | "politicalActors"
+      | "proConArticles"
+      | "publishArticleToVotingsCount"
+      | "publishProConArticle"
+      | "publishProConArticleResponse"
+      | "revokeAdminRoleApproval"
+      | "scheduleNewVoting"
+      | "scheduleNextElections"
+      | "sendGrantAdministratorRoleApproval"
+      | "setFirstVotingCycleStartDate"
+      | "unlockVotingBudget"
+      | "updateCitizenshipRoleApplicationFee"
+      | "voteOnElections"
+      | "voteOnVoting"
+      | "votes"
+      | "votingContentReadCheckAnswers"
+      | "votingCycleIndexes"
+      | "votingCycleStartVoteCount"
+      | "votingKeys"
+      | "votings"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
-      | 'CitizenshipRoleGranted'
-      | 'RoleGranted'
-      | 'RoleRevoked'
+      | "CitizenshipRoleGranted"
+      | "RoleGranted"
+      | "RoleRevoked"
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: 'ADMINISTRATOR',
+    functionFragment: "ADMINISTRATOR",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT',
+    functionFragment: "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS',
+    functionFragment: "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS',
+    functionFragment: "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'CITIZEN', values?: undefined): string;
+  encodeFunctionData(functionFragment: "CITIZEN", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: 'ELECTION_START_END_INTERVAL',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE',
+    functionFragment: "ELECTION_START_END_INTERVAL",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'MINIMUM_PERCENTAGE_OF_ELECTION_VOTES',
+    functionFragment: "MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED',
+    functionFragment: "MINIMUM_PERCENTAGE_OF_ELECTION_VOTES",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'MIN_PERCENTAGE_OF_VOTES',
+    functionFragment: "MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'MIN_TOTAL_CONTENT_READ_CHECK_ANSWER',
+    functionFragment: "MIN_PERCENTAGE_OF_VOTES",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'MIN_VOTE_SCORE',
+    functionFragment: "MIN_TOTAL_CONTENT_READ_CHECK_ANSWER",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME',
+    functionFragment: "MIN_VOTE_SCORE",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'POLITICAL_ACTOR',
+    functionFragment: "NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'VOTING_CHECK_ASKED_NUM_OF_QUESTIONS',
+    functionFragment: "POLITICAL_ACTOR",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'VOTING_CYCLE_INTERVAL',
+    functionFragment: "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'VOTING_DURATION',
+    functionFragment: "VOTING_CYCLE_INTERVAL",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'addKeccak256HashedAnswersToArticle',
+    functionFragment: "VOTING_DURATION",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addKeccak256HashedAnswersToArticle",
     values: [BytesLike, BytesLike, BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'addKeccak256HashedAnswersToArticleResponse',
+    functionFragment: "addKeccak256HashedAnswersToArticleResponse",
     values: [BytesLike, BytesLike, BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'addKeccak256HashedAnswersToVotingContent',
+    functionFragment: "addKeccak256HashedAnswersToVotingContent",
     values: [BytesLike, BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'adminApprovalSentToAccount',
+    functionFragment: "adminApprovalSentToAccount",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'adminRoleGrantApprovals',
+    functionFragment: "adminRoleGrantApprovals",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'admins',
+    functionFragment: "admins",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'applyForCitizenshipRole',
+    functionFragment: "applyForCitizenshipRole",
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'applyForElections',
+    functionFragment: "applyForElections",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'approveVoting',
+    functionFragment: "approveVoting",
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'articleContentReadCheckAnswers',
+    functionFragment: "articleContentReadCheckAnswers",
     values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'articleContentResponseReadCheckAnswers',
+    functionFragment: "articleContentResponseReadCheckAnswers",
     values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'articleKeys',
+    functionFragment: "articleKeys",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'articlesCompleted',
+    functionFragment: "articlesCompleted",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'articlesResponseCompleted',
+    functionFragment: "articlesResponseCompleted",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'assignQuizIpfsHashToArticleOrResponse',
+    functionFragment: "assignQuizIpfsHashToArticleOrResponse",
     values: [BytesLike, BytesLike, string, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: 'assignQuizIpfsHashToVoting',
+    functionFragment: "assignQuizIpfsHashToVoting",
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'calculateVoteScore',
+    functionFragment: "calculateVoteScore",
     values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'checkIfAccounthasRole',
+    functionFragment: "checkIfAccounthasRole",
     values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'citizenRoleApplicationFee',
+    functionFragment: "citizenRoleApplicationFee",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'citizens',
+    functionFragment: "citizens",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'citizenshipApplications',
+    functionFragment: "citizenshipApplications",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'closeElections',
+    functionFragment: "closeElections",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'completeContentReadQuiz',
+    functionFragment: "completeContentReadQuiz",
     values: [BigNumberish, BytesLike, BytesLike, string[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'creationDate',
+    functionFragment: "creationDate",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'dailyCitizenRoleModifyCredit',
+    functionFragment: "dailyCitizenRoleModifyCredit",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionCandidateScores',
+    functionFragment: "electionCandidateScores",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionCandidates',
+    functionFragment: "electionCandidates",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionVoters',
+    functionFragment: "electionVoters",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionVotes',
+    functionFragment: "electionVotes",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionsCandidateApplicationFee',
+    functionFragment: "electionsCandidateApplicationFee",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionsEndDate',
+    functionFragment: "electionsEndDate",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'electionsStartDate',
+    functionFragment: "electionsStartDate",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'firstVotingCycleStartDate',
+    functionFragment: "firstVotingCycleStartDate",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getAccountArticleQuizAnswerIndexes',
+    functionFragment: "getAccountArticleQuizAnswerIndexes",
     values: [BytesLike, BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getAccountArticleResponseQuizAnswerIndexes',
+    functionFragment: "getAccountArticleResponseQuizAnswerIndexes",
     values: [BytesLike, BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getAccountVotingQuizAnswerIndexes',
+    functionFragment: "getAccountVotingQuizAnswerIndexes",
     values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getAdminsSize',
+    functionFragment: "getAdminsSize",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getArticleKeysLength',
+    functionFragment: "getArticleKeysLength",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getCitizensSize',
+    functionFragment: "getBlockTime",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getElectionCandidatesSize',
+    functionFragment: "getCitizensSize",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getElectionVotersSize',
+    functionFragment: "getElectionCandidatesSize",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getPoliticalActorsSize',
+    functionFragment: "getElectionVotersSize",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getVotinCycleIndexesSize',
+    functionFragment: "getPoliticalActorsSize",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getVoting',
+    functionFragment: "getVotinCycleIndexesSize",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVoting",
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getVotingKeysLength',
+    functionFragment: "getVotingKeysLength",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'grantCitizenRole',
+    functionFragment: "grantCitizenRole",
     values: [AddressLike, BytesLike, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: 'hasRole',
+    functionFragment: "hasRole",
     values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'isContentReadQuizCorrect',
+    functionFragment: "isContentReadQuizCorrect",
     values: [BigNumberish[], BytesLike[], string[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'isEmptyString',
+    functionFragment: "isEmptyString",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'isVotingWon',
+    functionFragment: "isVotingWon",
     values: [BytesLike, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: 'politicalActorVotingCredits',
+    functionFragment: "politicalActorVotingCredits",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'politicalActors',
+    functionFragment: "politicalActors",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'proConArticles',
+    functionFragment: "proConArticles",
     values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'publishArticleToVotingsCount',
+    functionFragment: "publishArticleToVotingsCount",
     values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'publishProConArticle',
+    functionFragment: "publishProConArticle",
     values: [BytesLike, string, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: 'publishProConArticleResponse',
+    functionFragment: "publishProConArticleResponse",
     values: [BytesLike, BytesLike, string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'revokeAdminRoleApproval',
+    functionFragment: "revokeAdminRoleApproval",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'scheduleNewVoting',
+    functionFragment: "scheduleNewVoting",
     values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'scheduleNextElections',
+    functionFragment: "scheduleNextElections",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'sendGrantAdministratorRoleApproval',
+    functionFragment: "sendGrantAdministratorRoleApproval",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'setFirstVotingCycleStartDate',
+    functionFragment: "setFirstVotingCycleStartDate",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'unlockVotingBudget',
+    functionFragment: "unlockVotingBudget",
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'updateCitizenshipRoleApplicationFee',
+    functionFragment: "updateCitizenshipRoleApplicationFee",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'voteOnElections',
+    functionFragment: "voteOnElections",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'voteOnVoting',
+    functionFragment: "voteOnVoting",
     values: [BytesLike, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: 'votes',
+    functionFragment: "votes",
     values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'votingContentReadCheckAnswers',
+    functionFragment: "votingContentReadCheckAnswers",
     values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'votingCycleIndexes',
+    functionFragment: "votingCycleIndexes",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'votingCycleStartVoteCount',
+    functionFragment: "votingCycleStartVoteCount",
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: 'votingKeys',
+    functionFragment: "votingKeys",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: 'votings', values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "votings", values: [BytesLike]): string;
 
   decodeFunctionResult(
-    functionFragment: 'ADMINISTRATOR',
+    functionFragment: "ADMINISTRATOR",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT',
+    functionFragment: "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS',
+    functionFragment: "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS',
+    functionFragment: "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'CITIZEN', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "CITIZEN", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'ELECTION_START_END_INTERVAL',
+    functionFragment: "ELECTION_START_END_INTERVAL",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE',
+    functionFragment: "MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'MINIMUM_PERCENTAGE_OF_ELECTION_VOTES',
+    functionFragment: "MINIMUM_PERCENTAGE_OF_ELECTION_VOTES",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED',
+    functionFragment: "MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'MIN_PERCENTAGE_OF_VOTES',
+    functionFragment: "MIN_PERCENTAGE_OF_VOTES",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'MIN_TOTAL_CONTENT_READ_CHECK_ANSWER',
+    functionFragment: "MIN_TOTAL_CONTENT_READ_CHECK_ANSWER",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'MIN_VOTE_SCORE',
+    functionFragment: "MIN_VOTE_SCORE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME',
+    functionFragment: "NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'POLITICAL_ACTOR',
+    functionFragment: "POLITICAL_ACTOR",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'VOTING_CHECK_ASKED_NUM_OF_QUESTIONS',
+    functionFragment: "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'VOTING_CYCLE_INTERVAL',
+    functionFragment: "VOTING_CYCLE_INTERVAL",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'VOTING_DURATION',
+    functionFragment: "VOTING_DURATION",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'addKeccak256HashedAnswersToArticle',
+    functionFragment: "addKeccak256HashedAnswersToArticle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'addKeccak256HashedAnswersToArticleResponse',
+    functionFragment: "addKeccak256HashedAnswersToArticleResponse",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'addKeccak256HashedAnswersToVotingContent',
+    functionFragment: "addKeccak256HashedAnswersToVotingContent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'adminApprovalSentToAccount',
+    functionFragment: "adminApprovalSentToAccount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'adminRoleGrantApprovals',
+    functionFragment: "adminRoleGrantApprovals",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'admins', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "admins", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'applyForCitizenshipRole',
+    functionFragment: "applyForCitizenshipRole",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'applyForElections',
+    functionFragment: "applyForElections",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'approveVoting',
+    functionFragment: "approveVoting",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'articleContentReadCheckAnswers',
+    functionFragment: "articleContentReadCheckAnswers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'articleContentResponseReadCheckAnswers',
+    functionFragment: "articleContentResponseReadCheckAnswers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'articleKeys',
+    functionFragment: "articleKeys",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'articlesCompleted',
+    functionFragment: "articlesCompleted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'articlesResponseCompleted',
+    functionFragment: "articlesResponseCompleted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'assignQuizIpfsHashToArticleOrResponse',
+    functionFragment: "assignQuizIpfsHashToArticleOrResponse",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'assignQuizIpfsHashToVoting',
+    functionFragment: "assignQuizIpfsHashToVoting",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'calculateVoteScore',
+    functionFragment: "calculateVoteScore",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'checkIfAccounthasRole',
+    functionFragment: "checkIfAccounthasRole",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'citizenRoleApplicationFee',
+    functionFragment: "citizenRoleApplicationFee",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'citizens', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "citizens", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'citizenshipApplications',
+    functionFragment: "citizenshipApplications",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'closeElections',
+    functionFragment: "closeElections",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'completeContentReadQuiz',
+    functionFragment: "completeContentReadQuiz",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'creationDate',
+    functionFragment: "creationDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'dailyCitizenRoleModifyCredit',
+    functionFragment: "dailyCitizenRoleModifyCredit",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionCandidateScores',
+    functionFragment: "electionCandidateScores",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionCandidates',
+    functionFragment: "electionCandidates",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionVoters',
+    functionFragment: "electionVoters",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionVotes',
+    functionFragment: "electionVotes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionsCandidateApplicationFee',
+    functionFragment: "electionsCandidateApplicationFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionsEndDate',
+    functionFragment: "electionsEndDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'electionsStartDate',
+    functionFragment: "electionsStartDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'firstVotingCycleStartDate',
+    functionFragment: "firstVotingCycleStartDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getAccountArticleQuizAnswerIndexes',
+    functionFragment: "getAccountArticleQuizAnswerIndexes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getAccountArticleResponseQuizAnswerIndexes',
+    functionFragment: "getAccountArticleResponseQuizAnswerIndexes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getAccountVotingQuizAnswerIndexes',
+    functionFragment: "getAccountVotingQuizAnswerIndexes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getAdminsSize',
+    functionFragment: "getAdminsSize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getArticleKeysLength',
+    functionFragment: "getArticleKeysLength",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getCitizensSize',
+    functionFragment: "getBlockTime",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getElectionCandidatesSize',
+    functionFragment: "getCitizensSize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getElectionVotersSize',
+    functionFragment: "getElectionCandidatesSize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getPoliticalActorsSize',
+    functionFragment: "getElectionVotersSize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getVotinCycleIndexesSize',
+    functionFragment: "getPoliticalActorsSize",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'getVoting', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'getVotingKeysLength',
+    functionFragment: "getVotinCycleIndexesSize",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getVoting", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'grantCitizenRole',
+    functionFragment: "getVotingKeysLength",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'hasRole', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'isContentReadQuizCorrect',
+    functionFragment: "grantCitizenRole",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'isEmptyString',
+    functionFragment: "isContentReadQuizCorrect",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'isVotingWon',
+    functionFragment: "isEmptyString",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'politicalActorVotingCredits',
+    functionFragment: "isVotingWon",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'politicalActors',
+    functionFragment: "politicalActorVotingCredits",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'proConArticles',
+    functionFragment: "politicalActors",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'publishArticleToVotingsCount',
+    functionFragment: "proConArticles",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'publishProConArticle',
+    functionFragment: "publishArticleToVotingsCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'publishProConArticleResponse',
+    functionFragment: "publishProConArticle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'revokeAdminRoleApproval',
+    functionFragment: "publishProConArticleResponse",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'scheduleNewVoting',
+    functionFragment: "revokeAdminRoleApproval",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'scheduleNextElections',
+    functionFragment: "scheduleNewVoting",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'sendGrantAdministratorRoleApproval',
+    functionFragment: "scheduleNextElections",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setFirstVotingCycleStartDate',
+    functionFragment: "sendGrantAdministratorRoleApproval",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'unlockVotingBudget',
+    functionFragment: "setFirstVotingCycleStartDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'updateCitizenshipRoleApplicationFee',
+    functionFragment: "unlockVotingBudget",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'voteOnElections',
+    functionFragment: "updateCitizenshipRoleApplicationFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'voteOnVoting',
+    functionFragment: "voteOnElections",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'votes', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'votingContentReadCheckAnswers',
+    functionFragment: "voteOnVoting",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "votes", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'votingCycleIndexes',
+    functionFragment: "votingContentReadCheckAnswers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'votingCycleStartVoteCount',
+    functionFragment: "votingCycleIndexes",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'votingKeys', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'votings', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "votingCycleStartVoteCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "votingKeys", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "votings", data: BytesLike): Result;
 }
 
 export namespace CitizenshipRoleGrantedEvent {
@@ -934,75 +943,75 @@ export interface BVS_Voting extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  ADMINISTRATOR: TypedContractMethod<[], [string], 'view'>;
+  ADMINISTRATOR: TypedContractMethod<[], [string], "view">;
 
   APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
   ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
   ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
-  CITIZEN: TypedContractMethod<[], [string], 'view'>;
+  CITIZEN: TypedContractMethod<[], [string], "view">;
 
-  ELECTION_START_END_INTERVAL: TypedContractMethod<[], [bigint], 'view'>;
+  ELECTION_START_END_INTERVAL: TypedContractMethod<[], [bigint], "view">;
 
   MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
   MINIMUM_PERCENTAGE_OF_ELECTION_VOTES: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
   MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
-  MIN_PERCENTAGE_OF_VOTES: TypedContractMethod<[], [bigint], 'view'>;
+  MIN_PERCENTAGE_OF_VOTES: TypedContractMethod<[], [bigint], "view">;
 
   MIN_TOTAL_CONTENT_READ_CHECK_ANSWER: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
-  MIN_VOTE_SCORE: TypedContractMethod<[], [bigint], 'view'>;
+  MIN_VOTE_SCORE: TypedContractMethod<[], [bigint], "view">;
 
   NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
-  POLITICAL_ACTOR: TypedContractMethod<[], [string], 'view'>;
+  POLITICAL_ACTOR: TypedContractMethod<[], [string], "view">;
 
   VOTING_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
     [],
     [bigint],
-    'view'
+    "view"
   >;
 
-  VOTING_CYCLE_INTERVAL: TypedContractMethod<[], [bigint], 'view'>;
+  VOTING_CYCLE_INTERVAL: TypedContractMethod<[], [bigint], "view">;
 
-  VOTING_DURATION: TypedContractMethod<[], [bigint], 'view'>;
+  VOTING_DURATION: TypedContractMethod<[], [bigint], "view">;
 
   addKeccak256HashedAnswersToArticle: TypedContractMethod<
     [
@@ -1011,7 +1020,7 @@ export interface BVS_Voting extends BaseContract {
       _keccak256HashedAnswers: BytesLike[]
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   addKeccak256HashedAnswersToArticleResponse: TypedContractMethod<
@@ -1021,67 +1030,67 @@ export interface BVS_Voting extends BaseContract {
       _keccak256HashedAnswers: BytesLike[]
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   addKeccak256HashedAnswersToVotingContent: TypedContractMethod<
     [_votingKey: BytesLike, _keccak256HashedAnswers: BytesLike[]],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   adminApprovalSentToAccount: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
   adminRoleGrantApprovals: TypedContractMethod<
     [arg0: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
 
-  admins: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+  admins: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   applyForCitizenshipRole: TypedContractMethod<
     [_emailPublicKeyCombinedHash: BytesLike],
     [void],
-    'payable'
+    "payable"
   >;
 
-  applyForElections: TypedContractMethod<[], [void], 'payable'>;
+  applyForElections: TypedContractMethod<[], [void], "payable">;
 
   approveVoting: TypedContractMethod<
     [_votingKey: BytesLike],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   articleContentReadCheckAnswers: TypedContractMethod<
     [arg0: BytesLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
   articleContentResponseReadCheckAnswers: TypedContractMethod<
     [arg0: BytesLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
-  articleKeys: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+  articleKeys: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   articlesCompleted: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
   articlesResponseCompleted: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
   assignQuizIpfsHashToArticleOrResponse: TypedContractMethod<
@@ -1092,38 +1101,38 @@ export interface BVS_Voting extends BaseContract {
       assignToArticleContent: boolean
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   assignQuizIpfsHashToVoting: TypedContractMethod<
     [_votingKey: BytesLike, _quizIpfsHash: string],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   calculateVoteScore: TypedContractMethod<
     [_votingKey: BytesLike, _account: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
 
   checkIfAccounthasRole: TypedContractMethod<
     [_account: AddressLike, _role: BytesLike],
     [boolean],
-    'view'
+    "view"
   >;
 
-  citizenRoleApplicationFee: TypedContractMethod<[], [bigint], 'view'>;
+  citizenRoleApplicationFee: TypedContractMethod<[], [bigint], "view">;
 
-  citizens: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+  citizens: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   citizenshipApplications: TypedContractMethod<
     [arg0: AddressLike],
     [string],
-    'view'
+    "view"
   >;
 
-  closeElections: TypedContractMethod<[], [void], 'nonpayable'>;
+  closeElections: TypedContractMethod<[], [void], "nonpayable">;
 
   completeContentReadQuiz: TypedContractMethod<
     [
@@ -1133,80 +1142,82 @@ export interface BVS_Voting extends BaseContract {
       _answers: string[]
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
-  creationDate: TypedContractMethod<[], [bigint], 'view'>;
+  creationDate: TypedContractMethod<[], [bigint], "view">;
 
   dailyCitizenRoleModifyCredit: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [bigint],
-    'view'
+    "view"
   >;
 
   electionCandidateScores: TypedContractMethod<
     [arg0: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
 
   electionCandidates: TypedContractMethod<
     [arg0: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
-  electionVoters: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+  electionVoters: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
-  electionVotes: TypedContractMethod<[arg0: AddressLike], [string], 'view'>;
+  electionVotes: TypedContractMethod<[arg0: AddressLike], [string], "view">;
 
-  electionsCandidateApplicationFee: TypedContractMethod<[], [bigint], 'view'>;
+  electionsCandidateApplicationFee: TypedContractMethod<[], [bigint], "view">;
 
-  electionsEndDate: TypedContractMethod<[], [bigint], 'view'>;
+  electionsEndDate: TypedContractMethod<[], [bigint], "view">;
 
-  electionsStartDate: TypedContractMethod<[], [bigint], 'view'>;
+  electionsStartDate: TypedContractMethod<[], [bigint], "view">;
 
-  firstVotingCycleStartDate: TypedContractMethod<[], [bigint], 'view'>;
+  firstVotingCycleStartDate: TypedContractMethod<[], [bigint], "view">;
 
   getAccountArticleQuizAnswerIndexes: TypedContractMethod<
     [_votingKey: BytesLike, _articleKey: BytesLike, _account: AddressLike],
     [bigint[]],
-    'view'
+    "view"
   >;
 
   getAccountArticleResponseQuizAnswerIndexes: TypedContractMethod<
     [_votingKey: BytesLike, _articleKey: BytesLike, _account: AddressLike],
     [bigint[]],
-    'view'
+    "view"
   >;
 
   getAccountVotingQuizAnswerIndexes: TypedContractMethod<
     [_votingKey: BytesLike, _account: AddressLike],
     [bigint[]],
-    'view'
+    "view"
   >;
 
-  getAdminsSize: TypedContractMethod<[], [bigint], 'view'>;
+  getAdminsSize: TypedContractMethod<[], [bigint], "view">;
 
-  getArticleKeysLength: TypedContractMethod<[], [bigint], 'view'>;
+  getArticleKeysLength: TypedContractMethod<[], [bigint], "view">;
 
-  getCitizensSize: TypedContractMethod<[], [bigint], 'view'>;
+  getBlockTime: TypedContractMethod<[], [bigint], "view">;
 
-  getElectionCandidatesSize: TypedContractMethod<[], [bigint], 'view'>;
+  getCitizensSize: TypedContractMethod<[], [bigint], "view">;
 
-  getElectionVotersSize: TypedContractMethod<[], [bigint], 'view'>;
+  getElectionCandidatesSize: TypedContractMethod<[], [bigint], "view">;
 
-  getPoliticalActorsSize: TypedContractMethod<[], [bigint], 'view'>;
+  getElectionVotersSize: TypedContractMethod<[], [bigint], "view">;
 
-  getVotinCycleIndexesSize: TypedContractMethod<[], [bigint], 'view'>;
+  getPoliticalActorsSize: TypedContractMethod<[], [bigint], "view">;
+
+  getVotinCycleIndexesSize: TypedContractMethod<[], [bigint], "view">;
 
   getVoting: TypedContractMethod<
     [_votingKey: BytesLike],
     [BVS_Voting.VotingStructOutput],
-    'view'
+    "view"
   >;
 
-  getVotingKeysLength: TypedContractMethod<[], [bigint], 'view'>;
+  getVotingKeysLength: TypedContractMethod<[], [bigint], "view">;
 
   grantCitizenRole: TypedContractMethod<
     [
@@ -1215,13 +1226,13 @@ export interface BVS_Voting extends BaseContract {
       _revokeCitizenRole: boolean
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   hasRole: TypedContractMethod<
     [role: BytesLike, account: AddressLike],
     [boolean],
-    'view'
+    "view"
   >;
 
   isContentReadQuizCorrect: TypedContractMethod<
@@ -1231,24 +1242,24 @@ export interface BVS_Voting extends BaseContract {
       _answers: string[]
     ],
     [boolean],
-    'view'
+    "view"
   >;
 
-  isEmptyString: TypedContractMethod<[_string: string], [boolean], 'view'>;
+  isEmptyString: TypedContractMethod<[_string: string], [boolean], "view">;
 
   isVotingWon: TypedContractMethod<
     [_votingKey: BytesLike, _isAWinExpected: boolean],
     [boolean],
-    'view'
+    "view"
   >;
 
   politicalActorVotingCredits: TypedContractMethod<
     [arg0: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
 
-  politicalActors: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+  politicalActors: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   proConArticles: TypedContractMethod<
     [arg0: BytesLike, arg1: BytesLike],
@@ -1275,106 +1286,106 @@ export interface BVS_Voting extends BaseContract {
         responseContentCheckQuizIpfsHash: string;
       }
     ],
-    'view'
+    "view"
   >;
 
   publishArticleToVotingsCount: TypedContractMethod<
     [arg0: AddressLike, arg1: BytesLike],
     [bigint],
-    'view'
+    "view"
   >;
 
   publishProConArticle: TypedContractMethod<
     [_votingKey: BytesLike, _ipfsHash: string, _isVoteOnA: boolean],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   publishProConArticleResponse: TypedContractMethod<
     [_votingKey: BytesLike, _proConArticleKey: BytesLike, _ipfsHash: string],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   revokeAdminRoleApproval: TypedContractMethod<
     [revokedAccount: AddressLike],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   scheduleNewVoting: TypedContractMethod<
     [_contentIpfsHash: string, _startDate: BigNumberish, _budget: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   scheduleNextElections: TypedContractMethod<
     [_electionsStartDate: BigNumberish, _electionsEndDate: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   sendGrantAdministratorRoleApproval: TypedContractMethod<
     [_account: AddressLike],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   setFirstVotingCycleStartDate: TypedContractMethod<
     [_firstVotingCycleStartDate: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   unlockVotingBudget: TypedContractMethod<
     [_votingKey: BytesLike],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   updateCitizenshipRoleApplicationFee: TypedContractMethod<
     [value: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   voteOnElections: TypedContractMethod<
     [voteOnAddress: AddressLike],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   voteOnVoting: TypedContractMethod<
     [_votingKey: BytesLike, _voteOnA: boolean],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
 
   votes: TypedContractMethod<
     [arg0: AddressLike, arg1: BytesLike],
     [[boolean, boolean] & { voted: boolean; isContentCompleted: boolean }],
-    'view'
+    "view"
   >;
 
   votingContentReadCheckAnswers: TypedContractMethod<
     [arg0: BytesLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
 
   votingCycleIndexes: TypedContractMethod<
     [arg0: BigNumberish],
     [bigint],
-    'view'
+    "view"
   >;
 
   votingCycleStartVoteCount: TypedContractMethod<
     [arg0: BigNumberish, arg1: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
 
-  votingKeys: TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+  votingKeys: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   votings: TypedContractMethod<
     [arg0: BytesLike],
@@ -1405,7 +1416,7 @@ export interface BVS_Voting extends BaseContract {
         votingContentCheckQuizIpfsHash: string;
       }
     ],
-    'view'
+    "view"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -1413,58 +1424,58 @@ export interface BVS_Voting extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: 'ADMINISTRATOR'
-  ): TypedContractMethod<[], [string], 'view'>;
+    nameOrSignature: "ADMINISTRATOR"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: 'APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'CITIZEN'
-  ): TypedContractMethod<[], [string], 'view'>;
+    nameOrSignature: "CITIZEN"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: 'ELECTION_START_END_INTERVAL'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "ELECTION_START_END_INTERVAL"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'MINIMUM_PERCENTAGE_OF_ELECTION_VOTES'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "MINIMUM_PERCENTAGE_OF_ELECTION_VOTES"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'MIN_PERCENTAGE_OF_VOTES'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "MIN_PERCENTAGE_OF_VOTES"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'MIN_TOTAL_CONTENT_READ_CHECK_ANSWER'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "MIN_TOTAL_CONTENT_READ_CHECK_ANSWER"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'MIN_VOTE_SCORE'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "MIN_VOTE_SCORE"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'POLITICAL_ACTOR'
-  ): TypedContractMethod<[], [string], 'view'>;
+    nameOrSignature: "POLITICAL_ACTOR"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: 'VOTING_CHECK_ASKED_NUM_OF_QUESTIONS'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'VOTING_CYCLE_INTERVAL'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "VOTING_CYCLE_INTERVAL"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'VOTING_DURATION'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "VOTING_DURATION"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'addKeccak256HashedAnswersToArticle'
+    nameOrSignature: "addKeccak256HashedAnswersToArticle"
   ): TypedContractMethod<
     [
       _votingKey: BytesLike,
@@ -1472,10 +1483,10 @@ export interface BVS_Voting extends BaseContract {
       _keccak256HashedAnswers: BytesLike[]
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'addKeccak256HashedAnswersToArticleResponse'
+    nameOrSignature: "addKeccak256HashedAnswersToArticleResponse"
   ): TypedContractMethod<
     [
       _votingKey: BytesLike,
@@ -1483,74 +1494,74 @@ export interface BVS_Voting extends BaseContract {
       _keccak256HashedAnswers: BytesLike[]
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'addKeccak256HashedAnswersToVotingContent'
+    nameOrSignature: "addKeccak256HashedAnswersToVotingContent"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _keccak256HashedAnswers: BytesLike[]],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'adminApprovalSentToAccount'
+    nameOrSignature: "adminApprovalSentToAccount"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'adminRoleGrantApprovals'
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+    nameOrSignature: "adminRoleGrantApprovals"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'admins'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+    nameOrSignature: "admins"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: 'applyForCitizenshipRole'
+    nameOrSignature: "applyForCitizenshipRole"
   ): TypedContractMethod<
     [_emailPublicKeyCombinedHash: BytesLike],
     [void],
-    'payable'
+    "payable"
   >;
   getFunction(
-    nameOrSignature: 'applyForElections'
-  ): TypedContractMethod<[], [void], 'payable'>;
+    nameOrSignature: "applyForElections"
+  ): TypedContractMethod<[], [void], "payable">;
   getFunction(
-    nameOrSignature: 'approveVoting'
-  ): TypedContractMethod<[_votingKey: BytesLike], [void], 'nonpayable'>;
+    nameOrSignature: "approveVoting"
+  ): TypedContractMethod<[_votingKey: BytesLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'articleContentReadCheckAnswers'
+    nameOrSignature: "articleContentReadCheckAnswers"
   ): TypedContractMethod<
     [arg0: BytesLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'articleContentResponseReadCheckAnswers'
+    nameOrSignature: "articleContentResponseReadCheckAnswers"
   ): TypedContractMethod<
     [arg0: BytesLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'articleKeys'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+    nameOrSignature: "articleKeys"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: 'articlesCompleted'
+    nameOrSignature: "articlesCompleted"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'articlesResponseCompleted'
+    nameOrSignature: "articlesResponseCompleted"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'assignQuizIpfsHashToArticleOrResponse'
+    nameOrSignature: "assignQuizIpfsHashToArticleOrResponse"
   ): TypedContractMethod<
     [
       _votingKey: BytesLike,
@@ -1559,43 +1570,43 @@ export interface BVS_Voting extends BaseContract {
       assignToArticleContent: boolean
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'assignQuizIpfsHashToVoting'
+    nameOrSignature: "assignQuizIpfsHashToVoting"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _quizIpfsHash: string],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'calculateVoteScore'
+    nameOrSignature: "calculateVoteScore"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _account: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'checkIfAccounthasRole'
+    nameOrSignature: "checkIfAccounthasRole"
   ): TypedContractMethod<
     [_account: AddressLike, _role: BytesLike],
     [boolean],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'citizenRoleApplicationFee'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "citizenRoleApplicationFee"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'citizens'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+    nameOrSignature: "citizens"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: 'citizenshipApplications'
-  ): TypedContractMethod<[arg0: AddressLike], [string], 'view'>;
+    nameOrSignature: "citizenshipApplications"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
   getFunction(
-    nameOrSignature: 'closeElections'
-  ): TypedContractMethod<[], [void], 'nonpayable'>;
+    nameOrSignature: "closeElections"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'completeContentReadQuiz'
+    nameOrSignature: "completeContentReadQuiz"
   ): TypedContractMethod<
     [
       contentType: BigNumberish,
@@ -1604,96 +1615,99 @@ export interface BVS_Voting extends BaseContract {
       _answers: string[]
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'creationDate'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "creationDate"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'dailyCitizenRoleModifyCredit'
+    nameOrSignature: "dailyCitizenRoleModifyCredit"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [bigint],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'electionCandidateScores'
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+    nameOrSignature: "electionCandidateScores"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'electionCandidates'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+    nameOrSignature: "electionCandidates"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: 'electionVoters'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
+    nameOrSignature: "electionVoters"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: 'electionVotes'
-  ): TypedContractMethod<[arg0: AddressLike], [string], 'view'>;
+    nameOrSignature: "electionVotes"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
   getFunction(
-    nameOrSignature: 'electionsCandidateApplicationFee'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "electionsCandidateApplicationFee"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'electionsEndDate'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "electionsEndDate"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'electionsStartDate'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "electionsStartDate"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'firstVotingCycleStartDate'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "firstVotingCycleStartDate"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getAccountArticleQuizAnswerIndexes'
+    nameOrSignature: "getAccountArticleQuizAnswerIndexes"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _articleKey: BytesLike, _account: AddressLike],
     [bigint[]],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'getAccountArticleResponseQuizAnswerIndexes'
+    nameOrSignature: "getAccountArticleResponseQuizAnswerIndexes"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _articleKey: BytesLike, _account: AddressLike],
     [bigint[]],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'getAccountVotingQuizAnswerIndexes'
+    nameOrSignature: "getAccountVotingQuizAnswerIndexes"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _account: AddressLike],
     [bigint[]],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'getAdminsSize'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getAdminsSize"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getArticleKeysLength'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getArticleKeysLength"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getCitizensSize'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getBlockTime"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getElectionCandidatesSize'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getCitizensSize"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getElectionVotersSize'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getElectionCandidatesSize"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getPoliticalActorsSize'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getElectionVotersSize"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getVotinCycleIndexesSize'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getPoliticalActorsSize"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'getVoting'
+    nameOrSignature: "getVotinCycleIndexesSize"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getVoting"
   ): TypedContractMethod<
     [_votingKey: BytesLike],
     [BVS_Voting.VotingStructOutput],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'getVotingKeysLength'
-  ): TypedContractMethod<[], [bigint], 'view'>;
+    nameOrSignature: "getVotingKeysLength"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'grantCitizenRole'
+    nameOrSignature: "grantCitizenRole"
   ): TypedContractMethod<
     [
       _account: AddressLike,
@@ -1701,17 +1715,17 @@ export interface BVS_Voting extends BaseContract {
       _revokeCitizenRole: boolean
     ],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'hasRole'
+    nameOrSignature: "hasRole"
   ): TypedContractMethod<
     [role: BytesLike, account: AddressLike],
     [boolean],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'isContentReadQuizCorrect'
+    nameOrSignature: "isContentReadQuizCorrect"
   ): TypedContractMethod<
     [
       _answerIndexes: BigNumberish[],
@@ -1719,25 +1733,27 @@ export interface BVS_Voting extends BaseContract {
       _answers: string[]
     ],
     [boolean],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'isEmptyString'
-  ): TypedContractMethod<[_string: string], [boolean], 'view'>;
+    nameOrSignature: "isEmptyString"
+  ): TypedContractMethod<[_string: string], [boolean], "view">;
   getFunction(
-    nameOrSignature: 'isVotingWon'
+    nameOrSignature: "isVotingWon"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _isAWinExpected: boolean],
     [boolean],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'politicalActorVotingCredits'
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+    nameOrSignature: "politicalActorVotingCredits"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'politicalActors'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
-  getFunction(nameOrSignature: 'proConArticles'): TypedContractMethod<
+    nameOrSignature: "politicalActors"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "proConArticles"
+  ): TypedContractMethod<
     [arg0: BytesLike, arg1: BytesLike],
     [
       [
@@ -1762,100 +1778,102 @@ export interface BVS_Voting extends BaseContract {
         responseContentCheckQuizIpfsHash: string;
       }
     ],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'publishArticleToVotingsCount'
+    nameOrSignature: "publishArticleToVotingsCount"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BytesLike],
     [bigint],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'publishProConArticle'
+    nameOrSignature: "publishProConArticle"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _ipfsHash: string, _isVoteOnA: boolean],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'publishProConArticleResponse'
+    nameOrSignature: "publishProConArticleResponse"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _proConArticleKey: BytesLike, _ipfsHash: string],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'revokeAdminRoleApproval'
-  ): TypedContractMethod<[revokedAccount: AddressLike], [void], 'nonpayable'>;
+    nameOrSignature: "revokeAdminRoleApproval"
+  ): TypedContractMethod<[revokedAccount: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'scheduleNewVoting'
+    nameOrSignature: "scheduleNewVoting"
   ): TypedContractMethod<
     [_contentIpfsHash: string, _startDate: BigNumberish, _budget: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'scheduleNextElections'
+    nameOrSignature: "scheduleNextElections"
   ): TypedContractMethod<
     [_electionsStartDate: BigNumberish, _electionsEndDate: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'sendGrantAdministratorRoleApproval'
-  ): TypedContractMethod<[_account: AddressLike], [void], 'nonpayable'>;
+    nameOrSignature: "sendGrantAdministratorRoleApproval"
+  ): TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'setFirstVotingCycleStartDate'
+    nameOrSignature: "setFirstVotingCycleStartDate"
   ): TypedContractMethod<
     [_firstVotingCycleStartDate: BigNumberish],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'unlockVotingBudget'
-  ): TypedContractMethod<[_votingKey: BytesLike], [void], 'nonpayable'>;
+    nameOrSignature: "unlockVotingBudget"
+  ): TypedContractMethod<[_votingKey: BytesLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'updateCitizenshipRoleApplicationFee'
-  ): TypedContractMethod<[value: BigNumberish], [void], 'nonpayable'>;
+    nameOrSignature: "updateCitizenshipRoleApplicationFee"
+  ): TypedContractMethod<[value: BigNumberish], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'voteOnElections'
-  ): TypedContractMethod<[voteOnAddress: AddressLike], [void], 'nonpayable'>;
+    nameOrSignature: "voteOnElections"
+  ): TypedContractMethod<[voteOnAddress: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: 'voteOnVoting'
+    nameOrSignature: "voteOnVoting"
   ): TypedContractMethod<
     [_votingKey: BytesLike, _voteOnA: boolean],
     [void],
-    'nonpayable'
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: 'votes'
+    nameOrSignature: "votes"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BytesLike],
     [[boolean, boolean] & { voted: boolean; isContentCompleted: boolean }],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'votingContentReadCheckAnswers'
+    nameOrSignature: "votingContentReadCheckAnswers"
   ): TypedContractMethod<
     [arg0: BytesLike, arg1: BigNumberish],
     [string],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'votingCycleIndexes'
-  ): TypedContractMethod<[arg0: BigNumberish], [bigint], 'view'>;
+    nameOrSignature: "votingCycleIndexes"
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
   getFunction(
-    nameOrSignature: 'votingCycleStartVoteCount'
+    nameOrSignature: "votingCycleStartVoteCount"
   ): TypedContractMethod<
     [arg0: BigNumberish, arg1: AddressLike],
     [bigint],
-    'view'
+    "view"
   >;
   getFunction(
-    nameOrSignature: 'votingKeys'
-  ): TypedContractMethod<[arg0: BigNumberish], [string], 'view'>;
-  getFunction(nameOrSignature: 'votings'): TypedContractMethod<
+    nameOrSignature: "votingKeys"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "votings"
+  ): TypedContractMethod<
     [arg0: BytesLike],
     [
       [
@@ -1884,25 +1902,25 @@ export interface BVS_Voting extends BaseContract {
         votingContentCheckQuizIpfsHash: string;
       }
     ],
-    'view'
+    "view"
   >;
 
   getEvent(
-    key: 'CitizenshipRoleGranted'
+    key: "CitizenshipRoleGranted"
   ): TypedContractEvent<
     CitizenshipRoleGrantedEvent.InputTuple,
     CitizenshipRoleGrantedEvent.OutputTuple,
     CitizenshipRoleGrantedEvent.OutputObject
   >;
   getEvent(
-    key: 'RoleGranted'
+    key: "RoleGranted"
   ): TypedContractEvent<
     RoleGrantedEvent.InputTuple,
     RoleGrantedEvent.OutputTuple,
     RoleGrantedEvent.OutputObject
   >;
   getEvent(
-    key: 'RoleRevoked'
+    key: "RoleRevoked"
   ): TypedContractEvent<
     RoleRevokedEvent.InputTuple,
     RoleRevokedEvent.OutputTuple,
@@ -1910,7 +1928,7 @@ export interface BVS_Voting extends BaseContract {
   >;
 
   filters: {
-    'CitizenshipRoleGranted(address,address)': TypedContractEvent<
+    "CitizenshipRoleGranted(address,address)": TypedContractEvent<
       CitizenshipRoleGrantedEvent.InputTuple,
       CitizenshipRoleGrantedEvent.OutputTuple,
       CitizenshipRoleGrantedEvent.OutputObject
@@ -1921,7 +1939,7 @@ export interface BVS_Voting extends BaseContract {
       CitizenshipRoleGrantedEvent.OutputObject
     >;
 
-    'RoleGranted(bytes32,address,address)': TypedContractEvent<
+    "RoleGranted(bytes32,address,address)": TypedContractEvent<
       RoleGrantedEvent.InputTuple,
       RoleGrantedEvent.OutputTuple,
       RoleGrantedEvent.OutputObject
@@ -1932,7 +1950,7 @@ export interface BVS_Voting extends BaseContract {
       RoleGrantedEvent.OutputObject
     >;
 
-    'RoleRevoked(bytes32,address,address)': TypedContractEvent<
+    "RoleRevoked(bytes32,address,address)": TypedContractEvent<
       RoleRevokedEvent.InputTuple,
       RoleRevokedEvent.OutputTuple,
       RoleRevokedEvent.OutputObject
