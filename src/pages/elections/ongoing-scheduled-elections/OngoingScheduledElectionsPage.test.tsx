@@ -194,11 +194,16 @@ describe('OngoingScheduledElectionsPage', () => {
       render(<OngoingScheduledElectionsPage />, { wrapperProps });
     });
 
+    expect(screen.getAllByText(/Vote on candidate/i).length).toBe(3);
+
     const firstVoteOnButton = screen.getAllByText(/Vote on candidate/i)[0].closest('button');
     if (firstVoteOnButton) await userEvent.click(firstVoteOnButton);
 
     expect(
       mockContractFunctions.voteOnElectionsCandidate
     ).toHaveBeenCalledWith(MOCK_CANDIDATE_ACCOUNT_KEYS[0]);
+
+    expect(screen.queryByText('You voted on this candidate')).toBeInTheDocument();
+    expect(screen.getAllByText(/Vote on candidate/i).length).toBe(2);
   });
 });

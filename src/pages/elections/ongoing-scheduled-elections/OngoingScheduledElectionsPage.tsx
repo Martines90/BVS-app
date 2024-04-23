@@ -50,79 +50,77 @@ const OngoingScheduledElectionsPage: React.FC = () => {
 
   const now = getNow();
 
+  const callGetElectionsState = async () => {
+    const eStartDate = await asyncErrWrapper(getElectionsStartDate)();
+    const eEndDate = await asyncErrWrapper(getElectionsEndDate)();
+    const _votedOnCandidatePublicKey = await asyncErrWrapper(getVotedOnCandidatePublicKey)();
+
+    const _accountAlreadyVoted = isValidAddress(_votedOnCandidatePublicKey);
+
+    setElectionInfo({
+      electionsStartDate: eStartDate,
+      electionsEndDate: eEndDate,
+      votedOnCandidatePublicKey: _votedOnCandidatePublicKey,
+      accountAlreadyVoted: _accountAlreadyVoted
+    });
+
+    const numCandidates = await asyncErrWrapper(getNumberOfElectionCandidates)() || 0;
+
+    const candidates: { publicKey: AddressLike, score: number }[] = [];
+    let totalScore = 0;
+    for (let i = 0; i < numCandidates; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      const candidatePublicKey = await asyncErrWrapper(
+        getElectionsCandidatePublicKeyAtIndex
+      )(i) as AddressLike;
+
+      if (!candidatePublicKey) {
+        continue;
+      }
+      // eslint-disable-next-line no-await-in-loop
+      const candidateScore = await asyncErrWrapper(getElectionCandidateScore)(candidatePublicKey);
+
+      if (!candidateScore) {
+        continue;
+      }
+
+      totalScore += candidateScore;
+
+      candidates.push({
+        publicKey: candidatePublicKey,
+        score: candidateScore
+      });
+    }
+
+    // calculate percentage prop
+    candidates.forEach((item, i) => {
+      if (item.publicKey === _votedOnCandidatePublicKey) {
+        candidates.splice(i, 1);
+        candidates.unshift(item);
+      }
+    });
+
+    const candidatesWithPercentage = candidates.map((candidate) => (
+      { ...candidate, percentage: ((candidate.score / totalScore) * 1000) / 10 }
+    ));
+
+    setCandidatesData(candidatesWithPercentage);
+  };
+
+  useEffect(() => {
+    callGetElectionsState();
+  }, []);
+
   const voteOnCandidateClick = async (candidatePublicKey: AddressLike) => {
     await asyncErrWrapper(voteOnElectionsCandidate)(candidatePublicKey).then(() => {
       showSuccessToast(`You successfully voted on candidate ${candidatePublicKey}`);
+      setElectionInfo({
+        ...electionInfo,
+        votedOnCandidatePublicKey: candidatePublicKey,
+        accountAlreadyVoted: true
+      });
     });
   };
-
-  console.log('electionsStartDate:', electionsStartDate);
-
-  useEffect(() => {
-    const callContractDate = async () => {
-      console.log('blockTime:', await userState.contract?.getBlockTime());
-    };
-    const callGetElectionsState = async () => {
-      const eStartDate = await asyncErrWrapper(getElectionsStartDate)();
-      const eEndDate = await asyncErrWrapper(getElectionsEndDate)();
-      const _votedOnCandidatePublicKey = await asyncErrWrapper(getVotedOnCandidatePublicKey)();
-
-      const _accountAlreadyVoted = isValidAddress(_votedOnCandidatePublicKey);
-
-      setElectionInfo({
-        electionsStartDate: eStartDate,
-        electionsEndDate: eEndDate,
-        votedOnCandidatePublicKey: _votedOnCandidatePublicKey,
-        accountAlreadyVoted: _accountAlreadyVoted
-      });
-
-      const numCandidates = await asyncErrWrapper(getNumberOfElectionCandidates)() || 0;
-
-      const candidates: { publicKey: AddressLike, score: number }[] = [];
-      let totalScore = 0;
-      for (let i = 0; i < numCandidates; i++) {
-        // eslint-disable-next-line no-await-in-loop
-        const candidatePublicKey = await asyncErrWrapper(
-          getElectionsCandidatePublicKeyAtIndex
-        )(i) as AddressLike;
-
-        if (!candidatePublicKey) {
-          continue;
-        }
-        // eslint-disable-next-line no-await-in-loop
-        const candidateScore = await asyncErrWrapper(getElectionCandidateScore)(candidatePublicKey);
-
-        if (!candidateScore) {
-          continue;
-        }
-
-        totalScore += candidateScore;
-
-        candidates.push({
-          publicKey: candidatePublicKey,
-          score: candidateScore
-        });
-      }
-
-      // calculate percentage prop
-      candidates.forEach((item, i) => {
-        if (item.publicKey === _votedOnCandidatePublicKey) {
-          candidates.splice(i, 1);
-          candidates.unshift(item);
-        }
-      });
-
-      const candidatesWithPercentage = candidates.map((candidate) => (
-        { ...candidate, percentage: ((candidate.score / totalScore) * 1000) / 10 }
-      ));
-
-      setCandidatesData(candidatesWithPercentage);
-    };
-
-    callContractDate();
-
-    callGetElectionsState();
-  }, []);
 
   const electionsInfoIsLoading = electionsStartDate === undefined;
   const candidatesDataIsLoading = candidatesData === undefined;
