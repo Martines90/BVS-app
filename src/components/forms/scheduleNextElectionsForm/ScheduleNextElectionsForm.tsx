@@ -13,7 +13,6 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import LinkInText from '@components/links/LinkInText';
-import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
 
 import useContract from '@hooks/contract/useContract';
 
@@ -26,6 +25,7 @@ import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 import { ElectionsInfo, InitialValues } from './types';
 
+import LoadContent from '@components/general/Loaders/LoadContent';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import FormTitle from '../components/FormTitle';
 
@@ -126,7 +126,8 @@ const ScheduleNextElectionsForm = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <FormContainer>
         <FormTitle>Schedule Next Elections</FormTitle>
-        {electionInfo && !isThereOngoingElections
+        <LoadContent condition={!electionInfo}>
+          {!isThereOngoingElections
            && (
            <Formik
              initialValues={formInitialValues}
@@ -233,16 +234,15 @@ const ScheduleNextElectionsForm = () => {
              )}
            </Formik>
            )}
-        {electionInfo && isThereOngoingElections && (
-        <Alert severity="warning">
-          There is an already scheduled or ongoing election!{' '}
-          <LinkInText navigateTo="/elections#ongoing_next_elections">
-            Check out elections
-          </LinkInText>
-        </Alert>
-        )}
-        {!electionInfo
-          && <CommunicationWithContractIsInProgressLoader />}
+          {isThereOngoingElections && (
+          <Alert severity="warning">
+            There is an already scheduled or ongoing election!{' '}
+            <LinkInText navigateTo="/elections#ongoing_next_elections">
+              Check out elections
+            </LinkInText>
+          </Alert>
+          )}
+        </LoadContent>
       </FormContainer>
     </LocalizationProvider>
   );

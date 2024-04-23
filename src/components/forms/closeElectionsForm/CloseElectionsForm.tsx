@@ -31,7 +31,7 @@ const CloseElectionsForm = () => {
 
   return (
     <FormContainer>
-      <FormTitle>Close elections page</FormTitle>
+      <FormTitle>Close elections</FormTitle>
       <LoadContent condition={!!electionsInfo}>
         Content
       </LoadContent>
