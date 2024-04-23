@@ -168,6 +168,7 @@ const OngoingScheduledElectionsPage: React.FC = () => {
                 {candidatesData && candidatesData.length > 0 ? (
                   <Stack spacing={2}>
                     <LabelText label="Number of candidates:" text={candidatesData.length} />
+                    <Typography variant="h6" textAlign="center">Candidates</Typography>
                     <List>
                       {candidatesData.map((candidate, index) => (
                         <ListItem sx={{ border: '1px solid #cb8b8b', mb: '10px' }} key={candidate.publicKey as string}>

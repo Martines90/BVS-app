@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 
 import { useLocation } from 'react-router-dom';
 
@@ -10,6 +10,9 @@ const ApproveCitizenshipApplicationPage = lazy(
 // elections
 const ScheduleNextElectionsPage = lazy(
   () => import('@pages/elections/schedule-next-elections/ScheduleNextElectionsPage')
+);
+const CloseElectionsPage = lazy(
+  () => import('@pages/elections/close-elections/CloseElectionsPage')
 );
 const OngoingAndScheduledElectionsPage = lazy(
   () => import('@pages/elections/ongoing-scheduled-elections/OngoingScheduledElectionsPage')
@@ -29,6 +32,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   // elections
   if (hash === '#schedule_next_elections') {
     return <ScheduleNextElectionsPage />;
+  }
+
+  if (hash === '#close_elections') {
+    return <CloseElectionsPage />;
   }
 
   if (hash === '#ongoing_next_elections') {

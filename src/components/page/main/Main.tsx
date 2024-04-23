@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { Box } from '@mui/material';
-import { MainProps } from './types';
+import ApplyForCitizenshipWarning from '@components/alerts/applyForCitizenshipWarning/ApplyForCitizenshipWarning';
+import { USER_MODES } from '@global/types/user';
 import useRenderMainContentCheck from '@hooks/check/useRenderMainContentCheck';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
-import { USER_MODES } from '@global/types/user';
-import ApplyForCitizenshipWarning from '@components/alerts/applyForCitizenshipWarning/ApplyForCitizenshipWarning';
+import { Box } from '@mui/material';
+import * as React from 'react';
 import MainBreadcrumbs from './breadcrumbs/mainBreadcrumbs/MainBreadcrumbs';
+import { MainProps } from './types';
 
-const Main: React.FC<MainProps> = ({ children }) => {
+const Main = ({ children }: MainProps) => {
   const { userState } = useUserContext();
   const { renderMainContent } = useRenderMainContentCheck();
 

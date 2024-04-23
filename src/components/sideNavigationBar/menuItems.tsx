@@ -80,6 +80,11 @@ const menuItems: MenuItem[] = [
         modes: [USER_MODES.ADMINISTRATOR]
       },
       {
+        label: 'Close elections',
+        route: 'elections#close_elections',
+        modes: [USER_MODES.ADMINISTRATOR]
+      },
+      {
         label: 'Register as candidate',
         route: 'elections#register_as_candidate',
         modes: [USER_MODES.CITIZEN, USER_MODES.ADMINISTRATOR]
