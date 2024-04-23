@@ -1,4 +1,4 @@
-import CitizenshipApprovalForm from '@components/forms/citizenship-approval-form/CitizenshipApprovalForm';
+import CitizenshipApprovalForm from '@components/forms/citizenshipApprovalForm/CitizenshipApprovalForm';
 import React from 'react';
 
 const ApproveCitizenshipApplicationPage: React.FC = () => (

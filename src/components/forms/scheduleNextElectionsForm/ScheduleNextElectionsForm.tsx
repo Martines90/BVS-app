@@ -4,8 +4,7 @@ import {
   IconButton,
   InputAdornment,
   Stack,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -28,6 +27,7 @@ import FormContainer from '../components/FormContainer';
 import { ElectionsInfo, InitialValues } from './types';
 
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import FormTitle from '../components/FormTitle';
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -125,9 +125,7 @@ const ScheduleNextElectionsForm = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <FormContainer>
-        <Typography variant="h5" gutterBottom textAlign="center">
-          Schedule Next Elections
-        </Typography>
+        <FormTitle>Schedule Next Elections</FormTitle>
         {electionInfo && !isThereOngoingElections
            && (
            <Formik
