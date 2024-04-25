@@ -25,7 +25,7 @@ const CloseElectionsForm = () => {
 
   const now = getNow();
   const electionsCanBeClosedAfterExtraTime = BVS_CONTRACT.electionsCanCloseAfterDays
-  * TimeQuantities.DAY;
+  * TimeQuantities.DAY * 1000;
 
   useEffect(() => {
     const getElectionsState = async () => {
@@ -61,7 +61,7 @@ const CloseElectionsForm = () => {
         && electionsInfo?.endDate
         && now > electionsInfo.startDate && now < electionsInfo.endDate && (
           <Stack spacing={2}>
-            <Typography>Elections are in progress...</Typography>
+            <Typography textAlign="center">Elections are in progress</Typography>
             <Stack spacing={2} direction="row">
               <LabelText label="Elections start:" text={formatDateTime(electionsInfo.startDate)} />
               <LabelText label="Elections end:" text={formatDateTime(electionsInfo.endDate)} />
@@ -74,7 +74,7 @@ const CloseElectionsForm = () => {
               formatDateTimeToTime(electionsInfo.endDate)
               }
               </Typography>
-              {electionsInfo.endDate + electionsCanBeClosedAfterExtraTime > now
+              {electionsInfo.endDate + electionsCanBeClosedAfterExtraTime < now
                 ? (
                   <Stack spacing={2}>
                     <Button variant="contained" onClick={closeElectionsHandler}>Close Elections</Button>

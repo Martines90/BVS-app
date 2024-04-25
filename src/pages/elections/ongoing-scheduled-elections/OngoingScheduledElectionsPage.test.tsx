@@ -52,10 +52,6 @@ jest.mock('@hooks/contract/useContract', () => ({
 jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
 describe('OngoingScheduledElectionsPage', () => {
-  beforeEach(() => {
-    jest.resetModules();
-  });
-
   it('Should exist', () => {
     expect(OngoingScheduledElectionsPage).toBeDefined();
   });
