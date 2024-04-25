@@ -7,6 +7,18 @@ const ApplyForCitizenshipPage = lazy(
   () => import('@pages/community/apply-for-citizenship/ApplyForCitizenshipPage')
 );
 
+const CitizensPage = lazy(
+  () => import('@pages/community/citizens/CitizensPage')
+);
+
+const PoliticalActorsPage = lazy(
+  () => import('@pages/community/political-actors/PoliticalActorsPage')
+);
+
+const AdministratorsPage = lazy(
+  () => import('@pages/community/administrators/AdministratorsPage')
+);
+
 // approvals
 const ApproveCitizenshipApplicationPage = lazy(
   () => import('@pages/approvals/ApproveCitizenshipApplicationPage')
@@ -30,6 +42,18 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   const { hash } = useLocation();
 
   // community
+  if (hash === '#citizens') {
+    return <CitizensPage />;
+  }
+
+  if (hash === '#political_actors') {
+    return <PoliticalActorsPage />;
+  }
+
+  if (hash === '#administrators') {
+    return <AdministratorsPage />;
+  }
+
   if (hash === '#apply_for_citizenship') {
     return <ApplyForCitizenshipPage />;
   }

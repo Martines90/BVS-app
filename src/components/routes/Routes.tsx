@@ -8,16 +8,8 @@ const VotingPool = lazy(() => import('@pages/voting-pool/VotingPoolPage'));
 const Approvals = lazy(() => import('@pages/approvals/ApprovalsPage'));
 const Elections = lazy(() => import('@pages/elections/ElectionsPage'));
 
-const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
-const ApplyForCitizenship = lazy(
-  () => import('@pages/community/apply-for-citizenship/ApplyForCitizenshipPage')
-);
-
-const PoliticalActors = lazy(
-  () => import('@pages/political-actors/PoliticalActorsPage')
-);
 const PoliticalActor = lazy(
-  () => import('@pages/political-actor/PoliticalActorPage')
+  () => import('@pages/community/political-actor/PoliticalActorPage')
 );
 const Voting = lazy(() => import('@pages/voting/VotingPage'));
 
@@ -28,11 +20,6 @@ const Routes = () => (
   <Routes_>
     <Route path="/" element={<Dashboard />} />
     <Route path="/voting-pool" element={<VotingPool />} />
-    <Route path="/citizens" element={<Citizens />} />
-    <Route
-      path="/community/apply-for-citizenship"
-      element={<ApplyForCitizenship />}
-    />
 
     {/** Approvals */}
     <Route path="/approvals" element={<Approvals />} />
@@ -40,10 +27,10 @@ const Routes = () => (
     {/** Elections */}
     <Route path="/elections" element={<Elections />} />
 
+    {/** Community */}
     <Route path="/community" element={<Community />} />
-    <Route path="/political-actors" element={<PoliticalActors />} />
     <Route
-      path="/political-actor/:politicalActorKey"
+      path="/community/political-actor/:politicalActorKey"
       element={<PoliticalActor />}
     />
     <Route path="/voting/:votingKey" element={<Voting />} />
