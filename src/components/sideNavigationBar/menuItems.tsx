@@ -14,8 +14,8 @@ const menuItems: MenuItem[] = [
     modes: [USER_MODES.ADMINISTRATOR],
     subMenuItems: [
       {
-        label: 'Citizenship applications',
-        route: 'approvals#citizenship',
+        label: 'Citizenship approval',
+        route: 'approvals#citizenship_approval',
         modes: []
       },
       {

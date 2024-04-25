@@ -10,7 +10,7 @@ const Elections = lazy(() => import('@pages/elections/ElectionsPage'));
 
 const Citizens = lazy(() => import('@pages/citizens/CitizensPage'));
 const ApplyForCitizenship = lazy(
-  () => import('@pages/citizens/apply-for-citizenship/ApplyForCitizenshipPage')
+  () => import('@pages/community/apply-for-citizenship/ApplyForCitizenshipPage')
 );
 
 const PoliticalActors = lazy(
@@ -30,7 +30,7 @@ const Routes = () => (
     <Route path="/voting-pool" element={<VotingPool />} />
     <Route path="/citizens" element={<Citizens />} />
     <Route
-      path="/citizens/apply-for-citizenship"
+      path="/community/apply-for-citizenship"
       element={<ApplyForCitizenship />}
     />
 
