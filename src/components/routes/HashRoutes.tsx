@@ -2,6 +2,11 @@ import { lazy } from 'react';
 
 import { useLocation } from 'react-router-dom';
 
+// community
+const ApplyForCitizenshipPage = lazy(
+  () => import('@pages/citizens/apply-for-citizenship/ApplyForCitizenshipPage')
+);
+
 // approvals
 const ApproveCitizenshipApplicationPage = lazy(
   () => import('@pages/approvals/ApproveCitizenshipApplicationPage')
@@ -23,6 +28,11 @@ const RegisterAsCandidatePage = lazy(
 
 const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   const { hash } = useLocation();
+
+  // community
+  if (hash === '#apply_for_citizenship') {
+    return <ApplyForCitizenshipPage />;
+  }
 
   // approvals
   if (hash === '#citizenship') {

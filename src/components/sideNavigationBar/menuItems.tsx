@@ -42,11 +42,6 @@ const menuItems: MenuItem[] = [
     modes: [],
     subMenuItems: [
       {
-        label: 'Stats',
-        route: 'community#stats',
-        modes: []
-      },
-      {
         label: 'Administrators',
         route: 'community#administrators',
         modes: []
@@ -59,6 +54,11 @@ const menuItems: MenuItem[] = [
       {
         label: 'Citizens',
         route: 'community#citizens',
+        modes: []
+      },
+      {
+        label: 'Apply for citizenship',
+        route: 'community#apply_for_citizenship',
         modes: []
       }
     ]

@@ -1,11 +1,6 @@
+import HashRoutes from '@components/routes/HashRoutes';
 import React from 'react';
 
-import { useLocation } from 'react-router-dom';
-
-const CommunityPage: React.FC = () => {
-  const { hash } = useLocation();
-
-  return <div>Welcome at Community ({hash}) page</div>;
-};
+const CommunityPage: React.FC = () => <HashRoutes mainPageName="Elections" />;
 
 export default CommunityPage;
