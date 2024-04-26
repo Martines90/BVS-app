@@ -90,9 +90,16 @@ const useContract = (): ContractInteractionProps => {
   };
 
   // ********* GETTERS ***********
+  const getCitizenAtIndex = async (index: number) => (
+    (await contract?.citizens(index))
+  ) as AddressLike;
 
   const getNumberOfElectionCandidates = async () => Number(
     (await contract?.getElectionCandidatesSize()) || 0
+  );
+
+  const getNumberOfCitizens = async () => Number(
+    (await contract?.getCitizensSize()) || 0
   );
 
   const getElectionsCandidatePublicKeyAtIndex = async (index: number) => (
@@ -127,6 +134,8 @@ const useContract = (): ContractInteractionProps => {
 
   return {
     contract,
+    getCitizenAtIndex,
+    getNumberOfCitizens,
     getCitizenRoleApplicationFee,
     getElectionStartEndIntervalInDays,
     getElectionsStartDate,

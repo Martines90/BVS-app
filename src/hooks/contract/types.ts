@@ -19,12 +19,14 @@ export interface ContractInteractionProps {
   scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
   voteOnElectionsCandidate(candidatePublicKey: AddressLike): Promise<void>;
   getCitizenRoleApplicationFee(): Promise<number>;
+  getCitizenAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateApplicationFee(): Promise<number>;
   getElectionsCandidatePublicKeyAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateScore(accountAddress: AddressLike): Promise<number>;
   getElectionStartEndIntervalInDays(): Promise<number>;
   getElectionsStartDate(): Promise<number>;
   getElectionsEndDate(): Promise<number>;
+  getNumberOfCitizens(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
   getVotedOnCandidatePublicKey(): Promise<AddressLike>;
 }

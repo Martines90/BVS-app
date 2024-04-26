@@ -8,3 +8,5 @@ export enum TimeQuantities {
   DAY = hourInMilSec * 24,
   HOUR = hourInMilSec
 }
+
+export const TABLE_DISPLAY_MAX_ROWS = 10;

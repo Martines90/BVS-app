@@ -7,6 +7,7 @@ import {
   MOCK_NON_EXISTING_ADDRESS,
   MOCK_REGISTER_AS_CANDIDATE_FEE
 } from '@mocks/contract-mocks';
+import { AddressLike } from 'ethers';
 import useContract from './useContract';
 
 const mockFutureTimestamp = 2533566483;
@@ -17,11 +18,16 @@ const mockApplyForCitizenshipHash = getBytes32keccak256Hash(
   `test@email.com${mockAccountKey}`
 );
 
+const mockCitizens: AddressLike[] = [
+  mockAccountKey
+];
+
 const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElections: jest.fn(() => Promise.resolve()),
   closeElections: jest.fn(() => Promise.resolve()),
+  citizens: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   electionsCandidateApplicationFee: jest.fn(
     () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
   ),
@@ -40,6 +46,7 @@ const mockContract = {
   electionVotes: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
+  getCitizensSize: jest.fn(() => Promise.resolve(3)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   citizenshipApplications: jest.fn((publicKey) => {
     if (publicKey === mockAccountKey) {
@@ -339,6 +346,15 @@ describe('useContract', () => {
   });
 
   describe('getters', () => {
+    describe('getCitizenAtIndex', () => {
+      it('should call citizens and return public key', async () => {
+        const { getCitizenAtIndex } = useContract();
+
+        expect(await getCitizenAtIndex(0)).toBe(mockAccountKey);
+        expect(mockContract.citizens).toHaveBeenCalled();
+      });
+    });
+
     describe('getCitizenRoleApplicationFee', () => {
       it('should call citizenRoleApplicationFee and return application fee', async () => {
         const { getCitizenRoleApplicationFee } = useContract();
@@ -385,15 +401,13 @@ describe('useContract', () => {
       });
     });
 
-    it('should call electionVotes and return true when account already voted', async () => {
-      mockContract.electionVotes.mockImplementationOnce(
-        () => Promise.resolve(mockAccountKey)
-      );
+    describe('getNumberOfCitizens', () => {
+      it('should call getCitizensSize and return number of accounts', async () => {
+        const { getNumberOfCitizens } = useContract();
 
-      const { isAccountAlreadyVoted } = useContract();
-
-      expect(await isAccountAlreadyVoted()).toBe(true);
-      expect(mockContract.electionVotes).toHaveBeenCalled();
+        expect(await getNumberOfCitizens()).toBe(3);
+        expect(mockContract.getCitizensSize).toHaveBeenCalled();
+      });
     });
 
     describe('getVotedOnCandidatePublicKey', () => {
