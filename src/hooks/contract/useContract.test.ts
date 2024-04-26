@@ -56,7 +56,9 @@ const mockContract = {
   }),
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
+  getPoliticalActorsSize: jest.fn(() => Promise.resolve(BigInt(3))),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
+  politicalActors: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   voteOnElections: jest.fn(() => Promise.resolve()),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
     BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
@@ -407,6 +409,24 @@ describe('useContract', () => {
 
         expect(await getNumberOfCitizens()).toBe(3);
         expect(mockContract.getCitizensSize).toHaveBeenCalled();
+      });
+    });
+
+    describe('getNumberOfPoliticalActors', () => {
+      it('should call politicalActorsSize and return number of accounts', async () => {
+        const { getNumberOfPoliticalActors } = useContract();
+
+        expect(await getNumberOfPoliticalActors()).toBe(3);
+        expect(mockContract.getPoliticalActorsSize).toHaveBeenCalled();
+      });
+    });
+
+    describe('getPoliticalActorAtIndex', () => {
+      it('should call politicalActors and return public key', async () => {
+        const { getPoliticalActorAtIndex } = useContract();
+
+        expect(await getPoliticalActorAtIndex(0)).toBe(mockAccountKey);
+        expect(mockContract.politicalActors).toHaveBeenCalled();
       });
     });
 

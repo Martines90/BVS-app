@@ -34,6 +34,7 @@ export const MOCK_NON_EXISTING_ADDRESS = '0x000000000000000000000000000000000000
 export const mockContractFunctions = {
   getCitizenAtIndex: jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
   getNumberOfCitizens: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
+  getNumberOfPoliticalActors: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getCitizenRoleApplicationFee: jest.fn(() => Promise.resolve(MOCK_CITIZENSHIP_APPLICATION_FEE)),
   getElectionCandidateApplicationFee: jest.fn(
     () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
@@ -50,6 +51,8 @@ export const mockContractFunctions = {
     () => Promise.resolve(MOCK_ELECTIONS_START_END_INTERVAL_IN_DAYS)
   ),
   getNumberOfElectionCandidates: jest.fn(() => Promise.resolve(MOCK_CANDIDATE_ACCOUNT_KEYS.length)),
+  getPoliticalActorAtIndex:
+    jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
   getVotedOnCandidatePublicKey: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
   isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),

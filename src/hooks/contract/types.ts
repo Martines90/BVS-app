@@ -27,6 +27,8 @@ export interface ContractInteractionProps {
   getElectionsStartDate(): Promise<number>;
   getElectionsEndDate(): Promise<number>;
   getNumberOfCitizens(): Promise<number>;
+  getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
+  getPoliticalActorAtIndex(index: number): Promise<AddressLike>;
   getVotedOnCandidatePublicKey(): Promise<AddressLike>;
 }
