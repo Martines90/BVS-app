@@ -16,6 +16,7 @@ type PoliticalActor = {
 const PoliticalActorsTable = () => {
   const { getPoliticalActorAtIndex, getNumberOfPoliticalActors } = useContract();
   const [data, setData] = useState<PoliticalActor[]>([]);
+  const [totalNumberOfPoliticalActors, setTotalNumberOfPoliticalActors] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
@@ -38,6 +39,7 @@ const PoliticalActorsTable = () => {
       }
     }
     setData(publicKeys);
+    setTotalNumberOfPoliticalActors(numberOfPoliticalActors);
     setIsLoadingData(false);
   };
 
@@ -55,7 +57,7 @@ const PoliticalActorsTable = () => {
   return (
     <LoadContent condition={false}>
       <Stack spacing={2}>
-        <LabelText label="Total number of political actors:" text={data.length} />
+        <LabelText label="Total number of political actors:" text={totalNumberOfPoliticalActors} />
         <DataTable
           tableHeadFields={['Public key']}
           handlePageChange={handlePageChange}

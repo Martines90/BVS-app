@@ -16,6 +16,7 @@ type Citizen = {
 const CitizensTable = () => {
   const { getCitizenAtIndex, getNumberOfCitizens } = useContract();
   const [data, setData] = useState<Citizen[]>([]);
+  const [totalNumberOfCitizens, setTotalNumberOfCitizens] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
@@ -35,6 +36,7 @@ const CitizensTable = () => {
         break;
       }
     }
+    setTotalNumberOfCitizens(numberOfCitizens);
     setData(publicKeys);
     setIsLoadingData(false);
   };
@@ -53,7 +55,7 @@ const CitizensTable = () => {
   return (
     <LoadContent condition={false}>
       <Stack spacing={2}>
-        <LabelText label="Total number of citizens:" text={data.length} />
+        <LabelText label="Total number of citizens:" text={totalNumberOfCitizens} />
         <DataTable
           tableHeadFields={['Public key']}
           handlePageChange={handlePageChange}

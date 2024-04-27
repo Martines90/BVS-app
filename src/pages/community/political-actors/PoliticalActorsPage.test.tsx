@@ -1,3 +1,4 @@
+import { TABLE_DISPLAY_MAX_ROWS } from '@global/constants/general';
 import { mockAccountPublicKeys, mockContractFunctions } from '@mocks/contract-mocks';
 import { act, render, screen } from 'test-utils';
 import PoliticalActorsPage from './PoliticalActorsPage';
@@ -18,8 +19,10 @@ describe('CitizensTable', () => {
     });
 
     expect(screen.queryByText('Political actors')).toBeInTheDocument();
+    expect(screen.queryByText('Total number of political actors:')).toBeInTheDocument();
+    expect(screen.queryByText('11')).toBeInTheDocument();
 
-    for (let i = 0; i < mockAccountPublicKeys.length; i++) {
+    for (let i = 0; i < TABLE_DISPLAY_MAX_ROWS; i++) {
       expect(screen.queryByText(mockAccountPublicKeys[i])).toBeInTheDocument();
     }
   });
