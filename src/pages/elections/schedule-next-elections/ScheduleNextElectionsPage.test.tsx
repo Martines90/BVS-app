@@ -10,6 +10,16 @@ jest.mock('@hooks/contract/useContract', () => ({
   default: () => mockContractFunctions
 }));
 
+const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
+
+jest.mock('@global/helpers/date', () => {
+  const actual = jest.requireActual('@global/helpers/date');
+  return {
+    ...actual,
+    getNow: () => mockNowTimestamp
+  };
+});
+
 jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
 describe('ScheduleNextElectionsPage', () => {

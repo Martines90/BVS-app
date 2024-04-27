@@ -61,7 +61,7 @@ const CloseElectionsForm = () => {
         && electionsInfo?.endDate
         && now > electionsInfo.startDate && now < electionsInfo.endDate && (
           <Stack spacing={2}>
-            <Typography textAlign="center">Elections are in progress</Typography>
+            <Typography textAlign="center">Elections still in progress</Typography>
             <Stack spacing={2} direction="row">
               <LabelText label="Elections start:" text={formatDateTime(electionsInfo.startDate)} />
               <LabelText label="Elections end:" text={formatDateTime(electionsInfo.endDate)} />

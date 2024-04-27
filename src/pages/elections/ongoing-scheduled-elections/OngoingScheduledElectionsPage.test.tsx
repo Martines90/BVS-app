@@ -32,18 +32,6 @@ const mockRegisteredCandidates = [
   { ...candidateData, percentage: to2DecimalFixed(candidateData.score / mockTotalScore) }
 ));
 
-/*
-  const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
-
-  jest.mock('@global/helpers/date', () => {
-    const actual = jest.requireActual('@global/helpers/date');
-    return {
-      ...actual,
-      getNow: () => mockNowTimestamp
-    };
-  });
-*/
-
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions

@@ -40,7 +40,7 @@ describe('CloseElectionsPage', () => {
       render(<CloseElectionsPage />);
     });
 
-    expect(screen.queryByText('Elections are in progress')).toBeInTheDocument();
+    expect(screen.queryByText('Elections still in progress')).toBeInTheDocument();
 
     expect(screen.queryByText('Elections start:')).toBeInTheDocument();
     expect(screen.queryByText('14/04/2050')).toBeInTheDocument();
