@@ -25,7 +25,7 @@ const DataTable = ({
   const totalPages = Math.ceil(data.length / TABLE_DISPLAY_MAX_ROWS);
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2, minWidth: '400px' }}>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

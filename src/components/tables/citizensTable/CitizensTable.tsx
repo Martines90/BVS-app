@@ -1,9 +1,11 @@
 import DataTable from '@components/general/DataTable/DataTable';
+import LabelText from '@components/general/LabelText/LabelText';
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { TABLE_DISPLAY_MAX_ROWS } from '@global/constants/general';
 import { isValidAddress } from '@global/helpers/validators';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
+import { Stack } from '@mui/material';
 import { AddressLike } from 'ethers';
 import { useEffect, useState } from 'react';
 
@@ -50,13 +52,16 @@ const CitizensTable = () => {
 
   return (
     <LoadContent condition={false}>
-      <DataTable
-        tableHeadFields={['Public key']}
-        handlePageChange={handlePageChange}
-        data={data}
-        currentPage={currentPage}
-        isLoadingData={isLoadingData}
-      />
+      <Stack spacing={2}>
+        <LabelText label="Total number of citizens:" text={data.length} />
+        <DataTable
+          tableHeadFields={['Public key']}
+          handlePageChange={handlePageChange}
+          data={data}
+          currentPage={currentPage}
+          isLoadingData={isLoadingData}
+        />
+      </Stack>
     </LoadContent>
   );
 };
