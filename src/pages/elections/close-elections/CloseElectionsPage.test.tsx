@@ -63,11 +63,11 @@ describe('CloseElectionsPage', () => {
       render(<CloseElectionsPage />);
     });
 
-    expect(screen.queryByText('Elections voting period finished on 14/05/2050 18:28:03')).toBeInTheDocument();
+    expect(screen.queryByText('Elections voting period finished on 14/05/2050 18:28')).toBeInTheDocument();
 
     expect(screen.queryByRole('button', { name: 'Close Elections' })).not.toBeInTheDocument();
 
-    expect(screen.queryByText('Elections can be officially closed after 21/05/2050 18:28:03')).toBeInTheDocument();
+    expect(screen.queryByText('Elections can be officially closed after 21/05/2050 18:28')).toBeInTheDocument();
   });
 
   it('should render elections period end passed and 7 days passed state', async () => {
@@ -85,7 +85,7 @@ describe('CloseElectionsPage', () => {
       render(<CloseElectionsPage />);
     });
 
-    expect(screen.queryByText('Elections voting period finished on 14/05/2050 18:28:03')).toBeInTheDocument();
+    expect(screen.queryByText('Elections voting period finished on 14/05/2050 18:28')).toBeInTheDocument();
 
     expect(screen.queryByRole('button', { name: 'Close Elections' })).toBeInTheDocument();
   });

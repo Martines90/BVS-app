@@ -30,6 +30,10 @@ const CreateNewVotingPage = lazy(
   () => import('@pages/votings/create-new-voting/CreateNewVotingPage')
 );
 
+const FirstVotingCycleStartDatePage = lazy(
+  () => import('@pages/votings/first-voting-cycle-start/FirstVotingCycleStartPage')
+);
+
 // elections
 const ScheduleNextElectionsPage = lazy(
   () => import('@pages/elections/schedule-next-elections/ScheduleNextElectionsPage')
@@ -72,6 +76,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   // votings
   if (hash === '#create_new_voting') {
     return <CreateNewVotingPage />;
+  }
+
+  if (hash === '#manage_first_voting_cycle') {
+    return <FirstVotingCycleStartDatePage />;
   }
 
   // elections

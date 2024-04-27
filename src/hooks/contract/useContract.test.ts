@@ -45,6 +45,7 @@ const mockContract = {
     return Promise.resolve(MOCK_NON_EXISTING_ADDRESS);
   }),
   electionVotes: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
+  firstVotingCycleStartDate: jest.fn(() => Promise.resolve(mockFutureTimestamp)),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
   getAdminsSize: jest.fn(() => Promise.resolve(1)),
@@ -60,8 +61,13 @@ const mockContract = {
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   getPoliticalActorsSize: jest.fn(() => Promise.resolve(BigInt(3))),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
+  scheduleNewVoting: jest.fn(() => Promise.resolve()),
+  setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
   politicalActors: jest.fn((index) => Promise.resolve(mockCitizens[index])),
+  politicalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
   voteOnElections: jest.fn(() => Promise.resolve()),
+  votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
+  VOTING_CYCLE_INTERVAL: jest.fn(() => Promise.resolve(3)),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
     BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
   ))
@@ -180,6 +186,26 @@ describe('useContract', () => {
             nonMatchingApplicationHash
           )
         ).toBe(false);
+      });
+    });
+  });
+
+  describe('votings', () => {
+    describe('setFirstVotingCycleStartDate', () => {
+      it('should call setFirstVotingCycleStartDate contract function', async () => {
+        const { setFirstVotingCycleStartDate } = useContract();
+
+        await setFirstVotingCycleStartDate(mockFutureTimestamp);
+        expect(mockContract.setFirstVotingCycleStartDate).toHaveBeenCalled();
+      });
+    });
+
+    describe('scheduleNewVoting', () => {
+      it('should call scheduleNewVoting contract function', async () => {
+        const { scheduleNewVoting } = useContract();
+
+        await scheduleNewVoting('test-ipfs-hash', mockFutureTimestamp, 0);
+        expect(mockContract.scheduleNewVoting).toHaveBeenCalledWith('test-ipfs-hash', mockFutureTimestamp, 0);
       });
     });
   });
@@ -368,6 +394,15 @@ describe('useContract', () => {
       });
     });
 
+    describe('getFirstVotingCycleStartDate', () => {
+      it('should call firstVotingCycleStartDate and return proper date', async () => {
+        const { getFirstVotingCycleStartDate } = useContract();
+
+        expect(await getFirstVotingCycleStartDate()).toBe(mockFutureTimestamp * 1000);
+        expect(mockContract.firstVotingCycleStartDate).toHaveBeenCalled();
+      });
+    });
+
     describe('getCitizenRoleApplicationFee', () => {
       it('should call citizenRoleApplicationFee and return application fee', async () => {
         const { getCitizenRoleApplicationFee } = useContract();
@@ -447,6 +482,37 @@ describe('useContract', () => {
 
         expect(await getPoliticalActorAtIndex(0)).toBe(mockAccountKey);
         expect(mockContract.politicalActors).toHaveBeenCalled();
+      });
+    });
+
+    describe('getPoliticalActorVotingCredits', () => {
+      it('should call politicalActorVotingCredits and return number', async () => {
+        const { getPoliticalActorVotingCredits } = useContract();
+
+        expect(await getPoliticalActorVotingCredits(mockAccountKey)).toBe(3);
+        expect(mockContract.politicalActorVotingCredits).toHaveBeenCalledWith(mockAccountKey);
+      });
+    });
+
+    describe('getPoliticalActorVotingCycleVoteStartCount', () => {
+      it('should call votingCycleStartVoteCount and return number', async () => {
+        const { getPoliticalActorVotingCycleVoteStartCount } = useContract();
+
+        expect(await getPoliticalActorVotingCycleVoteStartCount(mockAccountKey, 2)).toBe(3);
+        expect(mockContract.votingCycleStartVoteCount).toHaveBeenCalledWith(2, mockAccountKey);
+      });
+    });
+
+    describe('getVotingCycleInterval', () => {
+      it('should call VOTING_CYCLE_INTERVAL and return a number', async () => {
+        mockContract.VOTING_CYCLE_INTERVAL.mockImplementationOnce(
+          () => Promise.resolve(3)
+        );
+
+        const { getVotingCycleInterval } = useContract();
+
+        expect(await getVotingCycleInterval()).toBe(3);
+        expect(mockContract.VOTING_CYCLE_INTERVAL).toHaveBeenCalled();
       });
     });
 

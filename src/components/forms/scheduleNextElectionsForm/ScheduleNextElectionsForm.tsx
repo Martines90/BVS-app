@@ -1,10 +1,7 @@
 import {
   Alert,
   Button,
-  IconButton,
-  InputAdornment,
-  Stack,
-  TextField
+  Stack
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -25,8 +22,8 @@ import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 import { ElectionsInfo, InitialValues } from './types';
 
+import DateTextField from '@components/general/DateTextField/DateTextField';
 import LoadContent from '@components/general/Loaders/LoadContent';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import FormTitle from '../components/FormTitle';
 
 // Validation Schema
@@ -36,52 +33,6 @@ const validationSchema = Yup.object().shape({
     .required('End date is required')
     .min(Yup.ref('startDate'), 'End date must be after the start date')
 });
-
-const DateTextField = (props: any) => {
-  const {
-    id,
-    label,
-    value,
-    setOpen,
-    helperText,
-    error,
-    name,
-    dataTestId,
-    InputProps: { ref } = { ref: null }
-  } = props;
-
-  return (
-    <TextField
-      data-testid={dataTestId}
-      id={id}
-      ref={ref}
-      label={label}
-      value={value}
-      name={name}
-      helperText={helperText}
-      error={error}
-      autoComplete="off"
-      onClick={() => setOpen?.((prev: any) => !prev)}
-      sx={{
-        '& > .MuiOutlinedInput-root input': {
-          caretColor: 'transparent',
-          cursor: 'pointer'
-        },
-        '& > .MuiOutlinedInput-root input::selection': {
-          background: 'transparent'
-        }
-      }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton sx={{ marginRight: '-10px' }}>
-              <CalendarTodayOutlinedIcon />
-            </IconButton>
-          </InputAdornment>)
-      }}
-    />
-  );
-};
 
 const ScheduleNextElectionsForm = () => {
   const {

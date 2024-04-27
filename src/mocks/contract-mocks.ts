@@ -37,6 +37,7 @@ export const mockContractFunctions = {
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
   getCitizenAtIndex: jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
+  getFirstVotingCycleStartDate: jest.fn(() => Promise.resolve(0)),
   getNumberOfCitizens: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getNumberOfAdministrators: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getNumberOfPoliticalActors: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
@@ -65,6 +66,7 @@ export const mockContractFunctions = {
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElectionsAsCandidate: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
+  setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(false)),
   voteOnElectionsCandidate: jest.fn(() => Promise.resolve())
 };

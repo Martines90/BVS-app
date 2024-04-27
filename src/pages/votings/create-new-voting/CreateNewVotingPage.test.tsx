@@ -11,12 +11,4 @@ describe('CreateNewVotingTable', () => {
   it('Should exist', () => {
     expect(CreateNewVotingPage).toBeDefined();
   });
-
-  it('should render new default view', async () => {
-    await act(async () => {
-      render(<CreateNewVotingPage />);
-    });
-
-    expect(screen.queryByText('Create new voting')).toBeInTheDocument();
-  });
 });

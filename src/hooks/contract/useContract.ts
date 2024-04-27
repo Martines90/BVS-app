@@ -56,6 +56,16 @@ const useContract = (): ContractInteractionProps => {
     return hashMatchesWithApplicationHash;
   };
 
+  // Votings
+
+  const setFirstVotingCycleStartDate = async (date: number) => {
+    await contract?.setFirstVotingCycleStartDate(date);
+  };
+
+  const scheduleNewVoting = async (ipfsHash: string, date: number, targetBudget?: number) => {
+    await contract?.scheduleNewVoting(ipfsHash, date, targetBudget || 0);
+  };
+
   // Elections
 
   const applyForElectionsAsCandidate = async (
@@ -98,9 +108,9 @@ const useContract = (): ContractInteractionProps => {
     (await contract?.citizens(index))
   ) as AddressLike;
 
-  const getPoliticalActorAtIndex = async (index: number) => (
-    (await contract?.politicalActors(index))
-  ) as AddressLike;
+  const getFirstVotingCycleStartDate = async () => Number(
+    await contract?.firstVotingCycleStartDate()
+  ) * 1000;
 
   const getNumberOfAdministrators = async () => Number(
     (await contract?.getAdminsSize()) || 0
@@ -117,6 +127,19 @@ const useContract = (): ContractInteractionProps => {
   const getNumberOfPoliticalActors = async () => Number(
     (await contract?.getPoliticalActorsSize()) || 0
   );
+
+  const getPoliticalActorVotingCredits = async (accountKey: AddressLike) => Number(
+    await contract?.politicalActorVotingCredits(accountKey) || 0
+  );
+
+  const getPoliticalActorVotingCycleVoteStartCount = async (
+    accountKey: AddressLike,
+    votingCycleCount: number
+  ) => Number(
+    await contract?.votingCycleStartVoteCount(votingCycleCount, accountKey) || 0
+  );
+
+  const getVotingCycleInterval = async () => Number(await contract?.VOTING_CYCLE_INTERVAL() || 0);
 
   const getElectionsCandidatePublicKeyAtIndex = async (index: number) => (
     (await contract?.electionCandidates(BigInt(index)) || '0x0')
@@ -146,6 +169,10 @@ const useContract = (): ContractInteractionProps => {
 
   const getElectionsEndDate = async () => Number(await contract?.electionsEndDate()) * 1000;
 
+  const getPoliticalActorAtIndex = async (index: number) => (
+    (await contract?.politicalActors(index))
+  ) as AddressLike;
+
   const getVotedOnCandidatePublicKey = async () => await contract?.electionVotes(userState.walletAddress || '0x0') as AddressLike;
 
   return {
@@ -162,15 +189,21 @@ const useContract = (): ContractInteractionProps => {
     getElectionCandidateApplicationFee,
     getElectionsCandidatePublicKeyAtIndex,
     getElectionCandidateScore,
+    getFirstVotingCycleStartDate,
     getNumberOfElectionCandidates,
     getPoliticalActorAtIndex,
+    getPoliticalActorVotingCredits,
+    getPoliticalActorVotingCycleVoteStartCount,
     getVotedOnCandidatePublicKey,
+    getVotingCycleInterval,
     applyForCitizenshipRole,
     closeElections,
     grantCitizenRole,
     applyForElectionsAsCandidate,
     hasRole,
     scheduleNextElections,
+    scheduleNewVoting,
+    setFirstVotingCycleStartDate,
     voteOnElectionsCandidate,
     isAccountAlreadyVoted,
     isAccountAppliedForCitizenship,

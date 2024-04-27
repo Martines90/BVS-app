@@ -126,6 +126,11 @@ const menuItems: MenuItem[] = [
         label: 'Assign quiz to voting',
         route: 'votings#assign_quiz_to_voting',
         modes: [USER_MODES.ADMINISTRATOR]
+      },
+      {
+        label: 'First voting cycle',
+        route: 'votings#manage_first_voting_cycle',
+        modes: [USER_MODES.ADMINISTRATOR]
       }
     ]
   },

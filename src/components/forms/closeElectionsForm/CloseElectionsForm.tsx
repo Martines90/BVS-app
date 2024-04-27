@@ -2,7 +2,7 @@ import LabelText from '@components/general/LabelText/LabelText';
 import IF from '@components/general/Loaders/IF';
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { showSuccessToast } from '@components/toasts/Toasts';
-import { BVS_CONTRACT } from '@global/constants/blockchain';
+import { BVS_HARDCODED_SETTINGS } from '@global/constants/blockchain';
 import { TimeQuantities } from '@global/constants/general';
 import { formatDateTime, formatDateTimeToTime, getNow } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
@@ -26,7 +26,7 @@ const CloseElectionsForm = () => {
   const [electionsInfo, setElectionInfo] = useState<ElectionsInfo | undefined>(undefined);
 
   const now = getNow();
-  const electionsCanBeClosedAfterExtraTime = BVS_CONTRACT.electionsCanCloseAfterDays
+  const electionsCanBeClosedAfterExtraTime = BVS_HARDCODED_SETTINGS.electionsCanCloseAfterDays
   * TimeQuantities.DAY * 1000;
 
   useEffect(() => {
