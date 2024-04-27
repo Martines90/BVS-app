@@ -11,7 +11,7 @@ const Elections = lazy(() => import('@pages/elections/ElectionsPage'));
 const PoliticalActor = lazy(
   () => import('@pages/community/political-actor/PoliticalActorPage')
 );
-const Voting = lazy(() => import('@pages/voting/VotingPage'));
+const Votings = lazy(() => import('@pages/votings/VotingPage'));
 
 const Profile = lazy(() => import('@pages/profile/ProfilePage'));
 
@@ -24,6 +24,9 @@ const Routes = () => (
     {/** Approvals */}
     <Route path="/approvals" element={<Approvals />} />
 
+    {/** Voting */}
+    <Route path="/votings" element={<Votings />} />
+
     {/** Elections */}
     <Route path="/elections" element={<Elections />} />
 
@@ -33,7 +36,6 @@ const Routes = () => (
       path="/community/political-actor/:politicalActorKey"
       element={<PoliticalActor />}
     />
-    <Route path="/voting/:votingKey" element={<Voting />} />
 
     <Route path="/profile" element={<Profile />} />
 

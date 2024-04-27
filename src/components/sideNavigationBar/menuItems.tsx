@@ -103,8 +103,8 @@ const menuItems: MenuItem[] = [
         modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
-        label: 'Start new voting',
-        route: 'votings#start_new_voting',
+        label: 'Create new voting',
+        route: 'votings#create_new_voting',
         modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
@@ -121,6 +121,11 @@ const menuItems: MenuItem[] = [
         label: 'Closed votings',
         route: 'votings#closed_votings',
         modes: []
+      },
+      {
+        label: 'Assign quiz to voting',
+        route: 'votings#assign_quiz_to_voting',
+        modes: [USER_MODES.ADMINISTRATOR]
       }
     ]
   },
@@ -129,7 +134,23 @@ const menuItems: MenuItem[] = [
     label: 'Articles / responses',
     route: 'articles',
     modes: [USER_MODES.POLITICAL_ACTOR, USER_MODES.ADMINISTRATOR],
-    subMenuItems: []
+    subMenuItems: [
+      {
+        label: 'Assign quiz to article',
+        route: 'articles#assign_quiz_to_article',
+        modes: [USER_MODES.ADMINISTRATOR]
+      },
+      {
+        label: 'Assign quiz to response',
+        route: 'articles#assign_quiz_to_response',
+        modes: [USER_MODES.ADMINISTRATOR]
+      },
+      {
+        label: 'Create new article',
+        route: 'articles#add_new_article',
+        modes: [USER_MODES.POLITICAL_ACTOR]
+      }
+    ]
   }
 ];
 

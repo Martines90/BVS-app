@@ -24,6 +24,12 @@ const ApproveCitizenshipApplicationPage = lazy(
   () => import('@pages/approvals/ApproveCitizenshipApplicationPage')
 );
 
+// votings
+
+const CreateNewVotingPage = lazy(
+  () => import('@pages/votings/create-new-voting/CreateNewVotingPage')
+);
+
 // elections
 const ScheduleNextElectionsPage = lazy(
   () => import('@pages/elections/schedule-next-elections/ScheduleNextElectionsPage')
@@ -61,6 +67,11 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   // approvals
   if (hash === '#citizenship_approval') {
     return <ApproveCitizenshipApplicationPage />;
+  }
+
+  // votings
+  if (hash === '#create_new_voting') {
+    return <CreateNewVotingPage />;
   }
 
   // elections
