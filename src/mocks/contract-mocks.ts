@@ -33,8 +33,12 @@ export const MOCK_CANDIDATE_SCORES: { [key: string]: number } = {
 export const MOCK_NON_EXISTING_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const mockContractFunctions = {
+  getAdministratorAtIndex: jest.fn(
+    (index: number) => Promise.resolve(mockAccountPublicKeys[index])
+  ),
   getCitizenAtIndex: jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
   getNumberOfCitizens: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
+  getNumberOfAdministrators: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getNumberOfPoliticalActors: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getCitizenRoleApplicationFee: jest.fn(() => Promise.resolve(MOCK_CITIZENSHIP_APPLICATION_FEE)),
   getElectionCandidateApplicationFee: jest.fn(

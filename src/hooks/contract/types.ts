@@ -18,6 +18,7 @@ export interface ContractInteractionProps {
   isThereOngoingElections(): Promise<boolean>;
   scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
   voteOnElectionsCandidate(candidatePublicKey: AddressLike): Promise<void>;
+  getAdministratorAtIndex(index: number): Promise<AddressLike>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getCitizenAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateApplicationFee(): Promise<number>;
@@ -26,6 +27,7 @@ export interface ContractInteractionProps {
   getElectionStartEndIntervalInDays(): Promise<number>;
   getElectionsStartDate(): Promise<number>;
   getElectionsEndDate(): Promise<number>;
+  getNumberOfAdministrators(): Promise<number>;
   getNumberOfCitizens(): Promise<number>;
   getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;

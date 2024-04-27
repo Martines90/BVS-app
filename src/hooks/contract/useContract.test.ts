@@ -28,6 +28,7 @@ const mockContract = {
   applyForElections: jest.fn(() => Promise.resolve()),
   closeElections: jest.fn(() => Promise.resolve()),
   citizens: jest.fn((index) => Promise.resolve(mockCitizens[index])),
+  admins: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   electionsCandidateApplicationFee: jest.fn(
     () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
   ),
@@ -46,6 +47,7 @@ const mockContract = {
   electionVotes: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
+  getAdminsSize: jest.fn(() => Promise.resolve(1)),
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   citizenshipApplications: jest.fn((publicKey) => {
@@ -348,12 +350,21 @@ describe('useContract', () => {
   });
 
   describe('getters', () => {
+    describe('getAdministratorAtIndex', () => {
+      it('should call admins and return public key', async () => {
+        const { getAdministratorAtIndex } = useContract();
+
+        expect(await getAdministratorAtIndex(0)).toBe(mockAccountKey);
+        expect(mockContract.admins).toHaveBeenCalledWith(0);
+      });
+    });
+
     describe('getCitizenAtIndex', () => {
       it('should call citizens and return public key', async () => {
         const { getCitizenAtIndex } = useContract();
 
         expect(await getCitizenAtIndex(0)).toBe(mockAccountKey);
-        expect(mockContract.citizens).toHaveBeenCalled();
+        expect(mockContract.citizens).toHaveBeenCalledWith(0);
       });
     });
 
@@ -400,6 +411,15 @@ describe('useContract', () => {
 
         expect(await getElectionsEndDate()).toBe(mockFutureTimestamp * 1000);
         expect(mockContract.electionsEndDate).toHaveBeenCalled();
+      });
+    });
+
+    describe('getNumberOfAdministrators', () => {
+      it('should call getCitizensSize and return number of admin accounts', async () => {
+        const { getNumberOfAdministrators } = useContract();
+
+        expect(await getNumberOfAdministrators()).toBe(1);
+        expect(mockContract.getAdminsSize).toHaveBeenCalled();
       });
     });
 
