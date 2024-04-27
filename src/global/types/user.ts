@@ -16,7 +16,7 @@ export const ContractRoleskeccak256: { [key in USER_ROLES]: string } = {
 export enum USER_MODES {
   GUEST = 'guest',
   CITIZEN = 'citizen',
-  POLITICAL_ACTOR = 'political_actor',
+  POLITICAL_ACTOR = 'political actor',
   ADMINISTRATOR = 'administrator'
 }
 

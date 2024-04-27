@@ -99,22 +99,27 @@ const menuItems: MenuItem[] = [
     subMenuItems: [
       {
         label: 'My votings',
-        route: 'elections#my_elections',
+        route: 'votings#my_votings',
+        modes: [USER_MODES.POLITICAL_ACTOR]
+      },
+      {
+        label: 'Start new voting',
+        route: 'votings#start_new_voting',
         modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
         label: 'Ongoing votings',
-        route: 'elections#upcoming',
+        route: 'votings#ongoing_votings',
         modes: []
       },
       {
         label: 'Upcoming votings',
-        route: 'elections#upcoming',
+        route: 'votings#upcoming_votings',
         modes: []
       },
       {
         label: 'Closed votings',
-        route: 'elections#closed',
+        route: 'votings#closed_votings',
         modes: []
       }
     ]
