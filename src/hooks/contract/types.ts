@@ -34,6 +34,7 @@ export interface ContractInteractionProps {
   getNumberOfCitizens(): Promise<number>;
   getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
+  getVotingCycleMinCloseToTheEndTime(): Promise<number>;
   getPoliticalActorAtIndex(index: number): Promise<AddressLike>;
   getPoliticalActorVotingCredits(accountKey: AddressLike): Promise<number>;
   getPoliticalActorVotingCycleVoteStartCount(

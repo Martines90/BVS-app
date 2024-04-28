@@ -511,7 +511,7 @@ describe('useContract', () => {
 
         const { getVotingCycleInterval } = useContract();
 
-        expect(await getVotingCycleInterval()).toBe(3);
+        expect(await getVotingCycleInterval()).toBe(3000);
         expect(mockContract.VOTING_CYCLE_INTERVAL).toHaveBeenCalled();
       });
     });

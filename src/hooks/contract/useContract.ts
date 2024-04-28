@@ -112,6 +112,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.firstVotingCycleStartDate()
   ) * 1000;
 
+  const getVotingCycleMinCloseToTheEndTime = async () => Number(
+    await contract?.NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME() || 0
+  ) * 1000;
+
   const getNumberOfAdministrators = async () => Number(
     (await contract?.getAdminsSize()) || 0
   );
@@ -139,7 +143,9 @@ const useContract = (): ContractInteractionProps => {
     await contract?.votingCycleStartVoteCount(votingCycleCount, accountKey) || 0
   );
 
-  const getVotingCycleInterval = async () => Number(await contract?.VOTING_CYCLE_INTERVAL() || 0);
+  const getVotingCycleInterval = async () => Number(
+    await contract?.VOTING_CYCLE_INTERVAL() || 0
+  ) * 1000;
 
   const getElectionsCandidatePublicKeyAtIndex = async (index: number) => (
     (await contract?.electionCandidates(BigInt(index)) || '0x0')
@@ -191,6 +197,7 @@ const useContract = (): ContractInteractionProps => {
     getElectionCandidateScore,
     getFirstVotingCycleStartDate,
     getNumberOfElectionCandidates,
+    getVotingCycleMinCloseToTheEndTime,
     getPoliticalActorAtIndex,
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
