@@ -1,5 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
+import { TimeQuantities } from '@global/constants/general';
+
 export const MOCK_REGISTER_AS_CANDIDATE_FEE = 100000;
 export const MOCK_CITIZENSHIP_APPLICATION_FEE = 10000;
 export const MOCK_ELECTIONS_START_END_INTERVAL_IN_DAYS = 30;
@@ -36,7 +38,13 @@ export const mockContractFunctions = {
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
+  getVotingCycleInterval: jest.fn(() => Promise.resolve(30 * TimeQuantities.DAY * 1000)),
+  getVotingCycleMinCloseToTheEndTime: jest.fn(
+    () => Promise.resolve(10 * TimeQuantities.DAY * 1000)
+  ),
   getCitizenAtIndex: jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
+  getPoliticalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
+  getPoliticalActorVotingCycleVoteStartCount: jest.fn(() => Promise.resolve(1)),
   getFirstVotingCycleStartDate: jest.fn(() => Promise.resolve(0)),
   getNumberOfCitizens: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getNumberOfAdministrators: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
@@ -66,6 +74,7 @@ export const mockContractFunctions = {
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElectionsAsCandidate: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
+  scheduleNewVoting: jest.fn(() => Promise.resolve()),
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(false)),
   voteOnElectionsCandidate: jest.fn(() => Promise.resolve())

@@ -87,9 +87,9 @@ const CreateNewVotingForm = () => {
       if (now > firstVotingCycleStartDate) {
         const timePassed = now - firstVotingCycleStartDate;
         votingCycleCount = Math.ceil(timePassed / votingCycleInterval);
-        votingCycleVoteStartCount = await asyncErrWrapper(getPoliticalActorVotingCycleVoteStartCount)(userState.walletAddress || '0x0', votingCycleCount - 1) || 0;
-
-        console.log('votingCycleVoteStartCount:', votingCycleVoteStartCount);
+        votingCycleVoteStartCount = await asyncErrWrapper(
+          getPoliticalActorVotingCycleVoteStartCount
+        )(userState.walletAddress || '0x0', votingCycleCount - 1) || 0;
 
         if (
           timePassed - (votingCycleCount - 1) * votingCycleInterval
@@ -158,7 +158,7 @@ const CreateNewVotingForm = () => {
                   await asyncErrWrapper(scheduleNewVoting)(
                     values.contentIpfsHash || '',
                     startDate,
-                    values.targetBudget || 0
+                    Number(values.targetBudget)
                   ).then(() => {
                     setVotingInfo({
                       ...votingInfo,
