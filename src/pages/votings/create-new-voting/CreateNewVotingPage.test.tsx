@@ -6,20 +6,14 @@ import {
 } from 'test-utils';
 import CreateNewVotingPage from './CreateNewVotingPage';
 
+import * as dateHelpers from '@global/helpers/date';
+
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions
 }));
 
 const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
-
-jest.mock('@global/helpers/date', () => {
-  const actual = jest.requireActual('@global/helpers/date');
-  return {
-    ...actual,
-    getNow: () => mockNowTimestamp
-  };
-});
 
 jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
@@ -30,6 +24,8 @@ describe('CreateNewVotingPage', () => {
   });
 
   it('should render default view', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp);
+
     mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
       () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)
     );
@@ -81,5 +77,42 @@ describe('CreateNewVotingPage', () => {
     );
 
     expect(screen.queryByText('1/3')).toBeInTheDocument();
+  });
+
+  it('should disable CREATE button and show warning text when voting cycle end is within 10 days', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp + TimeQuantities.DAY * 20 * 1000);
+
+    mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
+      () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)
+    );
+
+    await act(async () => {
+      ({ container } = render(<CreateNewVotingPage />));
+    });
+
+    expect(screen.queryByText('Voting cycle ends:')).toBeInTheDocument();
+    expect(screen.queryByText('8 days, 23 hours, 39 minutes')).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: 'CREATE' })).toBeDisabled();
+
+    expect(screen.queryByText('New voting can start only 10 days before ongoing voting cycle ends')).toBeInTheDocument();
+  });
+
+  it('should display no more voting credits warning', async () => {
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp);
+
+    mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
+      () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)
+    );
+
+    mockContractFunctions.getPoliticalActorVotingCycleVoteStartCount.mockImplementationOnce(
+      () => Promise.resolve(3)
+    );
+
+    await act(async () => {
+      ({ container } = render(<CreateNewVotingPage />));
+    });
+
+    expect(screen.queryByText('You have no more voting credit left for this voting cycle')).toBeInTheDocument();
   });
 });
