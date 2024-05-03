@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import LinkInText from '@components/links/LinkInText';
+import LinkText from '@components/links/LinkText';
 
 import useContract from '@hooks/contract/useContract';
 
@@ -188,9 +188,9 @@ const ScheduleNextElectionsForm = () => {
           {isThereOngoingElections && (
           <Alert severity="warning">
             There is an already scheduled or ongoing election!{' '}
-            <LinkInText navigateTo="/elections#ongoing_next_elections">
+            <LinkText navigateTo="/elections#ongoing_next_elections">
               Check out elections
-            </LinkInText>
+            </LinkText>
           </Alert>
           )}
         </LoadContent>

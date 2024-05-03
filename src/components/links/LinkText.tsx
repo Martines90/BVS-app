@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const LinkInText = ({
+const LinkText = ({
   navigateTo,
   children
 }: {
@@ -23,4 +23,4 @@ const LinkInText = ({
   );
 };
 
-export default LinkInText;
+export default LinkText;

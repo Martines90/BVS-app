@@ -1,4 +1,4 @@
-import LinkInText from '@components/links/LinkInText';
+import LinkText from '@components/links/LinkText';
 import { Alert } from '@mui/material';
 
 const ApplyForCitizenshipWarning = () => (
@@ -6,9 +6,9 @@ const ApplyForCitizenshipWarning = () => (
     sx={{ margin: '10px auto' }}
     severity="warning"
     action={(
-      <LinkInText navigateTo="community/apply-for-citizenship">
+      <LinkText navigateTo="community/apply-for-citizenship">
         Apply for citizenship
-      </LinkInText>
+      </LinkText>
       )}
   >
     You need citizenship to be part of the community!

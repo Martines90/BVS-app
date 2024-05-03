@@ -15,7 +15,7 @@ jest.mock('@hooks/contract/useContract', () => ({
 
 const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
 
-jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
+jest.mock('@components/links/LinkText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
 describe('CreateNewVotingPage', () => {
   let container: any;

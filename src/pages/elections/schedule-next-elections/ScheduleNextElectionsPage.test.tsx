@@ -20,7 +20,7 @@ jest.mock('@global/helpers/date', () => {
   };
 });
 
-jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
+jest.mock('@components/links/LinkText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
 describe('ScheduleNextElectionsPage', () => {
   it('Should exist', () => {

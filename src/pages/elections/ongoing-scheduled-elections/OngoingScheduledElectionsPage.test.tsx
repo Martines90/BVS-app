@@ -37,7 +37,7 @@ jest.mock('@hooks/contract/useContract', () => ({
   default: () => mockContractFunctions
 }));
 
-jest.mock('@components/links/LinkInText', () => ({ children }: { children: any }) => <div>{children}</div>);
+jest.mock('@components/links/LinkText', () => ({ children }: { children: any }) => <div>{children}</div>);
 
 describe('OngoingScheduledElectionsPage', () => {
   it('Should exist', () => {

@@ -22,7 +22,9 @@ import { useEffect, useState } from 'react';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 
+import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
 import * as Yup from 'yup';
+import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
 
 type VotingInfo = {
   firstVotingCycleStartDate?: number,
@@ -63,6 +65,7 @@ const CreateNewVotingForm = () => {
   const { userState } = useUserContext();
   const [votingInfo, setVotingInfo] = useState<VotingInfo>();
   const [startDateOpen, setStartDateOpen] = useState(false);
+  const [fileInfo, setFileInfo] = useState<FileInfo>({});
   const now = getNow();
 
   const minDate = dayjs(now
@@ -202,18 +205,28 @@ const CreateNewVotingForm = () => {
                           }
                         }}
                       />
+                      <IpfsFileUpload
+                        fileInfo={fileInfo}
+                        setFileInfo={setFileInfo}
+                      />
                       <Field
                         as={TextField}
                         name="contentIpfsHash"
                         label="Content ipfs hash reference"
+                        value={fileInfo.ipfsHash || ''}
                         fullWidth
                         error={touched.contentIpfsHash && !!errors.contentIpfsHash}
                         helperText={touched.contentIpfsHash && errors.contentIpfsHash}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           handleChange(e);
                           setFieldValue('contentIpfsHash', e.target.value);
+                          setFileInfo({
+                            ...fileInfo,
+                            ipfsHash: e.target.value
+                          });
                         }}
                       />
+                      <PdfIpfsContentViewer ipfsHash={fileInfo.ipfsHash} />
                       <Field
                         as={TextField}
                         name="targetBudget"

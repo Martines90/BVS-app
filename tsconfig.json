@@ -12,13 +12,13 @@
     "paths": {
       "test-utils": ["./utils/test-utils"],
       "@components/*": ["./components/*"],
-      "@pages/*": ["./pages/*"],
       "@hooks/*": ["./hooks/*"],
       "@global/*": ["./global/*"],
       "@blockchain/*": ["./blockchain/*"],
       "@utils/*": ["src/utils/*"],
       "@mocks/*": ["./mocks/*"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@server/*": ["./server/*"],
     },
     "types": ["@testing-library/jest-dom"]
   },
