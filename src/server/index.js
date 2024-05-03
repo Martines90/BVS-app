@@ -21,6 +21,7 @@ const storage = multer.diskStorage({
     cb(null, `${__dirname}/files/`);
   },
   filename(req, file, cb) {
+    // FIX ME: QuickNode has issues with accented chars, etc filenames
     cb(null, `${Date.now()}_${file.originalname}`);
   },
 });

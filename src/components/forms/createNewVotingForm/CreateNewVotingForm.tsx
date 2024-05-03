@@ -23,6 +23,7 @@ import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
+import { showSuccessToast } from '@components/toasts/Toasts';
 import * as Yup from 'yup';
 import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
 
@@ -169,6 +170,7 @@ const CreateNewVotingForm = () => {
                         votingInfo?.votingCycleVoteStartCount || 0
                       ) + 1
                     });
+                    showSuccessToast('New voting successfully scheduled!');
                   }).finally(() => {
                     setSubmitting(false);
                   });
