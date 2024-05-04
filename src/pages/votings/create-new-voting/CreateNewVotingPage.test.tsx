@@ -1,4 +1,4 @@
-import { TimeQuantities } from '@global/constants/general';
+import { IPFS_GATEWAY_URL, TimeQuantities } from '@global/constants/general';
 import { mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import {
@@ -8,10 +8,14 @@ import CreateNewVotingPage from './CreateNewVotingPage';
 
 import * as dateHelpers from '@global/helpers/date';
 
+import { baseUrl } from '@global/config';
+import axios from 'axios';
+
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions
 }));
+jest.mock('axios');
 
 const mockNowTimestamp = 1713467901248; // 2024. April 18., Thursday 19:18:21.248
 
@@ -23,8 +27,19 @@ describe('CreateNewVotingPage', () => {
     expect(CreateNewVotingPage).toBeDefined();
   });
 
-  it('should render default view', async () => {
-    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp);
+  it('should render default view and execute creation process of new voting', async () => {
+    const mockTestFile = new File(['(⌐□_□)'], 'test-file.pdf', { type: 'application/pdf' });
+
+    const mockedAxios = axios as jest.Mocked<typeof axios>;
+    mockedAxios.post.mockReturnValueOnce(Promise.resolve({
+      status: 200,
+      data: { ipfsHashKey: 'file-upload-generated-ipfs-hash' }
+    }));
+
+    const spyWindowOpen = jest.spyOn(window, 'open');
+    spyWindowOpen.mockImplementationOnce(jest.fn());
+
+    jest.spyOn(dateHelpers, 'getNow').mockImplementationOnce(() => mockNowTimestamp);
 
     mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
       () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)
@@ -57,7 +72,7 @@ describe('CreateNewVotingPage', () => {
 
     await userEvent.click(screen.getByText('29'));
 
-    expect(screen.getByDisplayValue('29/04/2024')).toHaveAttribute('name', 'start-date-field');
+    expect(screen.getByDisplayValue('29/05/2024')).toHaveAttribute('name', 'start-date-field');
 
     const contentIpfsHashField = container.querySelector('input[name="contentIpfsHash"]');
 
@@ -70,11 +85,28 @@ describe('CreateNewVotingPage', () => {
 
     expect(screen.getByRole('button', { name: 'VIEW' })).toBeEnabled();
 
+    // file upload scenario to have IPFS hash
+
+    const fileInput = screen.getByTestId('pdf-file-upload-input');
+    await userEvent.upload(fileInput, mockTestFile);
+
+    const formData = new FormData();
+    formData.append('file', mockTestFile);
+
+    expect(axios.post).toHaveBeenCalledWith(`${baseUrl}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+    // lets view the document
+
+    await userEvent.click(screen.getByRole('button', { name: 'VIEW' }));
+
+    expect(spyWindowOpen).toHaveBeenCalledWith(`${IPFS_GATEWAY_URL}/file-upload-generated-ipfs-hash`, '_blank', 'rel=noopener noreferrer');
+
+    // finally trigger creation of new voting
     await userEvent.click(screen.getByRole('button', { name: 'CREATE' }));
 
     expect(mockContractFunctions.scheduleNewVoting).toHaveBeenCalledWith(
-      'test-ipfs-hash',
-      1714341600,
+      'file-upload-generated-ipfs-hash',
+      1716933600,
       10000
     );
 
@@ -82,7 +114,7 @@ describe('CreateNewVotingPage', () => {
   });
 
   it('should disable CREATE button and show warning text when voting cycle end is within 10 days', async () => {
-    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp + TimeQuantities.DAY * 20 * 1000);
+    jest.spyOn(dateHelpers, 'getNow').mockImplementationOnce(() => mockNowTimestamp + TimeQuantities.DAY * 20 * 1000);
 
     mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
       () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)
@@ -101,7 +133,7 @@ describe('CreateNewVotingPage', () => {
   });
 
   it('should display no more voting credits warning', async () => {
-    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp);
+    jest.spyOn(dateHelpers, 'getNow').mockImplementationOnce(() => mockNowTimestamp);
 
     mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
       () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)

@@ -10,36 +10,35 @@ import axios from 'axios';
 export type FileInfo = {
   file?: any;
   name?: string;
-  ipfsHash?: string;
 };
 
 type Props = {
   fileInfo: FileInfo;
-  setFileInfo: React.Dispatch<React.SetStateAction<FileInfo>>
+  setFileInfo: React.Dispatch<React.SetStateAction<FileInfo>>;
+  setFieldValue: any;
 };
 
-const IpfsFileUpload = ({ fileInfo, setFileInfo }: Props) => {
+const IpfsFileUpload = ({ fileInfo, setFileInfo, setFieldValue }: Props) => {
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {
       if (file.type === 'application/pdf') {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('fileName:', file.name);
 
         axios.post(`${baseUrl}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
           .then((response) => {
-            console.log(response);
             if (response.status === 200) {
               setFileInfo({
                 file,
-                name: file.name,
-                ipfsHash: response.data.ipfsHashKey
+                name: file.name
               });
+              setFieldValue('contentIpfsHash', response.data.ipfsHashKey);
               showSuccessToast(`File (${file.name}) successfully uploaded to ipfs network`);
             } else {
               showErrorToast(`File upload failed with error: ${response.data.err}`);
             }
+            return response;
           });
       }
     } else {
@@ -61,6 +60,7 @@ const IpfsFileUpload = ({ fileInfo, setFileInfo }: Props) => {
       >
         Upload File (*pdf)
         <input
+          data-testid="pdf-file-upload-input"
           type="file"
           hidden
           onChange={handleFileChange}

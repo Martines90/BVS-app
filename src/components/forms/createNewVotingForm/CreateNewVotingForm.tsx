@@ -210,25 +210,21 @@ const CreateNewVotingForm = () => {
                       <IpfsFileUpload
                         fileInfo={fileInfo}
                         setFileInfo={setFileInfo}
+                        setFieldValue={setFieldValue}
                       />
                       <Field
                         as={TextField}
                         name="contentIpfsHash"
                         label="Content ipfs hash reference"
-                        value={fileInfo.ipfsHash || ''}
                         fullWidth
                         error={touched.contentIpfsHash && !!errors.contentIpfsHash}
                         helperText={touched.contentIpfsHash && errors.contentIpfsHash}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           handleChange(e);
                           setFieldValue('contentIpfsHash', e.target.value);
-                          setFileInfo({
-                            ...fileInfo,
-                            ipfsHash: e.target.value
-                          });
                         }}
                       />
-                      <PdfIpfsContentViewer ipfsHash={fileInfo.ipfsHash} />
+                      <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || ''} />
                       <Field
                         as={TextField}
                         name="targetBudget"
