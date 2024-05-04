@@ -17,6 +17,7 @@ const cors = require('cors');
 const app = express();
 
 const FormData = require('form-data');
+const { DEFAULT_PORT } = require('../global/constants/general');
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -91,6 +92,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     });
 });
 
-app.listen(3333, () => {
-  console.log('Server is listening on port 3333...');
+app.listen(DEFAULT_PORT, () => {
+  console.log(`Server is listening on port: ${DEFAULT_PORT}`);
 });

@@ -1,4 +1,6 @@
 /* eslint-disable import/prefer-default-export */
+export const DEFAULT_PORT = 3333;
+
 const hourInSec = 60 * 60;
 
 export enum TimeQuantities {

@@ -68,6 +68,8 @@ describe('CreateNewVotingPage', () => {
     await userEvent.clear(targetBudgetField);
     await userEvent.type(targetBudgetField, '10000');
 
+    expect(screen.getByRole('button', { name: 'VIEW' })).toBeEnabled();
+
     await userEvent.click(screen.getByRole('button', { name: 'CREATE' }));
 
     expect(mockContractFunctions.scheduleNewVoting).toHaveBeenCalledWith(
