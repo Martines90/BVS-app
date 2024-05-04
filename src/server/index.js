@@ -5,6 +5,8 @@ require('dotenv').config({
   path: `${__dirname}/./../../.env`,
 });
 
+const helpers = require('./helpers');
+
 const axios = require('axios');
 const express = require('express');
 const fs = require('fs');
@@ -22,7 +24,7 @@ const storage = multer.diskStorage({
   },
   filename(req, file, cb) {
     // FIX ME: QuickNode has issues with accented chars, etc filenames
-    cb(null, `${Date.now()}_${file.originalname}`);
+    cb(null, helpers.normalizeFileName(`${Date.now()}_${file.originalname}`));
   },
 });
 
@@ -67,7 +69,6 @@ const uploadToIPFS = async (filePath, fileName) => {
       }
     });
     if (response.status === 201 || response.status === 200) {
-      console.log(response);
       return response.data;
     }
     return response;
@@ -78,11 +79,12 @@ const uploadToIPFS = async (filePath, fileName) => {
 };
 
 app.post('/upload', upload.single('file'), async (req, res) => {
-  const filePath = `${__dirname}/files/${req.file.filename}`;
+  const normalizedFileName = helpers.normalizeFileName(req.file.filename);
+  const filePath = `${__dirname}/files/${normalizedFileName}`;
 
   await uploadToIPFS(
     filePath,
-    req.file.filename,
+    normalizedFileName,
   ).then((data) => res.status(200).send(JSON.stringify({ ipfsHashKey: data.pin.cid })))
     .catch((err) => {
       res.status(400).send(JSON.stringify({ defaultErrMessage: 'Something went wrong', err }));
