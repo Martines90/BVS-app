@@ -94,7 +94,7 @@ const menuItems: MenuItem[] = [
   {
     icon: <HowToVoteIcon />,
     label: 'Votings',
-    route: 'voting-pool',
+    route: 'votings',
     modes: [],
     subMenuItems: [
       {

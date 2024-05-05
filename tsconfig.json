@@ -18,6 +18,7 @@
       "@utils/*": ["src/utils/*"],
       "@mocks/*": ["./mocks/*"],
       "@assets/*": ["./assets/*"],
+      "@pages/*": ["./pages/*"],
       "@server/*": ["./server/*"],
     },
     "types": ["@testing-library/jest-dom"]
