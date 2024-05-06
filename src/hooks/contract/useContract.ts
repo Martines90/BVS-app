@@ -3,7 +3,7 @@ import { isValidAddress } from '@global/helpers/validators';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
-import { ContractInteractionProps } from './types';
+import { ContractInteractionProps, Voting } from './types';
 
 const useContract = (): ContractInteractionProps => {
   const { userState } = useUserContext();
@@ -64,6 +64,18 @@ const useContract = (): ContractInteractionProps => {
 
   const scheduleNewVoting = async (ipfsHash: string, date: number, targetBudget?: number) => {
     await contract?.scheduleNewVoting(ipfsHash, date, targetBudget || 0);
+  };
+
+  const getVotingAtKey = async (votingKey: BytesLike) => {
+    const voting = await contract?.votings(votingKey);
+    return {
+      ...voting,
+      budget: Number(voting?.budget),
+      voteCount: Number(voting?.voteCount),
+      startDate: Number(voting?.startDate),
+      voteOnAScore: Number(voting?.voteOnAScore),
+      voteOnBScore: Number(voting?.voteOnBScore)
+    } as Voting;
   };
 
   // Elections
@@ -132,6 +144,10 @@ const useContract = (): ContractInteractionProps => {
     (await contract?.getPoliticalActorsSize()) || 0
   );
 
+  const getNumberOfVotings = async () => Number(
+    (await contract?.getVotingKeysLength()) || 0
+  );
+
   const getPoliticalActorVotingCredits = async (accountKey: AddressLike) => Number(
     await contract?.politicalActorVotingCredits(accountKey) || 0
   );
@@ -146,6 +162,10 @@ const useContract = (): ContractInteractionProps => {
   const getVotingCycleInterval = async () => Number(
     await contract?.VOTING_CYCLE_INTERVAL() || 0
   ) * 1000;
+
+  const getVotingKeyAtIndex = async (index: number) => (
+    (await contract?.votingKeys(BigInt(index)) || '0x0')
+  ) as AddressLike;
 
   const getElectionsCandidatePublicKeyAtIndex = async (index: number) => (
     (await contract?.electionCandidates(BigInt(index)) || '0x0')
@@ -188,6 +208,7 @@ const useContract = (): ContractInteractionProps => {
     getNumberOfAdministrators,
     getNumberOfCitizens,
     getNumberOfPoliticalActors,
+    getNumberOfVotings,
     getCitizenRoleApplicationFee,
     getElectionStartEndIntervalInDays,
     getElectionsStartDate,
@@ -198,11 +219,13 @@ const useContract = (): ContractInteractionProps => {
     getFirstVotingCycleStartDate,
     getNumberOfElectionCandidates,
     getVotingCycleMinCloseToTheEndTime,
+    getVotingAtKey,
     getPoliticalActorAtIndex,
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
     getVotedOnCandidatePublicKey,
     getVotingCycleInterval,
+    getVotingKeyAtIndex,
     applyForCitizenshipRole,
     closeElections,
     grantCitizenRole,

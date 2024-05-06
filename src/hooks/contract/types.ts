@@ -1,6 +1,22 @@
 import { BVS_Voting } from '@blockchain/contract';
 import { USER_ROLES } from '@global/types/user';
-import { AddressLike, BytesLike, Contract } from 'ethers';
+import {
+  AddressLike, BigNumberish, BytesLike, Contract
+} from 'ethers';
+
+export type Voting = {
+  approved: boolean;
+  cancelled: boolean;
+  key: BytesLike;
+  budget: BigNumberish;
+  voteCount: BigNumberish;
+  creator: AddressLike;
+  contentIpfsHash: string;
+  startDate: BigNumberish;
+  voteOnAScore: BigNumberish;
+  voteOnBScore: BigNumberish;
+  votingContentCheckQuizIpfsHash: string;
+};
 
 export interface ContractInteractionProps {
   contract: Contract & BVS_Voting | undefined;
@@ -34,7 +50,10 @@ export interface ContractInteractionProps {
   getNumberOfCitizens(): Promise<number>;
   getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
+  getNumberOfVotings(): Promise<number>;
+  getVotingAtKey(votingKey: BytesLike): Promise<Voting>;
   getVotingCycleMinCloseToTheEndTime(): Promise<number>;
+  getVotingKeyAtIndex(index: number): Promise<AddressLike>;
   getPoliticalActorAtIndex(index: number): Promise<AddressLike>;
   getPoliticalActorVotingCredits(accountKey: AddressLike): Promise<number>;
   getPoliticalActorVotingCycleVoteStartCount(

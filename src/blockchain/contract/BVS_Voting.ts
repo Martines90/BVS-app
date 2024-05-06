@@ -28,13 +28,13 @@ export declare namespace BVS_Voting {
     approved: boolean;
     cancelled: boolean;
     key: BytesLike;
-    budget: BigNumberish;
-    voteCount: BigNumberish;
+    budget: Number;
+    voteCount: Number;
     creator: AddressLike;
     contentIpfsHash: string;
-    startDate: BigNumberish;
-    voteOnAScore: BigNumberish;
-    voteOnBScore: BigNumberish;
+    startDate: Number;
+    voteOnAScore: Number;
+    voteOnBScore: Number;
     votingContentCheckQuizIpfsHash: string;
   };
 

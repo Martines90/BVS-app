@@ -8,6 +8,7 @@ import {
   MOCK_REGISTER_AS_CANDIDATE_FEE
 } from '@mocks/contract-mocks';
 import { AddressLike } from 'ethers';
+import { Voting } from './types';
 import useContract from './useContract';
 
 const mockFutureTimestamp = 2533566483;
@@ -18,9 +19,27 @@ const mockApplyForCitizenshipHash = getBytes32keccak256Hash(
   `test@email.com${mockAccountKey}`
 );
 
+const mockVotingKeyHash = getBytes32keccak256Hash(
+  'jnksadjnsadkjskndeoio'
+);
+
 const mockCitizens: AddressLike[] = [
   mockAccountKey
 ];
+
+const mockVoting: Voting = {
+  approved: true,
+  cancelled: false,
+  key: mockVotingKeyHash,
+  budget: 100,
+  voteCount: 44,
+  creator: mockAccountKey,
+  contentIpfsHash: 'content-ipfs-hash',
+  startDate: mockFutureTimestamp,
+  voteOnAScore: 12445,
+  voteOnBScore: 23334,
+  votingContentCheckQuizIpfsHash: 'content-ipfs-hash'
+};
 
 const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
@@ -51,6 +70,7 @@ const mockContract = {
   getAdminsSize: jest.fn(() => Promise.resolve(1)),
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
+  getVotingKeysLength: jest.fn(() => Promise.resolve(10)),
   citizenshipApplications: jest.fn((publicKey) => {
     if (publicKey === mockAccountKey) {
       return Promise.resolve(mockApplyForCitizenshipHash);
@@ -67,6 +87,8 @@ const mockContract = {
   politicalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
   voteOnElections: jest.fn(() => Promise.resolve()),
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
+  votings: jest.fn(() => mockVoting),
+  votingKeys: jest.fn(() => mockVotingKeyHash),
   VOTING_CYCLE_INTERVAL: jest.fn(() => Promise.resolve(3)),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
     BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
@@ -362,17 +384,6 @@ describe('useContract', () => {
         expect(await getElectionCandidateScore(mockNotRegisteredAccountKey)).toBe(0);
       });
     });
-
-    describe('getNumberOfElectionCandidates', () => {
-      it('should call getElectionCandidatesSize and return the number of candidates', async () => {
-        const { getNumberOfElectionCandidates } = useContract();
-
-        mockContract.getElectionCandidatesSize.mockImplementationOnce(() => Promise.resolve(4));
-
-        expect(await getNumberOfElectionCandidates()).toBe(4);
-        expect(mockContract.getElectionCandidatesSize).toHaveBeenCalled();
-      });
-    });
   });
 
   describe('getters', () => {
@@ -467,12 +478,32 @@ describe('useContract', () => {
       });
     });
 
+    describe('getNumberOfElectionCandidates', () => {
+      it('should call getElectionCandidatesSize and return the number of candidates', async () => {
+        const { getNumberOfElectionCandidates } = useContract();
+
+        mockContract.getElectionCandidatesSize.mockImplementationOnce(() => Promise.resolve(4));
+
+        expect(await getNumberOfElectionCandidates()).toBe(4);
+        expect(mockContract.getElectionCandidatesSize).toHaveBeenCalled();
+      });
+    });
+
     describe('getNumberOfPoliticalActors', () => {
       it('should call politicalActorsSize and return number of accounts', async () => {
         const { getNumberOfPoliticalActors } = useContract();
 
         expect(await getNumberOfPoliticalActors()).toBe(3);
         expect(mockContract.getPoliticalActorsSize).toHaveBeenCalled();
+      });
+    });
+
+    describe('getNumberOfVotings', () => {
+      it('should call getVotingKeysLength and return number of votings', async () => {
+        const { getNumberOfVotings } = useContract();
+
+        expect(await getNumberOfVotings()).toBe(10);
+        expect(mockContract.getVotingKeysLength).toHaveBeenCalled();
       });
     });
 
@@ -500,6 +531,24 @@ describe('useContract', () => {
 
         expect(await getPoliticalActorVotingCycleVoteStartCount(mockAccountKey, 2)).toBe(3);
         expect(mockContract.votingCycleStartVoteCount).toHaveBeenCalledWith(2, mockAccountKey);
+      });
+    });
+
+    describe('getVotingAtKey', () => {
+      it('should call votings and return a number', async () => {
+        const { getVotingAtKey } = useContract();
+
+        expect(await getVotingAtKey(mockVotingKeyHash)).toEqual(mockVoting);
+        expect(mockContract.votings).toHaveBeenCalledWith(mockVotingKeyHash);
+      });
+    });
+
+    describe('getVotingKeyAtIndex', () => {
+      it('should call votingKeys and return a number', async () => {
+        const { getVotingKeyAtIndex } = useContract();
+
+        expect(await getVotingKeyAtIndex(1)).toBe(mockVotingKeyHash);
+        expect(mockContract.votingKeys).toHaveBeenCalledWith(BigInt(1));
       });
     });
 

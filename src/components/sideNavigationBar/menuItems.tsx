@@ -98,29 +98,14 @@ const menuItems: MenuItem[] = [
     modes: [],
     subMenuItems: [
       {
-        label: 'My votings',
-        route: 'votings#my_votings',
+        label: 'All votings',
+        route: 'votings#all_votings',
         modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
         label: 'Create new voting',
         route: 'votings#create_new_voting',
         modes: [USER_MODES.POLITICAL_ACTOR]
-      },
-      {
-        label: 'Ongoing votings',
-        route: 'votings#ongoing_votings',
-        modes: []
-      },
-      {
-        label: 'Upcoming votings',
-        route: 'votings#upcoming_votings',
-        modes: []
-      },
-      {
-        label: 'Closed votings',
-        route: 'votings#closed_votings',
-        modes: []
       },
       {
         label: 'Assign quiz to voting',

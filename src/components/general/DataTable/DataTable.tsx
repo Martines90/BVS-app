@@ -42,12 +42,17 @@ const DataTable = ({
               {data.slice((
                 currentPage - 1
               ) * TABLE_DISPLAY_MAX_ROWS, currentPage * TABLE_DISPLAY_MAX_ROWS).map(
-                (row, index) => (
-                  <TableRow key={row.publicKey}>
-                    <TableCell>{(currentPage - 1) * TABLE_DISPLAY_MAX_ROWS + index + 1}</TableCell>
-                    <TableCell>{row.publicKey}</TableCell>
-                  </TableRow>
-                )
+                (row, index) => {
+                  const rowKeys = Object.keys(row);
+                  return (
+                    <TableRow key={row.publicKey}>
+                      <TableCell>
+                        {(currentPage - 1) * TABLE_DISPLAY_MAX_ROWS + index + 1}
+                      </TableCell>
+                      {rowKeys.map((colKey) => <TableCell key={colKey}>{row[colKey]}</TableCell>)}
+                    </TableRow>
+                  );
+                }
               )}
             </LoadTableContent>
           </TableBody>

@@ -30,8 +30,8 @@ const CreateNewVotingPage = lazy(
   () => import('@pages/votings/create-new-voting/CreateNewVotingPage')
 );
 
-const MyVotingsPage = lazy(
-  () => import('@pages/votings/my-votings/MyVotingsPage')
+const AllVotingsPage = lazy(
+  () => import('@pages/votings/all-votings/AllVotingsPage')
 );
 
 const FirstVotingCycleStartDatePage = lazy(
@@ -82,8 +82,8 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
     return <CreateNewVotingPage />;
   }
 
-  if (hash === '#my_votings') {
-    return <MyVotingsPage />;
+  if (hash === '#all_votings') {
+    return <AllVotingsPage />;
   }
 
   if (hash === '#manage_first_voting_cycle') {
