@@ -7,14 +7,16 @@ export const getBreadcrumbMapFromUrl = (
 ): PathChunk[] => {
   let href = '';
 
+  const hash = location.hash.split('?')[0];
+
   const pathnames: PathChunk[] = [
     ...location.pathname
       .split('/')
       .filter((x) => x)
       .map((x) => (x.includes('#') ? x.split('#')[0] : x))
       .map((x) => ({ pathName: x, isHash: false })),
-    ...(location.hash
-      ? [{ pathName: location.hash.replace('#', ''), isHash: true }]
+    ...(hash
+      ? [{ pathName: hash.replace('#', ''), isHash: true }]
       : [])
   ].map(({ isHash, pathName }) => {
     if (!isHash) {

@@ -8,7 +8,7 @@ import CreateNewVotingPage from './CreateNewVotingPage';
 
 import * as dateHelpers from '@global/helpers/date';
 
-import { baseUrl } from '@global/config';
+import { apiBaseUrl } from '@global/config';
 import axios from 'axios';
 
 jest.mock('@hooks/contract/useContract', () => ({
@@ -93,7 +93,7 @@ describe('CreateNewVotingPage', () => {
     const formData = new FormData();
     formData.append('file', mockTestFile);
 
-    expect(axios.post).toHaveBeenCalledWith(`${baseUrl}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    expect(axios.post).toHaveBeenCalledWith(`${apiBaseUrl}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 
     // lets view the document
 

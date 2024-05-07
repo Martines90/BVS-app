@@ -10,7 +10,7 @@ const menuItems: MenuItem[] = [
   {
     icon: <ThumbsUpDownIcon />,
     label: 'Approval pool',
-    route: 'approvals',
+    route: '',
     modes: [USER_MODES.ADMINISTRATOR],
     subMenuItems: [
       {
@@ -94,13 +94,18 @@ const menuItems: MenuItem[] = [
   {
     icon: <HowToVoteIcon />,
     label: 'Votings',
-    route: 'votings',
+    route: '',
     modes: [],
     subMenuItems: [
       {
         label: 'All votings',
         route: 'votings#all_votings',
-        modes: [USER_MODES.POLITICAL_ACTOR]
+        modes: []
+      },
+      {
+        label: 'Voting',
+        route: 'votings#voting',
+        modes: []
       },
       {
         label: 'Create new voting',

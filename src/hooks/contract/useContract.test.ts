@@ -7,7 +7,7 @@ import {
   MOCK_NON_EXISTING_ADDRESS,
   MOCK_REGISTER_AS_CANDIDATE_FEE
 } from '@mocks/contract-mocks';
-import { AddressLike } from 'ethers';
+import { AddressLike, BigNumberish, BytesLike } from 'ethers';
 import { Voting } from './types';
 import useContract from './useContract';
 
@@ -27,19 +27,33 @@ const mockCitizens: AddressLike[] = [
   mockAccountKey
 ];
 
-const mockVoting: Voting = {
-  approved: true,
-  cancelled: false,
-  key: mockVotingKeyHash,
-  budget: 100,
-  voteCount: 44,
-  creator: mockAccountKey,
-  contentIpfsHash: 'content-ipfs-hash',
-  startDate: mockFutureTimestamp,
-  voteOnAScore: 12445,
-  voteOnBScore: 23334,
-  votingContentCheckQuizIpfsHash: 'content-ipfs-hash'
-};
+type ContractVoting = [
+  boolean,
+  boolean,
+  BytesLike,
+  BigNumberish,
+  BigNumberish,
+  AddressLike,
+  string,
+  BigNumberish,
+  BigNumberish,
+  BigNumberish,
+  string
+];
+
+const mockVoting: ContractVoting = [
+  true,
+  false,
+  mockVotingKeyHash,
+  BigInt(100),
+  BigInt(44),
+  mockAccountKey,
+  'content-ipfs-hash',
+  BigInt(mockFutureTimestamp),
+  BigInt(12445),
+  BigInt(23334),
+  'content-ipfs-hash'
+];
 
 const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
@@ -538,7 +552,21 @@ describe('useContract', () => {
       it('should call votings and return a number', async () => {
         const { getVotingAtKey } = useContract();
 
-        expect(await getVotingAtKey(mockVotingKeyHash)).toEqual(mockVoting);
+        const mockExpectedVotingData: Voting = {
+          approved: true,
+          cancelled: false,
+          key: mockVotingKeyHash,
+          budget: 100,
+          voteCount: 44,
+          creator: mockAccountKey,
+          contentIpfsHash: 'content-ipfs-hash',
+          startDate: mockFutureTimestamp * 1000,
+          voteOnAScore: 12445,
+          voteOnBScore: 23334,
+          votingContentCheckQuizIpfsHash: 'content-ipfs-hash'
+        };
+
+        expect(await getVotingAtKey(mockVotingKeyHash)).toEqual(mockExpectedVotingData);
         expect(mockContract.votings).toHaveBeenCalledWith(mockVotingKeyHash);
       });
     });

@@ -1,5 +1,5 @@
 import { showErrorToast, showSuccessToast } from '@components/toasts/Toasts';
-import { baseUrl } from '@global/config';
+import { apiBaseUrl } from '@global/config';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import {
   Box,
@@ -26,7 +26,7 @@ const IpfsFileUpload = ({ fileInfo, setFileInfo, setFieldValue }: Props) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        axios.post(`${baseUrl}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        axios.post(`${apiBaseUrl}/upload`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
           .then((response) => {
             if (response.status === 200) {
               setFileInfo({

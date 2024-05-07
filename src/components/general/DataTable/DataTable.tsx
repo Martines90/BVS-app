@@ -1,10 +1,14 @@
+import PopoverText from '@components/PopoverText/PopoverText';
+import ButtonLink from '@components/links/ButtonLink';
+import styled from '@emotion/styled';
 import { TABLE_DISPLAY_MAX_ROWS } from '@global/constants/general';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {
   Box,
   Paper,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  tableCellClasses
 } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
@@ -13,16 +17,36 @@ import LoadTableContent from '../Loaders/LoadTableContent';
 
 type Props = {
   tableHeadFields: React.ReactNode[],
+  popoverDisplayFields?: string[],
   data: any[],
   currentPage: number,
   handlePageChange: (_event: any, value: number) => void,
   isLoadingData: boolean
 };
 
+const STableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14
+  }
+}));
+
+const CellContent = styled('div')(() => ({
+  '&': {
+    overflow: 'hidden',
+    maxWidth: '100px',
+    textOverflow: 'ellipsis'
+  }
+}));
+
 const DataTable = ({
-  tableHeadFields, data, currentPage, handlePageChange, isLoadingData
+  tableHeadFields, data, currentPage, handlePageChange, isLoadingData, popoverDisplayFields = []
 }: Props) => {
   const totalPages = Math.ceil(data.length / TABLE_DISPLAY_MAX_ROWS);
+
+  console.log('popoverDisplayFields:', popoverDisplayFields);
 
   return (
     <Box sx={{ p: 2, minWidth: '400px' }}>
@@ -30,10 +54,10 @@ const DataTable = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>#</TableCell>
+              <STableCell>#</STableCell>
               {tableHeadFields.map((tHeadField, index) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <TableCell key={`thead-key-${index}`}>{tHeadField}</TableCell>
+                <STableCell key={`thead-key-${index}`}>{tHeadField}</STableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -46,10 +70,23 @@ const DataTable = ({
                   const rowKeys = Object.keys(row);
                   return (
                     <TableRow key={row.publicKey}>
-                      <TableCell>
-                        {(currentPage - 1) * TABLE_DISPLAY_MAX_ROWS + index + 1}
-                      </TableCell>
-                      {rowKeys.map((colKey) => <TableCell key={colKey}>{row[colKey]}</TableCell>)}
+                      <STableCell>
+                        <CellContent>
+                          {(currentPage - 1) * TABLE_DISPLAY_MAX_ROWS + index + 1}
+                        </CellContent>
+                      </STableCell>
+                      {rowKeys.map((colKey) => (
+                        <STableCell key={colKey}>
+                          {colKey === 'viewBtnLink' ? <ButtonLink navigateTo={row[colKey]}>Visit</ButtonLink>
+                            : (
+                              <CellContent>
+                                {popoverDisplayFields?.includes(colKey)
+                                  ? <PopoverText text={row[colKey]} popText={row[colKey]} />
+                                  : row[colKey]}
+                              </CellContent>
+                            )}
+                        </STableCell>
+                      ))}
                     </TableRow>
                   );
                 }

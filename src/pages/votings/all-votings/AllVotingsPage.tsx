@@ -1,3 +1,5 @@
-const AllVotingsPage = () => <div>Welcome at All Votings Page</div>;
+import VotingsTable from '@components/tables/votingsTable/VotingsTable';
+
+const AllVotingsPage = () => <VotingsTable />;
 
 export default AllVotingsPage;

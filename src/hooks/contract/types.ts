@@ -1,20 +1,20 @@
 import { BVS_Voting } from '@blockchain/contract';
 import { USER_ROLES } from '@global/types/user';
 import {
-  AddressLike, BigNumberish, BytesLike, Contract
+  AddressLike, BytesLike, Contract
 } from 'ethers';
 
 export type Voting = {
   approved: boolean;
   cancelled: boolean;
   key: BytesLike;
-  budget: BigNumberish;
-  voteCount: BigNumberish;
+  budget: number;
+  voteCount: number;
   creator: AddressLike;
   contentIpfsHash: string;
-  startDate: BigNumberish;
-  voteOnAScore: BigNumberish;
-  voteOnBScore: BigNumberish;
+  startDate: number;
+  voteOnAScore: number;
+  voteOnBScore: number;
   votingContentCheckQuizIpfsHash: string;
 };
 

@@ -67,14 +67,19 @@ const useContract = (): ContractInteractionProps => {
   };
 
   const getVotingAtKey = async (votingKey: BytesLike) => {
-    const voting = await contract?.votings(votingKey);
+    const voting = await contract?.votings(votingKey) || [];
     return {
-      ...voting,
-      budget: Number(voting?.budget),
-      voteCount: Number(voting?.voteCount),
-      startDate: Number(voting?.startDate),
-      voteOnAScore: Number(voting?.voteOnAScore),
-      voteOnBScore: Number(voting?.voteOnBScore)
+      approved: Boolean(voting[0]),
+      cancelled: Boolean(voting[1]),
+      key: voting[2],
+      budget: Number(voting[3]),
+      voteCount: Number(voting[4]),
+      creator: voting[5],
+      contentIpfsHash: voting[6],
+      startDate: Number(voting[7]) * 1000,
+      voteOnAScore: Number(voting[8]),
+      voteOnBScore: Number(voting[9]),
+      votingContentCheckQuizIpfsHash: voting[10]
     } as Voting;
   };
 

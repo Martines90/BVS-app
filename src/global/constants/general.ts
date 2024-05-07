@@ -1,5 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-export const DEFAULT_PORT = 3333;
+export const DEFAULT_API_PORT = 3333;
+
+export const DEFAULT_PORT = 8080;
 
 const hourInSec = 60 * 60;
 

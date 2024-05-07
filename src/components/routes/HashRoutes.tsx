@@ -34,6 +34,10 @@ const AllVotingsPage = lazy(
   () => import('@pages/votings/all-votings/AllVotingsPage')
 );
 
+const VotingPage = lazy(
+  () => import('@pages/votings/voting/VotingViewPage')
+);
+
 const FirstVotingCycleStartDatePage = lazy(
   () => import('@pages/votings/first-voting-cycle-start/FirstVotingCycleStartPage')
 );
@@ -56,60 +60,64 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   const { hash } = useLocation();
 
   // community
-  if (hash === '#citizens') {
+  if (hash.includes('#citizens')) {
     return <CitizensPage />;
   }
 
-  if (hash === '#political_actors') {
+  if (hash.includes('#political_actors')) {
     return <PoliticalActorsPage />;
   }
 
-  if (hash === '#administrators') {
+  if (hash.includes('#administrators')) {
     return <AdministratorsPage />;
   }
 
-  if (hash === '#apply_for_citizenship') {
+  if (hash.includes('#apply_for_citizenship')) {
     return <ApplyForCitizenshipPage />;
   }
 
   // approvals
-  if (hash === '#citizenship_approval') {
+  if (hash.includes('#citizenship_approval')) {
     return <ApproveCitizenshipApplicationPage />;
   }
 
   // votings
-  if (hash === '#create_new_voting') {
+  if (hash.includes('#create_new_voting')) {
     return <CreateNewVotingPage />;
   }
 
-  if (hash === '#all_votings') {
+  if (hash.includes('#all_votings')) {
     return <AllVotingsPage />;
   }
 
-  if (hash === '#manage_first_voting_cycle') {
+  if (hash.includes('#voting')) {
+    return <VotingPage />;
+  }
+
+  if (hash.includes('#manage_first_voting_cycle')) {
     return <FirstVotingCycleStartDatePage />;
   }
 
   // elections
-  if (hash === '#schedule_next_elections') {
+  if (hash.includes('#schedule_next_elections')) {
     return <ScheduleNextElectionsPage />;
   }
 
-  if (hash === '#close_elections') {
+  if (hash.includes('#close_elections')) {
     return <CloseElectionsPage />;
   }
 
-  if (hash === '#ongoing_next_elections') {
+  if (hash.includes('#ongoing_next_elections')) {
     return <OngoingAndScheduledElectionsPage />;
   }
 
-  if (hash === '#register_as_candidate') {
+  if (hash.includes('#register_as_candidate')) {
     return <RegisterAsCandidatePage />;
   }
 
   return (
     <div>
-      Welcome at {mainPageName} ({hash}) page
+      Welcome at {mainPageName} {hash ? `(${hash})` : ''} page
     </div>
   );
 };
