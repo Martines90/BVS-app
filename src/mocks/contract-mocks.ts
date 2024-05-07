@@ -1,6 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 
 import { TimeQuantities } from '@global/constants/general';
+import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { BytesLike } from 'ethers';
+import { MOCK_FUTURE_TIMESTAMP } from './common-mocks';
 
 export const MOCK_REGISTER_AS_CANDIDATE_FEE = 100000;
 export const MOCK_CITIZENSHIP_APPLICATION_FEE = 10000;
@@ -34,6 +37,61 @@ export const MOCK_CANDIDATE_SCORES: { [key: string]: number } = {
 
 export const MOCK_NON_EXISTING_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+// getVotingKeyAtIndex, getVotingAtKey, getNumberOfVotings
+export const MOCK_VOTING_KEY_HASHES = [
+  getBytes32keccak256Hash(
+    'jnksadjnsadkjskndeoio'
+  ) as string,
+  getBytes32keccak256Hash(
+    'háptgmo54ö53töööögffmdl'
+  ) as string,
+  getBytes32keccak256Hash(
+    'oirpmrwp9ö4kpfsfpdfmllksm'
+  ) as string
+];
+
+export const MOCK_VOTINGS = {
+  [MOCK_VOTING_KEY_HASHES[0]]: {
+    approved: true,
+    cancelled: false,
+    key: MOCK_VOTING_KEY_HASHES[0],
+    budget: 100,
+    voteCount: 44,
+    creator: mockAccountPublicKeys[0],
+    contentIpfsHash: 'content-ipfs-hash-0',
+    startDate: MOCK_FUTURE_TIMESTAMP,
+    voteOnAScore: 12445,
+    voteOnBScore: 23334,
+    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-0'
+  },
+  [MOCK_VOTING_KEY_HASHES[1]]: {
+    approved: false,
+    cancelled: false,
+    key: MOCK_VOTING_KEY_HASHES[1],
+    budget: 0,
+    voteCount: 12,
+    creator: mockAccountPublicKeys[1],
+    contentIpfsHash: 'content-ipfs-hash-1',
+    startDate: (MOCK_FUTURE_TIMESTAMP - TimeQuantities.WEEK * 1000),
+    voteOnAScore: 333,
+    voteOnBScore: 45,
+    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-1'
+  },
+  [MOCK_VOTING_KEY_HASHES[2]]: {
+    approved: true,
+    cancelled: false,
+    key: MOCK_VOTING_KEY_HASHES[2],
+    budget: 0,
+    voteCount: 1899,
+    creator: mockAccountPublicKeys[2],
+    contentIpfsHash: 'content-ipfs-hash-2',
+    startDate: (MOCK_FUTURE_TIMESTAMP + TimeQuantities.WEEK * 1000),
+    voteOnAScore: 333,
+    voteOnBScore: 45,
+    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-2'
+  }
+};
+
 export const mockContractFunctions = {
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
@@ -65,9 +123,12 @@ export const mockContractFunctions = {
     () => Promise.resolve(MOCK_ELECTIONS_START_END_INTERVAL_IN_DAYS)
   ),
   getNumberOfElectionCandidates: jest.fn(() => Promise.resolve(MOCK_CANDIDATE_ACCOUNT_KEYS.length)),
+  getNumberOfVotings: jest.fn(() => Promise.resolve(MOCK_VOTING_KEY_HASHES.length)),
   getPoliticalActorAtIndex:
     jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
   getVotedOnCandidatePublicKey: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
+  getVotingAtKey: jest.fn((key: BytesLike) => Promise.resolve(MOCK_VOTINGS[key as string])),
+  getVotingKeyAtIndex: jest.fn((index: number) => Promise.resolve(MOCK_VOTING_KEY_HASHES[index])),
   isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),
   isCandidateAlreadyApplied: jest.fn(() => Promise.resolve(false)),

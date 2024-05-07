@@ -32,6 +32,7 @@ const VotingsTable = () => {
     const numberOfVotings = await asyncErrWrapper(getNumberOfVotings)() || 0;
     const votings: VotingTableData[] = [];
     const _to = to > numberOfVotings ? numberOfVotings : to;
+
     for (let i = from; i < _to; i++) {
       const votingKey = await asyncErrWrapper(getVotingKeyAtIndex)(
         (numberOfVotings - 1) - i

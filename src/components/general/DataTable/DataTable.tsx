@@ -75,7 +75,7 @@ const DataTable = ({
                       </STableCell>
                       {rowKeys.map((colKey) => (
                         <STableCell key={colKey}>
-                          {colKey === 'viewBtnLink' ? <ButtonLink navigateTo={row[colKey]}>Visit</ButtonLink>
+                          {colKey === 'viewBtnLink' ? <ButtonLink navigateTo={row[colKey]}>VISIT</ButtonLink>
                             : (
                               <CellContent>
                                 {popoverDisplayFields?.includes(colKey)

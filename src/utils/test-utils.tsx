@@ -7,6 +7,13 @@ import ModalContextWrapper from '@hooks/context/modalContext/ModalContextWrapper
 import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrapper';
 import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
 
+const mockedUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom') as any,
+  useNavigate: () => mockedUseNavigate
+}));
+
 type ProviderProps = {
   children: React.ReactNode,
   initUserState?: any
@@ -30,6 +37,8 @@ const AllTheProviders = (
 const customRender = (ui: React.ReactElement, options?: any) => render(ui, {
   wrapper: (props) => <AllTheProviders {...props} {...options?.wrapperProps} />, ...options
 });
-
 export * from '@testing-library/react';
-export { customRender as render };
+export {
+  mockedUseNavigate, customRender as render
+};
+
