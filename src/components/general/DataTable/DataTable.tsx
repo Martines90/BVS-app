@@ -46,8 +46,6 @@ const DataTable = ({
 }: Props) => {
   const totalPages = Math.ceil(data.length / TABLE_DISPLAY_MAX_ROWS);
 
-  console.log('popoverDisplayFields:', popoverDisplayFields);
-
   return (
     <Box sx={{ p: 2, minWidth: '400px' }}>
       <TableContainer component={Paper}>
@@ -69,7 +67,7 @@ const DataTable = ({
                 (row, index) => {
                   const rowKeys = Object.keys(row);
                   return (
-                    <TableRow key={row.publicKey}>
+                    <TableRow key={row[rowKeys[0]]}>
                       <STableCell>
                         <CellContent>
                           {(currentPage - 1) * TABLE_DISPLAY_MAX_ROWS + index + 1}
