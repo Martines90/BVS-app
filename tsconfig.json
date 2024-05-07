@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "module": "es2022",
     "allowJs": true,
     "jsx": "react-jsx",
     "moduleResolution": "node",

@@ -1,10 +1,13 @@
 import LabelText from '@components/general/LabelText/LabelText';
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
-import { useUserContext } from '@hooks/context/userContext/UserContext';
+import PdfViewer from '@components/pdfViewer/PdfViewer';
+import { IPFS_GATEWAY_URL } from '@global/constants/general';
+import { formatDateTime } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
+import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
-  Alert, Stack, Typography
+  Alert, Stack
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -15,10 +18,10 @@ import FormTitle from '../components/FormTitle';
 type VotingInfo = {
   key?: string;
   startDate?: string;
+  contentIpfsHash?: string;
 };
 
 const VotingForm = () => {
-  const { userState } = useUserContext();
   const { hash } = useLocation();
   const { getVotingAtKey } = useContract();
 
@@ -29,11 +32,17 @@ const VotingForm = () => {
 
   useEffect(() => {
     const loadVotingInfo = async () => {
-
+      const voting = await asyncErrWrapper(getVotingAtKey)(votingKey);
+      setVotingInfo({
+        key: (voting?.key || '') as string,
+        startDate: formatDateTime(voting?.startDate) || '',
+        contentIpfsHash: voting?.contentIpfsHash || ''
+      });
+      setIsLoading(false);
     };
 
     loadVotingInfo();
-  }, []);
+  }, [votingKey]);
 
   if (isLoading) {
     return <CommunicationWithContractIsInProgressLoader />;
@@ -51,7 +60,7 @@ const VotingForm = () => {
 
   return (
     <FormContainer>
-      <FormTitle>Voting form</FormTitle>
+      <FormTitle>Voting</FormTitle>
       <LoadContent condition={!votingInfo}>
         <Formik
           initialValues={{}}
@@ -62,12 +71,11 @@ const VotingForm = () => {
           {() => (
             <Form>
               <Stack spacing={2}>
-                <Typography>
-                  Selected voting key: {votingKey}
-                </Typography>
+                <LabelText label="Key:" text={votingKey} />
                 {votingInfo && (
                 <Stack spacing={2}>
                   <LabelText label="Start date:" text={votingInfo.startDate} />
+                  <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${votingInfo.contentIpfsHash}`} />
                 </Stack>
                 )}
               </Stack>
