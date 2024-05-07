@@ -1,4 +1,6 @@
-import { Pagination, PaginationItem, Stack } from '@mui/material';
+import {
+  Box, Pagination, PaginationItem, Stack
+} from '@mui/material';
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 
@@ -31,9 +33,14 @@ const PdfViewer = ({ documentUrl }: Props) => {
 
   return (
     <Stack spacing={2}>
-      <Document file={documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
-        <Page pageNumber={pageNumber} />
-      </Document>
+      <Box sx={{
+        width: '800px', maxWidth: '800px', maxHeight: '600px', overflow: 'scroll'
+      }}
+      >
+        <Document file={documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
+          <Page scale={1.5} pageNumber={pageNumber} />
+        </Document>
+      </Box>
       <Pagination
         count={numberOfPages}
         page={pageNumber}

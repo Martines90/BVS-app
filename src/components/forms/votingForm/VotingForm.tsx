@@ -59,7 +59,7 @@ const VotingForm = () => {
   }
 
   return (
-    <FormContainer>
+    <FormContainer css={{ maxWidth: 800 }}>
       <FormTitle>Voting</FormTitle>
       <LoadContent condition={!votingInfo}>
         <Formik
