@@ -8,7 +8,8 @@ import { formatDateTime } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
-  Alert, Button, Stack
+  Alert, Button, Stack,
+  Typography
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -32,9 +33,12 @@ type VotingInfo = {
   voteOnBScore: number;
 };
 
+const YesNoText = ({ text }: { text: 'yes' | 'no' }) => <Typography sx={{ color: (text === 'yes' ? 'green' : 'red') }}>{text}</Typography>;
+
 const VotingForm = () => {
   const { hash } = useLocation();
   const { getVotingAtKey, getAccountVotingScore, getVotingDuration } = useContract();
+  // calculateVoteScore
 
   const [votingInfo, setVotingInfo] = useState<VotingInfo>();
   const [isLoading, setIsLoading] = useState(true);
@@ -96,8 +100,8 @@ const VotingForm = () => {
                   <Stack direction="row" spacing={10}>
                     <Stack>
                       <LabelText label="Start date:" text={votingInfo.startDate} />
-                      <LabelText label="Approved:" text={votingInfo.approved ? 'yes' : 'no'} />
-                      <LabelText label="Active:" text={votingInfo.active ? 'yes' : 'no'} />
+                      <LabelText label="Approved:" text={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
+                      <LabelText label="Active:" text={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
                     </Stack>
                     <Stack>
                       <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />
@@ -122,8 +126,8 @@ const VotingForm = () => {
                   />
 
                   <Stack direction="row" spacing={2}>
-                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">Yes</Button>
-                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">No</Button>
+                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">YES</Button>
+                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">NO</Button>
                   </Stack>
                 </Stack>
                 )}

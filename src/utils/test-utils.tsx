@@ -45,4 +45,3 @@ export * from '@testing-library/react';
 export {
   mockedUseLocation, mockedUseNavigate, customRender as render
 };
-
