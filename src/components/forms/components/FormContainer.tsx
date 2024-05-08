@@ -6,7 +6,11 @@ type Props = {
 };
 
 const FormContainer = ({ children, css = {} }: Props) => (
-  <Box sx={{ maxWidth: (css.maxWidth || 500), m: 'auto', p: 2 }}>{children}</Box>
+  <Box sx={{
+    maxWidth: 500, m: 'auto', p: 2, ...css
+  }}
+  >{children}
+  </Box>
 );
 
 export default FormContainer;

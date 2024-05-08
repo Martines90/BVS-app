@@ -67,7 +67,7 @@ const PdfViewer = ({ documentUrl }: Props) => {
   return (
     <Stack spacing={2}>
       <Box sx={{
-        width: '800px', maxWidth: '800px', maxHeight: '600px', overflow: 'scroll', border: '1px solid black', position: 'relative'
+        width: '1000px', maxWidth: '1000px', maxHeight: '600px', overflow: 'scroll', border: '1px solid black', position: 'relative'
       }}
       >
         <div style={{

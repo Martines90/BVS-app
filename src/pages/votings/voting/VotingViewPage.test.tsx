@@ -7,10 +7,9 @@ import VotingViewPage from './VotingViewPage';
 
 jest.mock('react-pdf', () => ({
   pdfjs: { GlobalWorkerOptions: { workerSrc: 'abc' } },
-  Document: ({ onLoadSuccess = (pdf = { numPages: 4 }) => pdf.numPages }) => (
-    <div>{
-    onLoadSuccess({ numPages: 4 })
-    }
+  Document: () => (
+    <div>
+      Document
     </div>
   ),
   Outline: null,
@@ -31,11 +30,19 @@ describe('VotingViewPage', () => {
     expect(VotingViewPage).toBeDefined();
   });
 
-  it('should render votings', async () => {
+  it('should render voting info', async () => {
     await act(async () => {
       render(<VotingViewPage />);
     });
 
+    const voting = MOCK_VOTINGS[MOCK_VOTING_KEY_HASHES[0]];
+
     expect(screen.queryByText('Voting')).toBeInTheDocument();
+
+    expect(screen.queryByText('Key:')).toBeInTheDocument();
+    expect(screen.queryByText(voting.key)).toBeInTheDocument();
+
+    expect(screen.queryByText('Start date:')).toBeInTheDocument();
+    expect(screen.queryByText(formatDateTime(voting.startDate) as string)).toBeInTheDocument();
   });
 });
