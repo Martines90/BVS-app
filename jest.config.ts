@@ -10,9 +10,10 @@ const config: Config.InitialOptions = {
   testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel-jest.config.js' }],
   },
   moduleNameMapper: {
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     '^@components(.*)$': '<rootDir>/src/components$1',
     '^test-utils$': ['<rootDir>/src/utils/test-utils.tsx'],
     '^@pages(.*)$': ['<rootDir>/src/pages$1'],

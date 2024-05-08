@@ -8,10 +8,14 @@ import ThemeProviderWrapper from '@hooks/context/themeContext/ThemeContextWrappe
 import UserContextWrapper from '@hooks/context/userContext/UserContextWrapper';
 
 const mockedUseNavigate = jest.fn();
+const mockedUseLocation = jest.fn().mockReturnValue({
+  hash: ''
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom') as any,
-  useNavigate: () => mockedUseNavigate
+  useNavigate: () => mockedUseNavigate,
+  useLocation: mockedUseLocation
 }));
 
 type ProviderProps = {
@@ -39,6 +43,6 @@ const customRender = (ui: React.ReactElement, options?: any) => render(ui, {
 });
 export * from '@testing-library/react';
 export {
-  mockedUseNavigate, customRender as render
+  mockedUseLocation, mockedUseNavigate, customRender as render
 };
 

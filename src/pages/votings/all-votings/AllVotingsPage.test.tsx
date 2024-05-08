@@ -2,7 +2,7 @@ import { formatDateTime } from '@global/helpers/date';
 import { MOCK_VOTINGS, MOCK_VOTING_KEY_HASHES, mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import {
-    act, mockedUseNavigate, render, screen
+  act, mockedUseNavigate, render, screen
 } from 'test-utils';
 import AllVotingsPage from './AllVotingsPage';
 
