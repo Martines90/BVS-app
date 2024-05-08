@@ -27,11 +27,14 @@ type VotingInfo = {
   approved: boolean;
   relatedVotingScore: number;
   active: boolean;
+  numberOfVotes: number;
+  voteOnAScore: number;
+  voteOnBScore: number;
 };
 
 const VotingForm = () => {
   const { hash } = useLocation();
-  const { getVotingAtKey } = useContract();
+  const { getVotingAtKey, getAccountVotingScore, getVotingDuration } = useContract();
 
   const [votingInfo, setVotingInfo] = useState<VotingInfo>();
   const [isLoading, setIsLoading] = useState(true);
@@ -47,7 +50,10 @@ const VotingForm = () => {
         contentIpfsHash: voting?.contentIpfsHash || '',
         approved: !!voting?.approved,
         relatedVotingScore: 0,
-        active: false
+        active: false,
+        numberOfVotes: voting?.voteCount || 0,
+        voteOnAScore: voting?.voteOnAScore || 0,
+        voteOnBScore: voting?.voteOnBScore || 0
       });
       setIsLoading(false);
     };
@@ -87,9 +93,18 @@ const VotingForm = () => {
                 <LabelText label="Key:" text={votingKey} />
                 {votingInfo && (
                 <Stack spacing={2}>
-                  <LabelText label="Start date:" text={votingInfo.startDate} />
-                  <LabelText label="Approved:" text={votingInfo.approved ? 'yes' : 'no'} />
-                  <LabelText label="Active:" text={votingInfo.active ? 'yes' : 'no'} />
+                  <Stack direction="row" spacing={10}>
+                    <Stack>
+                      <LabelText label="Start date:" text={votingInfo.startDate} />
+                      <LabelText label="Approved:" text={votingInfo.approved ? 'yes' : 'no'} />
+                      <LabelText label="Active:" text={votingInfo.active ? 'yes' : 'no'} />
+                    </Stack>
+                    <Stack>
+                      <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />
+                      <LabelText label='Score on "Yes":' text={votingInfo.voteOnAScore} />
+                      <LabelText label='Score on "No":' text={votingInfo.voteOnBScore} />
+                    </Stack>
+                  </Stack>
                   <LabelText label="Your voting score:" text={votingInfo.relatedVotingScore} />
                   <ToggleList
                     listItemComponents={[
