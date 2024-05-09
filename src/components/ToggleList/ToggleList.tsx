@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ToggleListItem from './ToggleListItem';
@@ -13,10 +14,10 @@ const ToggleList = ({ listItemComponents }: Props) => (
     component="nav"
   >
     {listItemComponents.map((listItemComponent) => (
-      <>
+      <Box key={listItemComponent.labelText}>
         <ToggleListItem listItemComponent={listItemComponent} />
         <Divider />
-      </>
+      </Box>
     ))}
   </List>
 );

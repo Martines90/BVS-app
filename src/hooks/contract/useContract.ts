@@ -117,6 +117,10 @@ const useContract = (): ContractInteractionProps => {
   };
 
   // ********* GETTERS ***********
+  const getAccountVotingScore = async (votingKey: BytesLike, accountAddress: AddressLike) => Number(
+    (await contract?.calculateVoteScore(votingKey, accountAddress)) || 0
+  );
+
   const getAdministratorAtIndex = async (index: number) => (
     (await contract?.admins(index))
   ) as AddressLike;
@@ -164,6 +168,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.votingCycleStartVoteCount(votingCycleCount, accountKey) || 0
   );
 
+  const getVotingDuration = async () => Number(
+    await contract?.VOTING_DURATION() || 0
+  ) * 1000;
+
   const getVotingCycleInterval = async () => Number(
     await contract?.VOTING_CYCLE_INTERVAL() || 0
   ) * 1000;
@@ -208,6 +216,7 @@ const useContract = (): ContractInteractionProps => {
 
   return {
     contract,
+    getAccountVotingScore,
     getAdministratorAtIndex,
     getCitizenAtIndex,
     getNumberOfAdministrators,
@@ -223,6 +232,7 @@ const useContract = (): ContractInteractionProps => {
     getElectionCandidateScore,
     getFirstVotingCycleStartDate,
     getNumberOfElectionCandidates,
+    getVotingDuration,
     getVotingCycleMinCloseToTheEndTime,
     getVotingAtKey,
     getPoliticalActorAtIndex,

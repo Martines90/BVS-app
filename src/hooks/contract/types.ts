@@ -36,6 +36,7 @@ export interface ContractInteractionProps {
   scheduleNewVoting(ipfsHash: string, startDate: number, targetBudget: number): Promise<void>;
   setFirstVotingCycleStartDate(date: number): Promise<void>;
   voteOnElectionsCandidate(candidatePublicKey: AddressLike): Promise<void>;
+  getAccountVotingScore(votingKey: BytesLike, accountAddress: AddressLike): Promise<number>;
   getAdministratorAtIndex(index: number): Promise<AddressLike>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getCitizenAtIndex(index: number): Promise<AddressLike>;
@@ -51,6 +52,7 @@ export interface ContractInteractionProps {
   getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
   getNumberOfVotings(): Promise<number>;
+  getVotingDuration(): Promise<number>;
   getVotingAtKey(votingKey: BytesLike): Promise<Voting>;
   getVotingCycleMinCloseToTheEndTime(): Promise<number>;
   getVotingKeyAtIndex(index: number): Promise<AddressLike>;

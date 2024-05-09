@@ -4,7 +4,7 @@ import LoadContent from '@components/general/Loaders/LoadContent';
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
 import PdfViewer from '@components/pdfViewer/PdfViewer';
 import { IPFS_GATEWAY_URL } from '@global/constants/general';
-import { formatDateTime } from '@global/helpers/date';
+import { formatDateTime, getNow } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
@@ -18,6 +18,8 @@ import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import ContentCheckQuizForm from '../contentCheckQuizForm/ContentCheckQuizForm';
 
+import LabelComponent from '@components/general/LabelComponent/LabelComponent';
+import { useUserContext } from '@hooks/context/userContext/UserContext';
 import ArticleIcon from '@mui/icons-material/Article';
 import QuizIcon from '@mui/icons-material/Quiz';
 
@@ -37,6 +39,7 @@ const YesNoText = ({ text }: { text: 'yes' | 'no' }) => <Typography sx={{ color:
 
 const VotingForm = () => {
   const { hash } = useLocation();
+  const { userState } = useUserContext();
   const { getVotingAtKey, getAccountVotingScore, getVotingDuration } = useContract();
   // calculateVoteScore
 
@@ -45,16 +48,27 @@ const VotingForm = () => {
 
   const votingKey = hash.split('?voting_key=')[1];
 
+  const now = getNow();
+
   useEffect(() => {
     const loadVotingInfo = async () => {
       const voting = await asyncErrWrapper(getVotingAtKey)(votingKey);
+      const accountVotingScore = await asyncErrWrapper(getAccountVotingScore)(
+        voting?.key || '',
+        userState.walletAddress || ''
+      );
+      const votingDuration = await asyncErrWrapper(getVotingDuration)() || 0;
+
+      const isVotingActive = now > (
+        voting?.startDate || 0) && now < (voting?.startDate || 0) + votingDuration;
+
       setVotingInfo({
         key: (voting?.key || '') as string,
         startDate: formatDateTime(voting?.startDate) || '',
         contentIpfsHash: voting?.contentIpfsHash || '',
         approved: !!voting?.approved,
-        relatedVotingScore: 0,
-        active: false,
+        relatedVotingScore: accountVotingScore || 0,
+        active: isVotingActive,
         numberOfVotes: voting?.voteCount || 0,
         voteOnAScore: voting?.voteOnAScore || 0,
         voteOnBScore: voting?.voteOnBScore || 0
@@ -100,8 +114,8 @@ const VotingForm = () => {
                   <Stack direction="row" spacing={10}>
                     <Stack>
                       <LabelText label="Start date:" text={votingInfo.startDate} />
-                      <LabelText label="Approved:" text={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
-                      <LabelText label="Active:" text={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
+                      <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
+                      <LabelComponent label="Active:" component={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
                     </Stack>
                     <Stack>
                       <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />

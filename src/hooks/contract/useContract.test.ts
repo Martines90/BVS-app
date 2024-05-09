@@ -91,6 +91,7 @@ const mockContract = {
     }
     return Promise.resolve(MOCK_NON_EXISTING_ADDRESS);
   }),
+  calculateVoteScore: jest.fn(() => Promise.resolve(BigInt(133))),
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   getPoliticalActorsSize: jest.fn(() => Promise.resolve(BigInt(3))),
@@ -103,6 +104,7 @@ const mockContract = {
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
   votings: jest.fn(() => mockVoting),
   votingKeys: jest.fn(() => mockVotingKeyHash),
+  VOTING_DURATION: jest.fn(() => Promise.resolve(14 * TimeQuantities.DAY)),
   VOTING_CYCLE_INTERVAL: jest.fn(() => Promise.resolve(3)),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
     BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
@@ -401,6 +403,18 @@ describe('useContract', () => {
   });
 
   describe('getters', () => {
+    describe('getAccountVotingScore', () => {
+      it('should call calculateVoteScore and return account voting related score', async () => {
+        const { getAccountVotingScore } = useContract();
+
+        expect(await getAccountVotingScore(mockVotingKeyHash, mockAccountKey)).toBe(133);
+        expect(mockContract.calculateVoteScore).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockAccountKey
+        );
+      });
+    });
+
     describe('getAdministratorAtIndex', () => {
       it('should call admins and return public key', async () => {
         const { getAdministratorAtIndex } = useContract();
@@ -545,6 +559,15 @@ describe('useContract', () => {
 
         expect(await getPoliticalActorVotingCycleVoteStartCount(mockAccountKey, 2)).toBe(3);
         expect(mockContract.votingCycleStartVoteCount).toHaveBeenCalledWith(2, mockAccountKey);
+      });
+    });
+
+    describe('getVotingDuration', () => {
+      it('should call VOTING_DURATION and return a number', async () => {
+        const { getVotingDuration } = useContract();
+
+        expect(await getVotingDuration()).toBe(14 * TimeQuantities.DAY * 1000);
+        expect(mockContract.VOTING_DURATION).toHaveBeenCalled();
       });
     });
 

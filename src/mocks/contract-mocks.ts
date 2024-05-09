@@ -93,6 +93,7 @@ export const MOCK_VOTINGS = {
 };
 
 export const mockContractFunctions = {
+  getAccountVotingScore: jest.fn(() => Promise.resolve(0)),
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
@@ -128,6 +129,7 @@ export const mockContractFunctions = {
     jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
   getVotedOnCandidatePublicKey: jest.fn(() => Promise.resolve(MOCK_NON_EXISTING_ADDRESS)),
   getVotingAtKey: jest.fn((key: BytesLike) => Promise.resolve(MOCK_VOTINGS[key as string])),
+  getVotingDuration: jest.fn(() => Promise.resolve(14 * TimeQuantities.DAY * 1000)),
   getVotingKeyAtIndex: jest.fn((index: number) => Promise.resolve(MOCK_VOTING_KEY_HASHES[index])),
   isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),
