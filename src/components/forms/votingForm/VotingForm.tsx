@@ -9,6 +9,7 @@ import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
   Alert, Button, Stack,
+  TextField,
   Typography
 } from '@mui/material';
 import { Form, Formik } from 'formik';
@@ -43,12 +44,16 @@ const VotingForm = () => {
   const { getVotingAtKey, getAccountVotingScore, getVotingDuration } = useContract();
   // calculateVoteScore
 
+  const [votingKey, setVoatingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
+  const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
   const [votingInfo, setVotingInfo] = useState<VotingInfo>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const votingKey = hash.split('?voting_key=')[1];
-
   const now = getNow();
+
+  const loadVoting = () => {
+    setVoatingKey(votingKeyFieldVal);
+  };
 
   useEffect(() => {
     const loadVotingInfo = async () => {
@@ -83,16 +88,6 @@ const VotingForm = () => {
     return <CommunicationWithContractIsInProgressLoader />;
   }
 
-  if (votingInfo?.key === '') {
-    return (
-      <FormContainer>
-        <Alert severity="info">
-          There is no existing voting under this Key: {votingKey}.
-        </Alert>
-      </FormContainer>
-    );
-  }
-
   const canVote = votingInfo?.active && votingInfo?.approved;
 
   return (
@@ -108,7 +103,29 @@ const VotingForm = () => {
           {() => (
             <Form>
               <Stack spacing={2}>
-                <LabelText label="Key:" text={votingKey} />
+                <Stack direction="row" spacing={2}>
+                  <Typography sx={{
+                    fontWeight: 'bold',
+                    lineHeight: '50px',
+                    display: 'table-cell'
+                  }}
+                  >Key:
+                  </Typography>
+                  <TextField
+                    name="voting-key"
+                    fullWidth
+                    value={votingKeyFieldVal}
+                    onChange={
+                          (e) => { setVotingKeyFieldVal(e.target.value); }
+                        }
+                  />
+                  <Button sx={{ width: '200px' }} variant="contained" onClick={() => loadVoting()}>LOAD VOTING</Button>
+                </Stack>
+                {votingInfo?.key === '' && (
+                  <Alert severity="info">
+                    There is no existing voting under this key.
+                  </Alert>
+                )}
                 {votingInfo && (
                 <Stack spacing={2}>
                   <Stack direction="row" spacing={10}>

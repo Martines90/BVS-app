@@ -1,8 +1,8 @@
 import { TimeQuantities } from '@global/constants/general';
 import * as dateHelpers from '@global/helpers/date';
-import { formatDateTime } from '@global/helpers/date';
 import { MOCK_FUTURE_TIMESTAMP } from '@mocks/common-mocks';
 import { MOCK_VOTINGS, MOCK_VOTING_KEY_HASHES, mockContractFunctions } from '@mocks/contract-mocks';
+import userEvent from '@testing-library/user-event';
 import {
   act, mockedUseLocation, render, screen
 } from 'test-utils';
@@ -25,6 +25,7 @@ jest.mock('@hooks/contract/useContract', () => ({
 }));
 
 describe('VotingViewPage', () => {
+  let container: any;
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -43,15 +44,18 @@ describe('VotingViewPage', () => {
     mockContractFunctions.getAccountVotingScore.mockReturnValueOnce(Promise.resolve(1533));
 
     await act(async () => {
-      render(<VotingViewPage />);
+      ({ container } = render(<VotingViewPage />));
     });
 
     const voting = MOCK_VOTINGS[MOCK_VOTING_KEY_HASHES[0]];
 
+    expect(screen.queryByText('There is no existing voting under this key.')).not.toBeInTheDocument();
+
     expect(screen.queryByText('Voting')).toBeInTheDocument();
 
     expect(screen.queryByText('Key:')).toBeInTheDocument();
-    expect(screen.queryByText(voting.key)).toBeInTheDocument();
+    expect(container.querySelector(`input[value="${voting.key}"]`)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'LOAD VOTING' })).toBeEnabled();
 
     expect(screen.queryByText('Start date:')).toBeInTheDocument();
     expect(screen.queryByText('14/04/2050')).toBeInTheDocument();
@@ -77,5 +81,31 @@ describe('VotingViewPage', () => {
 
     expect(screen.queryByRole('button', { name: 'YES' })).toBeEnabled();
     expect(screen.queryByRole('button', { name: 'NO' })).toBeEnabled();
+
+    // type new voting key and load new voting info
+
+    const votingKeyInputField = container.querySelector('input[name="voting-key"]');
+    const loadVoting = screen.getByRole('button', { name: 'LOAD VOTING' });
+
+    await userEvent.clear(votingKeyInputField);
+    await userEvent.type(votingKeyInputField, MOCK_VOTING_KEY_HASHES[1]);
+
+    await userEvent.click(loadVoting);
+
+    expect(screen.queryByText('07/04/2050')).toBeInTheDocument();
+
+    expect(screen.queryAllByText('no').length).toBe(1);
+    expect(screen.queryAllByText('yes').length).toBe(1);
+    expect(screen.queryByText('333')).toBeInTheDocument();
+    expect(screen.queryByText('45')).toBeInTheDocument();
+
+    // Try load non existing voting
+
+    await userEvent.clear(votingKeyInputField);
+    await userEvent.type(votingKeyInputField, 'dfkljsdfklédfsjskdélf');
+
+    await userEvent.click(loadVoting);
+
+    expect(screen.queryByText('There is no existing voting under this key.')).toBeInTheDocument();
   });
 });
