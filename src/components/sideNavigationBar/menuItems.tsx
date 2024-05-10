@@ -9,7 +9,7 @@ import { MenuItem } from './types';
 const menuItems: MenuItem[] = [
   {
     icon: <ThumbsUpDownIcon />,
-    label: 'Approval pool',
+    label: 'Approvals',
     route: '',
     modes: [USER_MODES.ADMINISTRATOR],
     subMenuItems: [
@@ -24,13 +24,8 @@ const menuItems: MenuItem[] = [
         modes: []
       },
       {
-        label: 'Articles',
-        route: 'approvals#article',
-        modes: []
-      },
-      {
-        label: 'Article responses',
-        route: 'approvals#article_response',
+        label: 'Approve voting',
+        route: 'approvals#voting_approval',
         modes: []
       }
     ]

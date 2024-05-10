@@ -1,5 +1,4 @@
 import ToggleList from '@components/ToggleList/ToggleList';
-import LabelText from '@components/general/LabelText/LabelText';
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
 import PdfViewer from '@components/pdfViewer/PdfViewer';
@@ -12,35 +11,59 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
-import ContentCheckQuizForm from '../contentCheckQuizForm/ContentCheckQuizForm';
 
+import Label from '@components/general/Label/Label';
 import LabelComponent from '@components/general/LabelComponent/LabelComponent';
+import LabelText from '@components/general/LabelText/LabelText';
+import SubTitle from '@components/general/SubTitle/SubTitle';
 import YesNoText from '@components/general/YesNoText/YesNoText';
+import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import ArticleIcon from '@mui/icons-material/Article';
-import QuizIcon from '@mui/icons-material/Quiz';
+import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
+import QuizQuestionEditor from './components/QuizQuestionsEditor';
 
 type VotingInfo = {
   key?: string;
-  startDate?: string;
+  deadlineTillApproveDate?: string;
   contentIpfsHash?: string;
   approved?: boolean;
-  relatedVotingScore?: number;
-  active?: boolean;
-  numberOfVotes?: number;
-  voteOnAScore?: number;
-  voteOnBScore?: number;
 };
 
-const VotingForm = () => {
+type InitialValues = {
+  contentIpfsHash: string
+};
+
+const formInitialValues: InitialValues = {
+  contentIpfsHash: ''
+};
+
+/*
+ function assignQuizIpfsHashToVoting(
+        bytes32 _votingKey,
+        string memory _quizIpfsHash
+    ) public onlyRole(ADMINISTRATOR) votingExists(_votingKey) {
+        votings[_votingKey].votingContentCheckQuizIpfsHash = _quizIpfsHash;
+    }
+
+    function addKeccak256HashedAnswersToVotingContent(
+        bytes32 _votingKey,
+        bytes32[] memory _keccak256HashedAnswers
+    )
+
+*/
+
+const ApproveVotingForm = () => {
   const { hash } = useLocation();
-  const { userState } = useUserContext();
-  const { getVotingAtKey, getAccountVotingScore, getVotingDuration } = useContract();
+  const { getVotingAtKey } = useContract();
+  const [answers, setAnswers] = useState<string[]>([]);
+
+  const [fileInfo, setFileInfo] = useState<FileInfo>({});
 
   const [votingKey, setVoatingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
@@ -57,25 +80,12 @@ const VotingForm = () => {
     const loadVotingInfo = async () => {
       if (votingKey) {
         const voting = await asyncErrWrapper(getVotingAtKey)(votingKey);
-        const accountVotingScore = await asyncErrWrapper(getAccountVotingScore)(
-          voting?.key || '',
-          userState.walletAddress || ''
-        );
-        const votingDuration = await asyncErrWrapper(getVotingDuration)() || 0;
-
-        const isVotingActive = now > (
-          voting?.startDate || 0) && now < (voting?.startDate || 0) + votingDuration;
 
         setVotingInfo({
           key: (voting?.key || '') as string,
-          startDate: formatDateTime(voting?.startDate) || '',
+          deadlineTillApproveDate: formatDateTime(voting?.startDate) || '',
           contentIpfsHash: voting?.contentIpfsHash || '',
-          approved: !!voting?.approved,
-          relatedVotingScore: accountVotingScore || 0,
-          active: isVotingActive,
-          numberOfVotes: voting?.voteCount || 0,
-          voteOnAScore: voting?.voteOnAScore || 0,
-          voteOnBScore: voting?.voteOnBScore || 0
+          approved: !!voting?.approved
         });
       } else {
         setVotingInfo({});
@@ -90,29 +100,25 @@ const VotingForm = () => {
     return <CommunicationWithContractIsInProgressLoader />;
   }
 
-  const canVote = votingInfo?.active && votingInfo?.approved;
+  const canApprove = !votingInfo?.approved;
 
   return (
     <FormContainer css={{ maxWidth: 1000, width: 1000 }}>
-      <FormTitle>Voting</FormTitle>
+      <FormTitle>Approve voting</FormTitle>
       <LoadContent condition={!votingInfo}>
         <Formik
-          initialValues={{}}
+          initialValues={formInitialValues}
           onSubmit={(values, { setSubmitting }) => {
 
           }}
         >
-          {() => (
+          {({
+            setFieldValue, values, errors, touched, handleChange
+          }) => (
             <Form>
               <Stack spacing={2}>
                 <Stack direction="row" spacing={2}>
-                  <Typography sx={{
-                    fontWeight: 'bold',
-                    lineHeight: '50px',
-                    display: 'table-cell'
-                  }}
-                  >Key:
-                  </Typography>
+                  <Label text="Key:" />
                   <TextField
                     name="voting-key"
                     fullWidth
@@ -124,43 +130,52 @@ const VotingForm = () => {
                   <Button sx={{ width: '200px' }} variant="contained" onClick={() => loadVoting()}>LOAD VOTING</Button>
                 </Stack>
                 {votingInfo?.key === '' && (
-                  <Alert severity="info">
-                    There is no existing voting under this key.
-                  </Alert>
+                <Alert severity="info">
+                  There is no existing voting under this key.
+                </Alert>
                 )}
                 {votingInfo && (
                 <Stack spacing={2}>
-                  <Stack direction="row" spacing={10}>
-                    <Stack>
-                      <LabelText label="Start date:" text={votingInfo.startDate} />
-                      <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
-                      <LabelComponent label="Active:" component={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
-                    </Stack>
-                    <Stack>
-                      <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />
-                      <LabelText label='Score on "Yes":' text={votingInfo.voteOnAScore} />
-                      <LabelText label='Score on "No":' text={votingInfo.voteOnBScore} />
-                    </Stack>
-                  </Stack>
-                  <LabelText label="Your voting score:" text={votingInfo.relatedVotingScore} />
+                  <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
+                  <LabelText label="Approve deadline:" text={votingInfo.deadlineTillApproveDate} />
                   <ToggleList
                     listItemComponents={[
                       {
                         labelText: 'Voting content description',
                         component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${votingInfo.contentIpfsHash}`} />,
                         icon: <ArticleIcon />
-                      },
-                      {
-                        labelText: 'Voting content check quiz',
-                        component: <ContentCheckQuizForm />,
-                        icon: <QuizIcon />
                       }
                     ]}
                   />
-
-                  <Stack direction="row" spacing={2}>
-                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">YES</Button>
-                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">NO</Button>
+                  <SubTitle text="Assign IPFS Quiz hash" />
+                  <IpfsFileUpload
+                    fileInfo={fileInfo}
+                    setFileInfo={setFileInfo}
+                    setFieldValue={setFieldValue}
+                  />
+                  <Field
+                    as={TextField}
+                    name="contentIpfsHash"
+                    label="Content ipfs hash reference"
+                    fullWidth
+                    error={touched.contentIpfsHash && !!errors.contentIpfsHash}
+                    helperText={touched.contentIpfsHash && errors.contentIpfsHash}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleChange(e);
+                      setFieldValue('contentIpfsHash', e.target.value);
+                    }}
+                  />
+                  <Stack spacing={2} direction="row">
+                    <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || ''} />
+                    <Button color="info" disabled={!values.contentIpfsHash} variant="contained">ASSIGN IPFS HASH TO VOTING</Button>
+                  </Stack>
+                  <SubTitle text="Assign answers" />
+                  <QuizQuestionEditor answers={answers} setAnswers={setAnswers} />
+                  <Stack spacing={2} direction="row">
+                    <Button color="info" disabled={!answers.length} variant="contained">ASSIGN ANSWERS TO VOTING</Button>
+                  </Stack>
+                  <Stack>
+                    <Button color="success" disabled={!canApprove} variant="contained">APPROVE</Button>
                   </Stack>
                 </Stack>
                 )}
@@ -173,4 +188,4 @@ const VotingForm = () => {
   );
 };
 
-export default VotingForm;
+export default ApproveVotingForm;

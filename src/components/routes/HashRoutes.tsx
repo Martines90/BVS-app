@@ -21,7 +21,11 @@ const AdministratorsPage = lazy(
 
 // approvals
 const ApproveCitizenshipApplicationPage = lazy(
-  () => import('@pages/approvals/ApproveCitizenshipApplicationPage')
+  () => import('@pages/approvals/approve-citizenship-application/ApproveCitizenshipApplicationPage')
+);
+
+const ApproveVotingPage = lazy(
+  () => import('@pages/approvals/approve-voting/ApproveVotingPage')
 );
 
 // votings
@@ -79,6 +83,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   // approvals
   if (hash.includes('#citizenship_approval')) {
     return <ApproveCitizenshipApplicationPage />;
+  }
+
+  if (hash.includes('#voting_approval')) {
+    return <ApproveVotingPage />;
   }
 
   // votings
