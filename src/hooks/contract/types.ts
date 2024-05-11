@@ -20,6 +20,9 @@ export type Voting = {
 
 export interface ContractInteractionProps {
   contract: Contract & BVS_Voting | undefined;
+  addAnswersToVotingContent(votingKey: BytesLike, answers: BytesLike[]): Promise<void>;
+  approveVoting(votingKey: BytesLike): Promise<void>;
+  assignQuizIpfsHashToVoting(votingKey: BytesLike, quizIpfsHash: string): Promise<void>;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
     applicationFee: number): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
@@ -38,6 +41,7 @@ export interface ContractInteractionProps {
   voteOnElectionsCandidate(candidatePublicKey: AddressLike): Promise<void>;
   getAccountVotingScore(votingKey: BytesLike, accountAddress: AddressLike): Promise<number>;
   getAdministratorAtIndex(index: number): Promise<AddressLike>;
+  getApproveVotingMinTimeAfterLimit(): Promise<number>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getCitizenAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateApplicationFee(): Promise<number>;
@@ -47,11 +51,13 @@ export interface ContractInteractionProps {
   getElectionsStartDate(): Promise<number>;
   getElectionsEndDate(): Promise<number>;
   getFirstVotingCycleStartDate(): Promise<number>;
+  getMinTotalQuizCheckAnswers(): Promise<number>;
   getNumberOfAdministrators(): Promise<number>;
   getNumberOfCitizens(): Promise<number>;
   getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
   getNumberOfVotings(): Promise<number>;
+  getVotingContentReadCheckAnswersLength(votingKey: BytesLike): Promise<number>;
   getVotingDuration(): Promise<number>;
   getVotingAtKey(votingKey: BytesLike): Promise<Voting>;
   getVotingCycleMinCloseToTheEndTime(): Promise<number>;

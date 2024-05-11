@@ -22,17 +22,23 @@ import LabelText from '@components/general/LabelText/LabelText';
 import SubTitle from '@components/general/SubTitle/SubTitle';
 import YesNoText from '@components/general/YesNoText/YesNoText';
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
-import { toBytes32ToKeccak256 } from '@global/helpers/hash-manipulation';
+import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { Voting } from '@hooks/contract/types';
 import ArticleIcon from '@mui/icons-material/Article';
 import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
 import QuizQuestionEditor from './components/QuizQuestionsEditor';
 
 type VotingInfo = {
+  oVoting?: Voting;
   key?: string;
   startDate?: string;
   contentIpfsHash?: string;
+  contentCheckQuizIpfsHash?: string;
   approved?: boolean;
   canApprove?: boolean;
+  numOfAssignedAnswers?: number;
+  minTotalCheckQuizAnswers?: number;
+  approveMaxTimeBeforeVotingStarts?: number;
 };
 
 type InitialValues = {
@@ -43,31 +49,15 @@ const formInitialValues: InitialValues = {
   contentIpfsHash: ''
 };
 
-/*
-keccak256(bytes(_answers[i]))
-
-MIN_TOTAL_CONTENT_READ_CHECK_ANSWER
-
- function assignQuizIpfsHashToVoting(
-        bytes32 _votingKey,
-        string memory _quizIpfsHash
-    ) public onlyRole(ADMINISTRATOR) votingExists(_votingKey) {
-        votings[_votingKey].votingContentCheckQuizIpfsHash = _quizIpfsHash;
-    }
-
-    function addKeccak256HashedAnswersToVotingContent(
-        bytes32 _votingKey,
-        bytes32[] memory _keccak256HashedAnswers
-    )
-
-*/
-
 const ApproveVotingForm = () => {
   const { hash } = useLocation();
   const {
     getVotingAtKey,
     addAnswersToVotingContent,
+    approveVoting,
     assignQuizIpfsHashToVoting,
+    getApproveVotingMinTimeAfterLimit,
+    getVotingContentReadCheckAnswersLength,
     getMinTotalQuizCheckAnswers
   } = useContract();
   const [answers, setAnswers] = useState<string[]>([]);
@@ -90,14 +80,32 @@ const ApproveVotingForm = () => {
     const loadVotingInfo = async () => {
       if (votingKey) {
         const voting = await asyncErrWrapper(getVotingAtKey)(votingKey);
+        const _minTotalCheckQuizAnswers = await asyncErrWrapper(getMinTotalQuizCheckAnswers)();
+        const _numOfAssignedAnswers = await asyncErrWrapper(
+          getVotingContentReadCheckAnswersLength
+        )(votingKey);
+        const _approveMaxTimeBeforeVotingStarts = Number(await asyncErrWrapper(
+          getApproveVotingMinTimeAfterLimit
+        )());
 
         setVotingInfo({
+          oVoting: voting,
           key: (voting?.key || '') as string,
           startDate: formatDateTimeToTime(voting?.startDate) || '',
           contentIpfsHash: voting?.contentIpfsHash || '',
           approved: !!voting?.approved,
-          canApprove: !voting?.approved && now < (voting?.startDate || 0)
+          canApprove:
+          Number(voting?.startDate) - _approveMaxTimeBeforeVotingStarts < now
+          && now < Number(voting?.startDate),
+          minTotalCheckQuizAnswers: _minTotalCheckQuizAnswers,
+          numOfAssignedAnswers: (_numOfAssignedAnswers || 0),
+          contentCheckQuizIpfsHash: (voting?.votingContentCheckQuizIpfsHash || ''),
+          approveMaxTimeBeforeVotingStarts: _approveMaxTimeBeforeVotingStarts
         });
+
+        if (voting?.votingContentCheckQuizIpfsHash) {
+          setContentIpfsHashInput(voting?.votingContentCheckQuizIpfsHash);
+        }
       } else {
         setVotingInfo({});
       }
@@ -112,16 +120,39 @@ const ApproveVotingForm = () => {
   }
 
   const assignIpfsContentCheckToVoting = async () => {
-    await asyncErrWrapper(assignQuizIpfsHashToVoting)(votingInfo?.key, contentIpfsHashInput);
-    setVotingInfo({
-      ...votingInfo,
-      contentIpfsHash: contentIpfsHashInput
-    });
+    if (votingInfo?.key && contentIpfsHashInput) {
+      await asyncErrWrapper(assignQuizIpfsHashToVoting)(votingInfo?.key, contentIpfsHashInput);
+      setVotingInfo({
+        ...votingInfo,
+        contentCheckQuizIpfsHash: contentIpfsHashInput
+      });
+    }
   };
 
   const assignAnswersToVoting = async () => {
-    const hashAnswers = answers.map((answer) => toBytes32ToKeccak256(answer));
-    await asyncErrWrapper(addAnswersToVotingContent)(votingInfo?.key, hashAnswers);
+    const hashAnswers = answers.map((answer) => toKeccak256HashToBytes32(answer));
+    if (votingInfo?.key && hashAnswers.length >= (votingInfo?.minTotalCheckQuizAnswers || 1)) {
+      await asyncErrWrapper(addAnswersToVotingContent)(votingInfo?.key, hashAnswers);
+      setVotingInfo({
+        ...votingInfo,
+        numOfAssignedAnswers: hashAnswers.length
+      });
+    }
+  };
+
+  const approveVotingAction = async () => {
+    if (
+      !votingInfo?.approved
+      && votingInfo?.key
+      && votingInfo?.contentCheckQuizIpfsHash
+      && Number(votingInfo?.numOfAssignedAnswers) >= Number(votingInfo?.minTotalCheckQuizAnswers)
+    ) {
+      await asyncErrWrapper(approveVoting)(votingInfo?.key);
+      setVotingInfo({
+        ...votingInfo,
+        approved: true
+      });
+    }
   };
 
   return (
@@ -156,7 +187,7 @@ const ApproveVotingForm = () => {
                   There is no existing voting under this key.
                 </Alert>
                 )}
-                {votingInfo?.canApprove && (
+                {votingInfo?.key && (
                 <Stack spacing={2}>
                   <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
                   <LabelText label="Approve deadline:" text={votingInfo.startDate} />
@@ -170,15 +201,20 @@ const ApproveVotingForm = () => {
                     ]}
                   />
                   <SubTitle text="Assign IPFS Quiz hash" />
+                  {!votingInfo?.contentCheckQuizIpfsHash && (
                   <IpfsFileUpload
                     fileInfo={fileInfo}
                     setFileInfo={setFileInfo}
                     setFieldValue={setFieldValue}
+                    setInputFieldValue={setContentIpfsHashInput}
                   />
+                  )}
                   <Field
                     as={TextField}
                     name="contentIpfsHash"
                     label="Content ipfs hash reference"
+                    value={contentIpfsHashInput}
+                    disabled={!!votingInfo?.contentCheckQuizIpfsHash}
                     fullWidth
                     error={touched.contentIpfsHash && !!errors.contentIpfsHash}
                     helperText={touched.contentIpfsHash && errors.contentIpfsHash}
@@ -189,19 +225,51 @@ const ApproveVotingForm = () => {
                     }}
                   />
                   <Stack spacing={2} direction="row">
-                    <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || ''} />
+                    <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || votingInfo?.contentCheckQuizIpfsHash || ''} />
                     <Button color="info" disabled={!values.contentIpfsHash} onClick={assignIpfsContentCheckToVoting} variant="contained">ASSIGN IPFS HASH TO VOTING</Button>
                   </Stack>
                   <SubTitle text="Assign answers" />
-                  <QuizQuestionEditor answers={answers} setAnswers={setAnswers} />
-                  <Stack spacing={2}>
-                    {!votingInfo?.contentIpfsHash && <Alert security="info">IPFS content check quiz has to be assigned before</Alert>}
-                    <Button color="info" onClick={assignAnswersToVoting} disabled={!answers.length || !votingInfo?.contentIpfsHash} variant="contained">
-                      ASSIGN ANSWERS TO VOTING
-                    </Button>
-                  </Stack>
+                  {votingInfo?.contentCheckQuizIpfsHash && !votingInfo?.numOfAssignedAnswers
+                    && (
+                      <Stack spacing={2}>
+                        <QuizQuestionEditor
+                          answers={answers}
+                          setAnswers={setAnswers}
+                          minAnswersRequired={Number(votingInfo?.minTotalCheckQuizAnswers)}
+                        />
+                        <Button color="info" onClick={assignAnswersToVoting} disabled={answers.length < (votingInfo.minTotalCheckQuizAnswers || 50)} variant="contained">
+                          ASSIGN ANSWERS TO VOTING
+                        </Button>
+                      </Stack>
+                    )}
+                  {votingInfo?.contentCheckQuizIpfsHash && votingInfo?.numOfAssignedAnswers
+                    && (
+                      <LabelText label="Number of assigned answers:" text={votingInfo?.numOfAssignedAnswers} />
+                    )}
+                  {!votingInfo?.contentCheckQuizIpfsHash && <Alert severity="info">IPFS content check quiz hash has to be assigned before</Alert>}
+                  {!votingInfo?.canApprove && (
+                    <Stack>
+                      <Alert severity="info">Voting can be approved between:
+                        {`${formatDateTimeToTime(Number(votingInfo.oVoting?.startDate) - Number(votingInfo.approveMaxTimeBeforeVotingStarts))}`} and
+                        {`${formatDateTimeToTime(Number(votingInfo.oVoting?.startDate))}`}
+                      </Alert>
+                    </Stack>
+                  )}
                   <Stack>
-                    <Button color="success" variant="contained">APPROVE</Button>
+                    <Button
+                      disabled={
+                        !votingInfo?.canApprove
+                        || votingInfo?.approved
+                        || !votingInfo?.contentCheckQuizIpfsHash
+                        || Number(votingInfo?.minTotalCheckQuizAnswers)
+                        > Number(votingInfo?.numOfAssignedAnswers)
+                      }
+                      onClick={approveVotingAction}
+                      color="success"
+                      variant="contained"
+                    >
+                      APPROVE
+                    </Button>
                   </Stack>
                 </Stack>
                 )}

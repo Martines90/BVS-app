@@ -52,22 +52,27 @@ npm install -g truffle
 
 Add time amount (in seconds)
 
-Run truffle console: ```truffle console```
+- Run truffle console: ```truffle console```
 
-To get last block number, run: ```blockNum = await web3.eth.getBlockNumber()```
-To get last block, run: ```block = await web3.eth.getBlock(blockNum)```
-To get latest block timestamp value, run: ```block.timestamp```
+- Get last block number, run: ```blockNum = await web3.eth.getBlockNumber()```
+- Get last block, run: ```block = await web3.eth.getBlock(blockNum)```
+- Get latest block timestamp value, run: ```block.timestamp```
 
-Run: ```new Promise((resolve, reject) => {web3.currentProvider.send({jsonrpc: '2.0', method: 'evm_increaseTime', params: [86400], id: new Date().getTime()}, (error, result) => {return resolve(result);})});```
+- Add time: ```new Promise((resolve, reject) => {web3.currentProvider.send({jsonrpc: '2.0', method: 'evm_increaseTime', params: [86400], id: new Date().getTime()}, (error, result) => {return resolve(result);})});```
 
-Mine new block (this updates block.timestamp)
-Run: ```new Promise((resolve, reject) => {web3.currentProvider.send({jsonrpc: '2.0', method: 'evm_mine', id: new Date().getTime()}, (err, result) => {const newBlockHash = web3.eth.getBlock('latest').hash; return resolve(newBlockHash);})})```
+- Mine new block (this updates block.timestamp):
+```new Promise((resolve, reject) => {web3.currentProvider.send({jsonrpc: '2.0', method: 'evm_mine', id: new Date().getTime()}, (err, result) => {const newBlockHash = web3.eth.getBlock('latest').hash; return resolve(newBlockHash);})})```
 
 To check latest block timestamp:
 
-Run: blockNum = await web3.eth.getBlockNumber()
-Run: block = await web3.eth.getBlock(blockNum)
-Run: block.timestamp
+- Run: ```blockNum = await web3.eth.getBlockNumber()```
+- Run: ```block = await web3.eth.getBlock(blockNum)```
+- Run: ```block.timestamp```
+
+Interact with contract:
+
+- Get contract instance: ```let instance = await BVS_Voting.deployed()```
+- Get accounts: let accounts = await web3.eth.getAccounts()
 
 in browser you can "change" system time using a cookie variable
 

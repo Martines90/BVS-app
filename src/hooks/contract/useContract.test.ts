@@ -57,8 +57,12 @@ const mockVoting: ContractVoting = [
 
 const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
+  addKeccak256HashedAnswersToVotingContent: jest.fn(() => Promise.resolve()),
+  approveVoting: jest.fn(() => Promise.resolve()),
+  assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElections: jest.fn(() => Promise.resolve()),
+  APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3)),
   closeElections: jest.fn(() => Promise.resolve()),
   citizens: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   admins: jest.fn((index) => Promise.resolve(mockCitizens[index])),
@@ -81,7 +85,9 @@ const mockContract = {
   firstVotingCycleStartDate: jest.fn(() => Promise.resolve(mockFutureTimestamp)),
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
+  MIN_TOTAL_CONTENT_READ_CHECK_ANSWER: jest.fn(() => Promise.resolve(50)),
   getAdminsSize: jest.fn(() => Promise.resolve(1)),
+  getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   getVotingKeysLength: jest.fn(() => Promise.resolve(10)),
@@ -103,6 +109,7 @@ const mockContract = {
   voteOnElections: jest.fn(() => Promise.resolve()),
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
   votings: jest.fn(() => mockVoting),
+  votingContentReadCheckAnswers: jest.fn(() => 50),
   votingKeys: jest.fn(() => mockVotingKeyHash),
   VOTING_DURATION: jest.fn(() => Promise.resolve(14 * TimeQuantities.DAY)),
   VOTING_CYCLE_INTERVAL: jest.fn(() => Promise.resolve(3)),
@@ -229,6 +236,33 @@ describe('useContract', () => {
   });
 
   describe('votings', () => {
+    describe('approveVoting', () => {
+      it('should call approveVoting contract function', async () => {
+        const { approveVoting } = useContract();
+
+        await approveVoting(mockVotingKeyHash);
+        expect(mockContract.approveVoting).toHaveBeenCalledWith(mockVotingKeyHash);
+      });
+    });
+
+    describe('addAnswersToVotingContent', () => {
+      it('should call addKeccak256HashedAnswersToVotingContent contract function', async () => {
+        const { addAnswersToVotingContent } = useContract();
+
+        await addAnswersToVotingContent(mockVotingKeyHash, ['answer-1-hash', 'answer-2-hash']);
+        expect(mockContract.addKeccak256HashedAnswersToVotingContent).toHaveBeenCalledWith(mockVotingKeyHash, ['answer-1-hash', 'answer-2-hash']);
+      });
+    });
+
+    describe('assignQuizIpfsHashToVoting', () => {
+      it('should call assignQuizIpfsHashToVoting contract function', async () => {
+        const { assignQuizIpfsHashToVoting } = useContract();
+
+        await assignQuizIpfsHashToVoting(mockVotingKeyHash, 'test-ipfs-hash');
+        expect(mockContract.assignQuizIpfsHashToVoting).toHaveBeenCalledWith(mockVotingKeyHash, 'test-ipfs-hash');
+      });
+    });
+
     describe('setFirstVotingCycleStartDate', () => {
       it('should call setFirstVotingCycleStartDate contract function', async () => {
         const { setFirstVotingCycleStartDate } = useContract();
@@ -424,6 +458,15 @@ describe('useContract', () => {
       });
     });
 
+    describe('getApproveVotingMinTimeAfterLimit', () => {
+      it('should call APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT and return a number', async () => {
+        const { getApproveVotingMinTimeAfterLimit } = useContract();
+
+        expect(await getApproveVotingMinTimeAfterLimit()).toBe(TimeQuantities.DAY * 3 * 1000);
+        expect(mockContract.APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT).toHaveBeenCalled();
+      });
+    });
+
     describe('getCitizenAtIndex', () => {
       it('should call citizens and return public key', async () => {
         const { getCitizenAtIndex } = useContract();
@@ -485,6 +528,15 @@ describe('useContract', () => {
 
         expect(await getElectionsEndDate()).toBe(mockFutureTimestamp * 1000);
         expect(mockContract.electionsEndDate).toHaveBeenCalled();
+      });
+    });
+
+    describe('getMinTotalQuizCheckAnswers', () => {
+      it('should call MIN_TOTAL_CONTENT_READ_CHECK_ANSWER and return a number', async () => {
+        const { getMinTotalQuizCheckAnswers } = useContract();
+
+        expect(await getMinTotalQuizCheckAnswers()).toBe(50);
+        expect(mockContract.MIN_TOTAL_CONTENT_READ_CHECK_ANSWER).toHaveBeenCalled();
       });
     });
 
@@ -559,6 +611,16 @@ describe('useContract', () => {
 
         expect(await getPoliticalActorVotingCycleVoteStartCount(mockAccountKey, 2)).toBe(3);
         expect(mockContract.votingCycleStartVoteCount).toHaveBeenCalledWith(2, mockAccountKey);
+      });
+    });
+
+    describe('getVotingContentReadCheckAnswersLength', () => {
+      // FIXME: votingContentReadCheckAnswers has to be getVotingContentReadCheckAnswersLength
+      it('should call votingContentReadCheckAnswers and return a number', async () => {
+        const { getVotingContentReadCheckAnswersLength } = useContract();
+
+        expect(await getVotingContentReadCheckAnswersLength(mockVotingKeyHash)).toBe(50);
+        expect(mockContract.votingContentReadCheckAnswers).toHaveBeenCalled();
       });
     });
 

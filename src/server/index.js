@@ -17,7 +17,8 @@ const cors = require('cors');
 const app = express();
 
 const FormData = require('form-data');
-const { DEFAULT_API_PORT } = require('../global/constants/general');
+
+const DEFAULT_API_PORT = 3333;
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {

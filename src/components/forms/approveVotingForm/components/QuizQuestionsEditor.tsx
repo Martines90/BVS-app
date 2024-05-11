@@ -7,21 +7,23 @@ import {
 import { useState } from 'react';
 
 type Props = {
+  minAnswersRequired: number,
   answers: string[],
   setAnswers: React.Dispatch<React.SetStateAction<string[]>>
 };
 
-const QuizQuestionEditor = ({ answers, setAnswers }: Props) => {
+const QuizQuestionEditor = ({ answers, setAnswers, minAnswersRequired }: Props) => {
   const [answer, setAnswer] = useState('');
   const addAnswer = () => {
     setAnswers([
-      ...answers
+      ...answers,
+      answer
     ]);
     setAnswer('');
   };
   return (
     <Stack spacing={2}>
-      <LabelText label="Correct answer count:" text={answers.length} />
+      <LabelText label="Added answers count:" text={`${answers.length} / ${minAnswersRequired}`} />
       <Stack spacing={2}>
         <List>
           {answers.map((_answer, index) => (

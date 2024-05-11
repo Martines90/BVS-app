@@ -58,6 +58,18 @@ const useContract = (): ContractInteractionProps => {
 
   // Votings
 
+  const addAnswersToVotingContent = async (votingKey: BytesLike, answersHash: BytesLike[]) => {
+    await contract?.addKeccak256HashedAnswersToVotingContent(votingKey, answersHash);
+  };
+
+  const approveVoting = async (votingKey: BytesLike) => {
+    await contract?.approveVoting(votingKey);
+  };
+
+  const assignQuizIpfsHashToVoting = async (votingKey: BytesLike, quizIpfsHash: string) => {
+    await contract?.assignQuizIpfsHashToVoting(votingKey, quizIpfsHash);
+  };
+
   const setFirstVotingCycleStartDate = async (date: number) => {
     await contract?.setFirstVotingCycleStartDate(date);
   };
@@ -125,6 +137,10 @@ const useContract = (): ContractInteractionProps => {
     (await contract?.admins(index))
   ) as AddressLike;
 
+  const getApproveVotingMinTimeAfterLimit = async () => Number(
+    await contract?.APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT()
+  ) * 1000;
+
   const getCitizenAtIndex = async (index: number) => (
     (await contract?.citizens(index))
   ) as AddressLike;
@@ -136,6 +152,10 @@ const useContract = (): ContractInteractionProps => {
   const getVotingCycleMinCloseToTheEndTime = async () => Number(
     await contract?.NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME() || 0
   ) * 1000;
+
+  const getMinTotalQuizCheckAnswers = async () => Number(
+    (await contract?.MIN_TOTAL_CONTENT_READ_CHECK_ANSWER()) || 0
+  );
 
   const getNumberOfAdministrators = async () => Number(
     (await contract?.getAdminsSize()) || 0
@@ -171,6 +191,12 @@ const useContract = (): ContractInteractionProps => {
   const getVotingDuration = async () => Number(
     await contract?.VOTING_DURATION() || 0
   ) * 1000;
+
+  // FIXME: build and release a new contract with method: getVotingContentReadCheckAnswersLength
+  const getVotingContentReadCheckAnswersLength = async (votingKey: BytesLike) => (
+    await contract?.votingContentReadCheckAnswers(votingKey, 0) !== '' ? 10 : 0
+    // await contract?.getVotingContentReadCheckAnswersLength(votingKey) || []
+  );
 
   const getVotingCycleInterval = async () => Number(
     await contract?.VOTING_CYCLE_INTERVAL() || 0
@@ -218,7 +244,9 @@ const useContract = (): ContractInteractionProps => {
     contract,
     getAccountVotingScore,
     getAdministratorAtIndex,
+    getApproveVotingMinTimeAfterLimit,
     getCitizenAtIndex,
+    getMinTotalQuizCheckAnswers,
     getNumberOfAdministrators,
     getNumberOfCitizens,
     getNumberOfPoliticalActors,
@@ -239,8 +267,12 @@ const useContract = (): ContractInteractionProps => {
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
     getVotedOnCandidatePublicKey,
+    getVotingContentReadCheckAnswersLength,
     getVotingCycleInterval,
     getVotingKeyAtIndex,
+    addAnswersToVotingContent,
+    approveVoting,
+    assignQuizIpfsHashToVoting,
     applyForCitizenshipRole,
     closeElections,
     grantCitizenRole,

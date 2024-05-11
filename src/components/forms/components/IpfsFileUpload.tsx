@@ -16,9 +16,14 @@ type Props = {
   fileInfo: FileInfo;
   setFileInfo: React.Dispatch<React.SetStateAction<FileInfo>>;
   setFieldValue: any;
+  setInputFieldValue?: any;
 };
 
-const IpfsFileUpload = ({ fileInfo, setFileInfo, setFieldValue }: Props) => {
+const IpfsFileUpload = (
+  {
+    fileInfo, setFileInfo, setFieldValue, setInputFieldValue = undefined
+  }: Props
+) => {
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {
@@ -34,6 +39,7 @@ const IpfsFileUpload = ({ fileInfo, setFileInfo, setFieldValue }: Props) => {
                 name: file.name
               });
               setFieldValue('contentIpfsHash', response.data.ipfsHashKey);
+              if (setInputFieldValue) setInputFieldValue(response.data.ipfsHashKey);
               showSuccessToast(`File (${file.name}) successfully uploaded to ipfs network`);
             } else {
               showErrorToast(`File upload failed with error: ${response.data.err}`);
