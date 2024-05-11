@@ -22,6 +22,7 @@ import LabelText from '@components/general/LabelText/LabelText';
 import SubTitle from '@components/general/SubTitle/SubTitle';
 import YesNoText from '@components/general/YesNoText/YesNoText';
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
+import { showSuccessToast } from '@components/toasts/Toasts';
 import { GWEI_TO_WEI } from '@global/constants/blockchain';
 import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { Voting } from '@hooks/contract/types';
@@ -129,6 +130,7 @@ const ApproveVotingForm = () => {
         ...votingInfo,
         contentCheckQuizIpfsHash: contentIpfsHashInput
       });
+      showSuccessToast('Ipfs content check successfully assigned to voting');
     }
   };
 
@@ -140,6 +142,7 @@ const ApproveVotingForm = () => {
         ...votingInfo,
         numOfAssignedAnswers: hashAnswers.length
       });
+      showSuccessToast('Answers successfully assigned to voting');
     }
   };
 
@@ -155,6 +158,7 @@ const ApproveVotingForm = () => {
         ...votingInfo,
         approved: true
       });
+      showSuccessToast('Voting successfully approved');
     }
   };
 

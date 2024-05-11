@@ -155,6 +155,7 @@ describe('ApproveVotingPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'APPROVE' }));
 
     expect(mockContractFunctions.approveVoting).toHaveBeenCalledWith(voting.key);
+    expect(screen.queryByText('yes')).toBeInTheDocument();
   });
 
   it('should render voting what is cant approve yet (outside of approve date interval)', async () => {
