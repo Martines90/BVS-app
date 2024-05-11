@@ -37,7 +37,7 @@ const QuizQuestionEditor = ({ answers, setAnswers, minAnswersRequired }: Props) 
       <Stack direction="row" spacing={2}>
         <Label text="Next answer:" />
         <TextField value={answer} name="new-answer" sx={{ width: '400px' }} onChange={(e) => { setAnswer(e.target.value); }} />
-        <Button variant="contained" onClick={addAnswer}>Add</Button>
+        <Button variant="contained" onClick={addAnswer}>ADD</Button>
       </Stack>
     </Stack>
   );

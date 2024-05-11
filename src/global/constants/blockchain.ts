@@ -14,3 +14,5 @@ export const BVS_HARDCODED_SETTINGS = {
   newVotingCanStartAfterDays: 10,
   newVotingCantStartAfterDays: 30
 };
+
+export const GWEI_TO_WEI = 1000000000;

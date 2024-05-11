@@ -8,17 +8,6 @@ import {
 } from 'test-utils';
 import VotingViewPage from './VotingViewPage';
 
-jest.mock('react-pdf', () => ({
-  pdfjs: { GlobalWorkerOptions: { workerSrc: 'abc' } },
-  Document: () => (
-    <div>
-      Document
-    </div>
-  ),
-  Outline: null,
-  Page: () => <div>def</div>
-}));
-
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions

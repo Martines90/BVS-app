@@ -18,6 +18,17 @@ jest.mock('react-router-dom', () => ({
   useLocation: mockedUseLocation
 }));
 
+jest.mock('react-pdf', () => ({
+  pdfjs: { GlobalWorkerOptions: { workerSrc: 'abc' } },
+  Document: () => (
+    <div>
+      Document
+    </div>
+  ),
+  Outline: null,
+  Page: () => <div>def</div>
+}));
+
 type ProviderProps = {
   children: React.ReactNode,
   initUserState?: any
@@ -45,3 +56,4 @@ export * from '@testing-library/react';
 export {
   mockedUseLocation, mockedUseNavigate, customRender as render
 };
+

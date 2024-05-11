@@ -22,6 +22,7 @@ import LabelText from '@components/general/LabelText/LabelText';
 import SubTitle from '@components/general/SubTitle/SubTitle';
 import YesNoText from '@components/general/YesNoText/YesNoText';
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
+import { GWEI_TO_WEI } from '@global/constants/blockchain';
 import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { Voting } from '@hooks/contract/types';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -32,6 +33,7 @@ type VotingInfo = {
   oVoting?: Voting;
   key?: string;
   startDate?: string;
+  targetBudgetInGwei?: number;
   contentIpfsHash?: string;
   contentCheckQuizIpfsHash?: string;
   approved?: boolean;
@@ -92,6 +94,7 @@ const ApproveVotingForm = () => {
           oVoting: voting,
           key: (voting?.key || '') as string,
           startDate: formatDateTimeToTime(voting?.startDate) || '',
+          targetBudgetInGwei: Number(voting?.budget) / GWEI_TO_WEI,
           contentIpfsHash: voting?.contentIpfsHash || '',
           approved: !!voting?.approved,
           canApprove:
@@ -191,6 +194,7 @@ const ApproveVotingForm = () => {
                 <Stack spacing={2}>
                   <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
                   <LabelText label="Approve deadline:" text={votingInfo.startDate} />
+                  <LabelText label="Target budget (gwei):" text={votingInfo.targetBudgetInGwei} />
                   <ToggleList
                     listItemComponents={[
                       {

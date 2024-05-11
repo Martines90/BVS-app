@@ -29,19 +29,24 @@ describe('AllVotingsPage', () => {
       const voting = MOCK_VOTINGS[MOCK_VOTING_KEY_HASHES[i]];
       expect(screen.queryByText(formatDateTime(voting.startDate) as string)).toBeInTheDocument();
       expect(screen.queryByText(voting.key)).toBeInTheDocument();
-      expect(screen.queryByText(voting.contentIpfsHash)).toBeInTheDocument();
+      if (voting.contentIpfsHash !== '') {
+        expect(screen.queryByText(voting.contentIpfsHash)).toBeInTheDocument();
+      }
     }
 
-    expect(screen.queryAllByText('no').length).toBe(1);
+    expect(screen.queryAllByText('no').length).toBe(2);
     expect(screen.queryAllByText('yes').length).toBe(2);
 
     await userEvent.click(viewButtons[0]);
-    expect(mockedUseNavigate).toHaveBeenCalledWith(`/votings#voting?voting_key=${MOCK_VOTING_KEY_HASHES[2]}`);
+    expect(mockedUseNavigate).toHaveBeenCalledWith(`/votings#voting?voting_key=${MOCK_VOTING_KEY_HASHES[3]}`);
 
     await userEvent.click(viewButtons[1]);
-    expect(mockedUseNavigate).toHaveBeenCalledWith(`/votings#voting?voting_key=${MOCK_VOTING_KEY_HASHES[1]}`);
+    expect(mockedUseNavigate).toHaveBeenCalledWith(`/votings#voting?voting_key=${MOCK_VOTING_KEY_HASHES[2]}`);
 
     await userEvent.click(viewButtons[2]);
+    expect(mockedUseNavigate).toHaveBeenCalledWith(`/votings#voting?voting_key=${MOCK_VOTING_KEY_HASHES[1]}`);
+
+    await userEvent.click(viewButtons[3]);
     expect(mockedUseNavigate).toHaveBeenCalledWith(`/votings#voting?voting_key=${MOCK_VOTING_KEY_HASHES[0]}`);
   });
 });
