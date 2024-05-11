@@ -3,13 +3,12 @@ import LoadContent from '@components/general/Loaders/LoadContent';
 import { CommunicationWithContractIsInProgressLoader } from '@components/loaders/Loaders';
 import PdfViewer from '@components/pdfViewer/PdfViewer';
 import { IPFS_GATEWAY_URL } from '@global/constants/general';
-import { formatDateTime, getNow } from '@global/helpers/date';
+import { formatDateTimeToTime, getNow } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
   Alert, Button, Stack,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -23,16 +22,17 @@ import LabelText from '@components/general/LabelText/LabelText';
 import SubTitle from '@components/general/SubTitle/SubTitle';
 import YesNoText from '@components/general/YesNoText/YesNoText';
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
-import { useUserContext } from '@hooks/context/userContext/UserContext';
+import { toBytes32ToKeccak256 } from '@global/helpers/hash-manipulation';
 import ArticleIcon from '@mui/icons-material/Article';
 import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
 import QuizQuestionEditor from './components/QuizQuestionsEditor';
 
 type VotingInfo = {
   key?: string;
-  deadlineTillApproveDate?: string;
+  startDate?: string;
   contentIpfsHash?: string;
   approved?: boolean;
+  canApprove?: boolean;
 };
 
 type InitialValues = {
@@ -44,6 +44,10 @@ const formInitialValues: InitialValues = {
 };
 
 /*
+keccak256(bytes(_answers[i]))
+
+MIN_TOTAL_CONTENT_READ_CHECK_ANSWER
+
  function assignQuizIpfsHashToVoting(
         bytes32 _votingKey,
         string memory _quizIpfsHash
@@ -60,8 +64,14 @@ const formInitialValues: InitialValues = {
 
 const ApproveVotingForm = () => {
   const { hash } = useLocation();
-  const { getVotingAtKey } = useContract();
+  const {
+    getVotingAtKey,
+    addAnswersToVotingContent,
+    assignQuizIpfsHashToVoting,
+    getMinTotalQuizCheckAnswers
+  } = useContract();
   const [answers, setAnswers] = useState<string[]>([]);
+  const [contentIpfsHashInput, setContentIpfsHashInput] = useState('');
 
   const [fileInfo, setFileInfo] = useState<FileInfo>({});
 
@@ -83,9 +93,10 @@ const ApproveVotingForm = () => {
 
         setVotingInfo({
           key: (voting?.key || '') as string,
-          deadlineTillApproveDate: formatDateTime(voting?.startDate) || '',
+          startDate: formatDateTimeToTime(voting?.startDate) || '',
           contentIpfsHash: voting?.contentIpfsHash || '',
-          approved: !!voting?.approved
+          approved: !!voting?.approved,
+          canApprove: !voting?.approved && now < (voting?.startDate || 0)
         });
       } else {
         setVotingInfo({});
@@ -100,7 +111,18 @@ const ApproveVotingForm = () => {
     return <CommunicationWithContractIsInProgressLoader />;
   }
 
-  const canApprove = !votingInfo?.approved;
+  const assignIpfsContentCheckToVoting = async () => {
+    await asyncErrWrapper(assignQuizIpfsHashToVoting)(votingInfo?.key, contentIpfsHashInput);
+    setVotingInfo({
+      ...votingInfo,
+      contentIpfsHash: contentIpfsHashInput
+    });
+  };
+
+  const assignAnswersToVoting = async () => {
+    const hashAnswers = answers.map((answer) => toBytes32ToKeccak256(answer));
+    await asyncErrWrapper(addAnswersToVotingContent)(votingInfo?.key, hashAnswers);
+  };
 
   return (
     <FormContainer css={{ maxWidth: 1000, width: 1000 }}>
@@ -134,10 +156,10 @@ const ApproveVotingForm = () => {
                   There is no existing voting under this key.
                 </Alert>
                 )}
-                {votingInfo && (
+                {votingInfo?.canApprove && (
                 <Stack spacing={2}>
                   <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
-                  <LabelText label="Approve deadline:" text={votingInfo.deadlineTillApproveDate} />
+                  <LabelText label="Approve deadline:" text={votingInfo.startDate} />
                   <ToggleList
                     listItemComponents={[
                       {
@@ -163,19 +185,23 @@ const ApproveVotingForm = () => {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       handleChange(e);
                       setFieldValue('contentIpfsHash', e.target.value);
+                      setContentIpfsHashInput(e.target.value);
                     }}
                   />
                   <Stack spacing={2} direction="row">
                     <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || ''} />
-                    <Button color="info" disabled={!values.contentIpfsHash} variant="contained">ASSIGN IPFS HASH TO VOTING</Button>
+                    <Button color="info" disabled={!values.contentIpfsHash} onClick={assignIpfsContentCheckToVoting} variant="contained">ASSIGN IPFS HASH TO VOTING</Button>
                   </Stack>
                   <SubTitle text="Assign answers" />
                   <QuizQuestionEditor answers={answers} setAnswers={setAnswers} />
-                  <Stack spacing={2} direction="row">
-                    <Button color="info" disabled={!answers.length} variant="contained">ASSIGN ANSWERS TO VOTING</Button>
+                  <Stack spacing={2}>
+                    {!votingInfo?.contentIpfsHash && <Alert security="info">IPFS content check quiz has to be assigned before</Alert>}
+                    <Button color="info" onClick={assignAnswersToVoting} disabled={!answers.length || !votingInfo?.contentIpfsHash} variant="contained">
+                      ASSIGN ANSWERS TO VOTING
+                    </Button>
                   </Stack>
                   <Stack>
-                    <Button color="success" disabled={!canApprove} variant="contained">APPROVE</Button>
+                    <Button color="success" variant="contained">APPROVE</Button>
                   </Stack>
                 </Stack>
                 )}

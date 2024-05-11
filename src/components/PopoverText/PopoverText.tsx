@@ -20,11 +20,15 @@ const PopoverText = ({ text, popText }: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    if (!anchorEl) {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handlePopoverClose = () => {
-    setAnchorEl(null);
+    setTimeout(() => {
+      setAnchorEl(null);
+    }, 1000);
   };
 
   const open = Boolean(anchorEl);
@@ -55,6 +59,7 @@ const PopoverText = ({ text, popText }: Props) => {
           horizontal: 'left'
         }}
         onClose={handlePopoverClose}
+        onMouseEnter={() => console.log('mouse entered')}
       >
         <Typography sx={{ p: 1 }}>{popText}</Typography>
       </Popover>

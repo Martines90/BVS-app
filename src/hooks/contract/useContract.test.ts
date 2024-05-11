@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { TimeQuantities } from '@global/constants/general';
-import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import {
   MOCK_CITIZENSHIP_APPLICATION_FEE,
@@ -15,11 +15,11 @@ const mockFutureTimestamp = 2533566483;
 const mockAccountKey = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 const mockNotRegisteredAccountKey = '0x914a73ad0b138eedf80704f9ccd81be56f33bbd5f8b371c82de3b6b6a5a23ff7';
 
-const mockApplyForCitizenshipHash = getBytes32keccak256Hash(
+const mockApplyForCitizenshipHash = toKeccak256HashToBytes32(
   `test@email.com${mockAccountKey}`
 );
 
-const mockVotingKeyHash = getBytes32keccak256Hash(
+const mockVotingKeyHash = toKeccak256HashToBytes32(
   'jnksadjnsadkjskndeoio'
 );
 

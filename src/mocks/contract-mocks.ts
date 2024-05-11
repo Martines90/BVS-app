@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import { TimeQuantities } from '@global/constants/general';
-import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { BytesLike } from 'ethers';
 import { MOCK_FUTURE_TIMESTAMP } from './common-mocks';
 
@@ -39,13 +39,13 @@ export const MOCK_NON_EXISTING_ADDRESS = '0x000000000000000000000000000000000000
 
 // getVotingKeyAtIndex, getVotingAtKey, getNumberOfVotings
 export const MOCK_VOTING_KEY_HASHES = [
-  getBytes32keccak256Hash(
+  toKeccak256HashToBytes32(
     'jnksadjnsadkjskndeoio'
   ) as string,
-  getBytes32keccak256Hash(
+  toKeccak256HashToBytes32(
     'háptgmo54ö53töööögffmdl'
   ) as string,
-  getBytes32keccak256Hash(
+  toKeccak256HashToBytes32(
     'oirpmrwp9ö4kpfsfpdfmllksm'
   ) as string
 ];

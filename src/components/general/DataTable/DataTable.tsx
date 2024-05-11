@@ -1,4 +1,3 @@
-import PopoverText from '@components/PopoverText/PopoverText';
 import ButtonLink from '@components/links/ButtonLink';
 import styled from '@emotion/styled';
 import { TABLE_DISPLAY_MAX_ROWS } from '@global/constants/general';
@@ -14,6 +13,7 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import React from 'react';
 import LoadTableContent from '../Loaders/LoadTableContent';
+import TooltipText from '../TooltipText/TooltipText';
 
 type Props = {
   tableHeadFields: React.ReactNode[],
@@ -79,7 +79,7 @@ const DataTable = ({
                             : (
                               <CellContent>
                                 {popoverDisplayFields?.includes(colKey)
-                                  ? <PopoverText text={row[colKey]} popText={row[colKey]} />
+                                  ? <TooltipText text={row[colKey]} popText={row[colKey]} />
                                   : row[colKey]}
                               </CellContent>
                             )}

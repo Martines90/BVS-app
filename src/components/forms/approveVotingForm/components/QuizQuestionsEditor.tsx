@@ -15,8 +15,7 @@ const QuizQuestionEditor = ({ answers, setAnswers }: Props) => {
   const [answer, setAnswer] = useState('');
   const addAnswer = () => {
     setAnswers([
-      ...answers,
-      answer
+      ...answers
     ]);
     setAnswer('');
   };

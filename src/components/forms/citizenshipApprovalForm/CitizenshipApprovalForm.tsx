@@ -1,5 +1,5 @@
 import { CircularProgressL } from '@components/general/Loaders/components/CircularProgress';
-import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { USER_ROLES } from '@global/types/user';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
@@ -35,7 +35,7 @@ const CitizenshipApprovalForm = () => {
     email: string,
     publicKey: string
   ) => {
-    const applicationHash = getBytes32keccak256Hash(email + publicKey);
+    const applicationHash = toKeccak256HashToBytes32(email + publicKey);
 
     const hashMatchesWithApplicationHash = await asyncErrWrapper(
       isHashMatchWithCitizenshipApplicationHash
@@ -101,7 +101,7 @@ const CitizenshipApprovalForm = () => {
             // grant citizenship role
             await asyncErrWrapper(grantCitizenRole)(
               values.publicKey,
-              getBytes32keccak256Hash(values.email + values.publicKey)
+              toKeccak256HashToBytes32(values.email + values.publicKey)
             ).then((res) => {
               setSucess(true);
               console.log(res);

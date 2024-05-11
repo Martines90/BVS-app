@@ -1,4 +1,4 @@
-import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { MOCK_CITIZENSHIP_APPLICATION_FEE, mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import { act, render, screen } from 'test-utils';
@@ -50,7 +50,7 @@ describe('ApplyForCitizenshipPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Apply for citizenship' }));
 
-      const expectedHash = getBytes32keccak256Hash(`test@email.com${mockWallerAddress}`);
+      const expectedHash = toKeccak256HashToBytes32(`test@email.com${mockWallerAddress}`);
 
       expect(
         mockContractFunctions.applyForCitizenshipRole

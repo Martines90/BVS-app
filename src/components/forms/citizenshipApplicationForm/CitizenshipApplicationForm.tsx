@@ -1,6 +1,6 @@
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { CircularProgressM } from '@components/general/Loaders/components/CircularProgress';
-import { getBytes32keccak256Hash } from '@global/helpers/hash-manipulation';
+import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
@@ -104,7 +104,7 @@ const CitizenshipApplicationForm = () => {
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
           // Assuming `hash` is the state variable where the hash is stored
-            const applicationHash = getBytes32keccak256Hash(
+            const applicationHash = toKeccak256HashToBytes32(
               values.email + accountPublicKey
             );
 
