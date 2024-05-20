@@ -18,6 +18,11 @@ export type Voting = {
   votingContentCheckQuizIpfsHash: string;
 };
 
+export type Vote = {
+  voted?: boolean;
+  isContentQuizCompleted?: boolean;
+};
+
 export interface ContractInteractionProps {
   contract: Contract & BVS_Voting | undefined;
   addAnswersToVotingContent(votingKey: BytesLike, answers: BytesLike[]): Promise<void>;
@@ -27,6 +32,7 @@ export interface ContractInteractionProps {
     applicationFee: number): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
   closeElections(): Promise<void>,
+  completeVotingContentCheckQuiz(votingKey: BytesLike, answers: string[]): Promise<void>,
   grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): Promise<void>;
   hasRole(role: USER_ROLES, walletAddress: AddressLike): Promise<boolean>;
   isAccountAlreadyVoted(): Promise<boolean>;
@@ -39,6 +45,12 @@ export interface ContractInteractionProps {
   scheduleNewVoting(ipfsHash: string, startDate: number, targetBudget: number): Promise<void>;
   setFirstVotingCycleStartDate(date: number): Promise<void>;
   voteOnElectionsCandidate(candidatePublicKey: AddressLike): Promise<void>;
+  voteOnVoting(votingKey: BytesLike, voteOnA: boolean): Promise<void>;
+  getAccountVotingRelatedQuestionIndexes(
+    votingKey: BytesLike,
+    accountAddress: AddressLike
+  ): Promise<number[]>;
+  getAccountVote(votingKey: BytesLike, accountAddress: AddressLike): Promise<Vote>;
   getAccountVotingScore(votingKey: BytesLike, accountAddress: AddressLike): Promise<number>;
   getAdministratorAtIndex(index: number): Promise<AddressLike>;
   getApproveVotingMinTimeAfterLimit(): Promise<number>;
@@ -57,6 +69,7 @@ export interface ContractInteractionProps {
   getNumberOfPoliticalActors(): Promise<number>;
   getNumberOfElectionCandidates(): Promise<number>;
   getNumberOfVotings(): Promise<number>;
+  getVotingContentCheckAnswerAtIndex(votingKey: BytesLike, index: number): Promise<string>;
   getVotingContentReadCheckAnswersLength(votingKey: BytesLike): Promise<number>;
   getVotingDuration(): Promise<number>;
   getVotingAtKey(votingKey: BytesLike): Promise<Voting>;

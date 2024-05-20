@@ -21,30 +21,22 @@ import ContentCheckQuizForm from '../contentCheckQuizForm/ContentCheckQuizForm';
 
 import LabelComponent from '@components/general/LabelComponent/LabelComponent';
 import YesNoText from '@components/general/YesNoText/YesNoText';
+import { showSuccessToast } from '@components/toasts/Toasts';
+import { VotingInfo } from '@components/types/Types';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import ArticleIcon from '@mui/icons-material/Article';
 import QuizIcon from '@mui/icons-material/Quiz';
 
-type VotingInfo = {
-  key?: string;
-  startDate?: string;
-  contentIpfsHash?: string;
-  approved?: boolean;
-  relatedVotingScore?: number;
-  active?: boolean;
-  numberOfVotes?: number;
-  voteOnAScore?: number;
-  voteOnBScore?: number;
-};
-
 const VotingForm = () => {
   const { hash } = useLocation();
   const { userState } = useUserContext();
-  const { getVotingAtKey, getAccountVotingScore, getVotingDuration } = useContract();
+  const {
+    getVotingAtKey, getAccountVotingScore, getVotingDuration, getAccountVote, voteOnVoting
+  } = useContract();
 
   const [votingKey, setVoatingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
-  const [votingInfo, setVotingInfo] = useState<VotingInfo>();
+  const [votingInfo, setVotingInfo] = useState<VotingInfo | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
   const now = getNow();
@@ -57,6 +49,7 @@ const VotingForm = () => {
     const loadVotingInfo = async () => {
       if (votingKey) {
         const voting = await asyncErrWrapper(getVotingAtKey)(votingKey);
+        const vote = await asyncErrWrapper(getAccountVote)(votingKey, userState.walletAddress || '');
         const accountVotingScore = await asyncErrWrapper(getAccountVotingScore)(
           voting?.key || '',
           userState.walletAddress || ''
@@ -70,15 +63,17 @@ const VotingForm = () => {
           key: (voting?.key || '') as string,
           startDate: formatDateTime(voting?.startDate) || '',
           contentIpfsHash: voting?.contentIpfsHash || '',
+          contentCheckQuizIpfsHash: voting?.votingContentCheckQuizIpfsHash || '',
           approved: !!voting?.approved,
           relatedVotingScore: accountVotingScore || 0,
           active: isVotingActive,
           numberOfVotes: voting?.voteCount || 0,
           voteOnAScore: voting?.voteOnAScore || 0,
-          voteOnBScore: voting?.voteOnBScore || 0
+          voteOnBScore: voting?.voteOnBScore || 0,
+          vote
         });
       } else {
-        setVotingInfo({});
+        setVotingInfo(undefined);
       }
       setIsLoading(false);
     };
@@ -86,16 +81,32 @@ const VotingForm = () => {
     loadVotingInfo();
   }, [votingKey]);
 
+  const vote = async (voteOnA: boolean) => {
+    await asyncErrWrapper(voteOnVoting)(votingInfo?.key || '', voteOnA).then(() => {
+      showSuccessToast('You have successfully voted');
+      setVotingInfo({
+        ...votingInfo,
+        vote: {
+          ...votingInfo?.vote,
+          voted: true
+        }
+      });
+    });
+  };
+
   if (isLoading) {
     return <CommunicationWithContractIsInProgressLoader />;
   }
 
-  const canVote = votingInfo?.active && votingInfo?.approved;
+  const canVote = votingInfo?.active
+    && votingInfo?.approved
+    && votingInfo.vote?.isContentQuizCompleted
+    && !votingInfo.vote?.voted;
 
   return (
     <FormContainer css={{ maxWidth: 1000, width: 1000 }}>
       <FormTitle>Voting</FormTitle>
-      <LoadContent condition={!votingInfo}>
+      <LoadContent condition={isLoading}>
         <Formik
           initialValues={{}}
           onSubmit={(values, { setSubmitting }) => {
@@ -128,18 +139,20 @@ const VotingForm = () => {
                     There is no existing voting under this key.
                   </Alert>
                 )}
-                {votingInfo && (
+                {!!votingInfo && (
                 <Stack spacing={2}>
                   <Stack direction="row" spacing={10}>
                     <Stack>
                       <LabelText label="Start date:" text={votingInfo.startDate} />
                       <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
                       <LabelComponent label="Active:" component={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
+                      <LabelComponent label="Content check quiz completed:" component={<YesNoText text={votingInfo.vote?.isContentQuizCompleted ? 'yes' : 'no'} />} />
                     </Stack>
                     <Stack>
                       <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />
                       <LabelText label='Score on "Yes":' text={votingInfo.voteOnAScore} />
                       <LabelText label='Score on "No":' text={votingInfo.voteOnBScore} />
+                      <LabelComponent label="Voted:" component={<YesNoText text={votingInfo.vote?.voted ? 'yes' : 'no'} />} />
                     </Stack>
                   </Stack>
                   <LabelText label="Your voting score:" text={votingInfo.relatedVotingScore} />
@@ -152,15 +165,19 @@ const VotingForm = () => {
                       },
                       {
                         labelText: 'Voting content check quiz',
-                        component: <ContentCheckQuizForm />,
+                        component:
+  <ContentCheckQuizForm
+    setVotingInfo={setVotingInfo}
+    votingInfo={votingInfo}
+  />,
                         icon: <QuizIcon />
                       }
                     ]}
                   />
 
                   <Stack direction="row" spacing={2}>
-                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">YES</Button>
-                    <Button sx={{ width: '50%' }} disabled={!canVote} variant="contained">NO</Button>
+                    <Button sx={{ width: '50%' }} onClick={() => vote(true)} disabled={!canVote} variant="contained">YES</Button>
+                    <Button sx={{ width: '50%' }} onClick={() => vote(false)} disabled={!canVote} variant="contained">NO</Button>
                   </Stack>
                 </Stack>
                 )}

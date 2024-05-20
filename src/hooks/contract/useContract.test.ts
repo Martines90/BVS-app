@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { EMPTY_BYTES_32 } from '@global/constants/blockchain';
 import { TimeQuantities } from '@global/constants/general';
 import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
@@ -7,7 +8,9 @@ import {
   MOCK_NON_EXISTING_ADDRESS,
   MOCK_REGISTER_AS_CANDIDATE_FEE
 } from '@mocks/contract-mocks';
-import { AddressLike, BigNumberish, BytesLike } from 'ethers';
+import {
+  AddressLike, BigNumberish, BytesLike
+} from 'ethers';
 import { Voting } from './types';
 import useContract from './useContract';
 
@@ -65,6 +68,7 @@ const mockContract = {
   APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3)),
   closeElections: jest.fn(() => Promise.resolve()),
   citizens: jest.fn((index) => Promise.resolve(mockCitizens[index])),
+  completeContentReadQuiz: jest.fn(() => Promise.resolve()),
   admins: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   electionsCandidateApplicationFee: jest.fn(
     () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
@@ -86,6 +90,7 @@ const mockContract = {
   grantCitizenRole: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(true)),
   MIN_TOTAL_CONTENT_READ_CHECK_ANSWER: jest.fn(() => Promise.resolve(50)),
+  getAccountVotingQuizAnswerIndexes: jest.fn(() => Promise.resolve([3, 4, 17, 33, 19])),
   getAdminsSize: jest.fn(() => Promise.resolve(1)),
   getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
@@ -109,8 +114,9 @@ const mockContract = {
   voteOnElections: jest.fn(() => Promise.resolve()),
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
   votings: jest.fn(() => mockVoting),
-  votingContentReadCheckAnswers: jest.fn(() => 50),
+  votingContentReadCheckAnswers: jest.fn(() => 'answer-hash-string'),
   votingKeys: jest.fn(() => mockVotingKeyHash),
+  voteOnVoting: jest.fn(() => Promise.resolve()),
   VOTING_DURATION: jest.fn(() => Promise.resolve(14 * TimeQuantities.DAY)),
   VOTING_CYCLE_INTERVAL: jest.fn(() => Promise.resolve(3)),
   citizenRoleApplicationFee: jest.fn(() => Promise.resolve(
@@ -245,6 +251,16 @@ describe('useContract', () => {
       });
     });
 
+    describe('completeVotingContentCheckQuiz', () => {
+      it('should call completeContentReadQuiz contract function', async () => {
+        const { completeVotingContentCheckQuiz } = useContract();
+
+        await completeVotingContentCheckQuiz(mockVotingKeyHash, ['answer-1-hash', 'answer-2-hash']);
+
+        expect(mockContract.completeContentReadQuiz.mock.calls[mockContract.completeContentReadQuiz.mock.calls.length - 1]).toEqual([BigInt(1), mockVotingKeyHash, EMPTY_BYTES_32, ['answer-1-hash', 'answer-2-hash']]);
+      });
+    });
+
     describe('addAnswersToVotingContent', () => {
       it('should call addKeccak256HashedAnswersToVotingContent contract function', async () => {
         const { addAnswersToVotingContent } = useContract();
@@ -278,6 +294,15 @@ describe('useContract', () => {
 
         await scheduleNewVoting('test-ipfs-hash', mockFutureTimestamp, 0);
         expect(mockContract.scheduleNewVoting).toHaveBeenCalledWith('test-ipfs-hash', mockFutureTimestamp, 0);
+      });
+    });
+
+    describe('voteOnVoting', () => {
+      it('should call voteOnVoting contract function', async () => {
+        const { voteOnVoting } = useContract();
+
+        await voteOnVoting(mockVotingKeyHash, true);
+        expect(mockContract.voteOnVoting).toHaveBeenCalledWith(mockVotingKeyHash, true);
       });
     });
   });
@@ -437,6 +462,21 @@ describe('useContract', () => {
   });
 
   describe('getters', () => {
+    describe('getAccountVotingRelatedQuestionIndexes', () => {
+      it('should call getAccountVotingQuizAnswerIndexes and return account related question indexes', async () => {
+        const { getAccountVotingRelatedQuestionIndexes } = useContract();
+
+        expect(
+          await getAccountVotingRelatedQuestionIndexes(mockVotingKeyHash, mockAccountKey)
+        ).toStrictEqual([3, 4, 17, 33, 19]);
+
+        expect(mockContract.getAccountVotingQuizAnswerIndexes).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockAccountKey
+        );
+      });
+    });
+
     describe('getAccountVotingScore', () => {
       it('should call calculateVoteScore and return account voting related score', async () => {
         const { getAccountVotingScore } = useContract();
@@ -611,6 +651,19 @@ describe('useContract', () => {
 
         expect(await getPoliticalActorVotingCycleVoteStartCount(mockAccountKey, 2)).toBe(3);
         expect(mockContract.votingCycleStartVoteCount).toHaveBeenCalledWith(2, mockAccountKey);
+      });
+    });
+
+    describe('getVotingContentCheckAnswerAtIndex', () => {
+      // FIXME: votingContentReadCheckAnswers has to be getVotingContentReadCheckAnswersLength
+      it('should call votingContentReadCheckAnswers and return a string', async () => {
+        const { getVotingContentCheckAnswerAtIndex } = useContract();
+
+        expect(await getVotingContentCheckAnswerAtIndex(mockVotingKeyHash, 0)).toBe('answer-hash-string');
+        expect(mockContract.votingContentReadCheckAnswers).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          BigInt(0)
+        );
       });
     });
 

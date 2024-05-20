@@ -11,7 +11,7 @@ import {
 import ApproveVotingPage from './ApproveVotingPage';
 
 import { apiBaseUrl } from '@global/config';
-import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { toBytes32ToKeccak256, toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -147,7 +147,7 @@ describe('ApproveVotingPage', () => {
 
     expect(mockContractFunctions.addAnswersToVotingContent).toHaveBeenCalledWith(
       voting.key,
-      mockAnswers.map((answer) => toKeccak256HashToBytes32(answer))
+      mockAnswers.map((answer) => toBytes32ToKeccak256(answer))
     );
 
     expect(screen.queryByRole('button', { name: 'APPROVE' })).toBeEnabled();
@@ -164,8 +164,6 @@ describe('ApproveVotingPage', () => {
     await act(async () => {
       ({ container } = render(<ApproveVotingPage />));
     });
-
-    const voting = MOCK_VOTINGS[MOCK_VOTING_KEY_HASHES[1]];
 
     const votingKeyInputField = container.querySelector('input[name="voting-key"]');
     const loadVotingBtn = screen.getByRole('button', { name: 'LOAD VOTING' });

@@ -1,9 +1,11 @@
+/* eslint-disable max-lines */
+import { EMPTY_BYTES_32 } from '@global/constants/blockchain';
 import { TimeQuantities } from '@global/constants/general';
 import { isValidAddress } from '@global/helpers/validators';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
-import { ContractInteractionProps, Voting } from './types';
+import { ContractInteractionProps, Vote, Voting } from './types';
 
 const useContract = (): ContractInteractionProps => {
   const { userState } = useUserContext();
@@ -11,7 +13,6 @@ const useContract = (): ContractInteractionProps => {
   const { contract } = userState;
 
   // Roles
-
   const applyForCitizenshipRole = async (
     applicantEmailPubKeyHash: BytesLike,
     applicationFee: number
@@ -70,6 +71,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.assignQuizIpfsHashToVoting(votingKey, quizIpfsHash);
   };
 
+  const completeVotingContentCheckQuiz = async (votingKey: BytesLike, answers: string[]) => {
+    await contract?.completeContentReadQuiz(BigInt(1), votingKey, EMPTY_BYTES_32, answers);
+  };
+
   const setFirstVotingCycleStartDate = async (date: number) => {
     await contract?.setFirstVotingCycleStartDate(date);
   };
@@ -93,6 +98,19 @@ const useContract = (): ContractInteractionProps => {
       voteOnBScore: Number(voting[9]),
       votingContentCheckQuizIpfsHash: voting[10]
     } as Voting;
+  };
+
+  const getAccountVote = async (votingKey: BytesLike, accountAddress: AddressLike) => {
+    const vote = await contract?.votes(accountAddress, votingKey);
+
+    return {
+      voted: vote?.[0],
+      isContentQuizCompleted: vote?.[1]
+    } as Vote;
+  };
+
+  const voteOnVoting = async (votingKey: BytesLike, voteOnA: boolean) => {
+    await contract?.voteOnVoting(votingKey, voteOnA);
   };
 
   // Elections
@@ -129,6 +147,13 @@ const useContract = (): ContractInteractionProps => {
   };
 
   // ********* GETTERS ***********
+  const getAccountVotingRelatedQuestionIndexes = async (
+    votingKey: string,
+    accountKey: AddressLike
+  ) => ((
+    (await contract?.getAccountVotingQuizAnswerIndexes(votingKey, accountKey)) || []
+  ) as bigint[]).map((item) => Number(item));
+
   const getAccountVotingScore = async (votingKey: BytesLike, accountAddress: AddressLike) => Number(
     (await contract?.calculateVoteScore(votingKey, accountAddress)) || 0
   );
@@ -198,6 +223,10 @@ const useContract = (): ContractInteractionProps => {
     // await contract?.getVotingContentReadCheckAnswersLength(votingKey) || []
   );
 
+  const getVotingContentCheckAnswerAtIndex = async (votingKey: BytesLike, index: number) => (
+    await contract?.votingContentReadCheckAnswers(votingKey, BigInt(index)) || ''
+  );
+
   const getVotingCycleInterval = async () => Number(
     await contract?.VOTING_CYCLE_INTERVAL() || 0
   ) * 1000;
@@ -242,6 +271,8 @@ const useContract = (): ContractInteractionProps => {
 
   return {
     contract,
+    getAccountVote,
+    getAccountVotingRelatedQuestionIndexes,
     getAccountVotingScore,
     getAdministratorAtIndex,
     getApproveVotingMinTimeAfterLimit,
@@ -267,6 +298,7 @@ const useContract = (): ContractInteractionProps => {
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
     getVotedOnCandidatePublicKey,
+    getVotingContentCheckAnswerAtIndex,
     getVotingContentReadCheckAnswersLength,
     getVotingCycleInterval,
     getVotingKeyAtIndex,
@@ -275,6 +307,7 @@ const useContract = (): ContractInteractionProps => {
     assignQuizIpfsHashToVoting,
     applyForCitizenshipRole,
     closeElections,
+    completeVotingContentCheckQuiz,
     grantCitizenRole,
     applyForElectionsAsCandidate,
     hasRole,
@@ -282,6 +315,7 @@ const useContract = (): ContractInteractionProps => {
     scheduleNewVoting,
     setFirstVotingCycleStartDate,
     voteOnElectionsCandidate,
+    voteOnVoting,
     isAccountAlreadyVoted,
     isAccountAppliedForCitizenship,
     isCandidateAlreadyApplied,

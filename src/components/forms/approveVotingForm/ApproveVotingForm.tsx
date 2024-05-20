@@ -24,7 +24,7 @@ import YesNoText from '@components/general/YesNoText/YesNoText';
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
 import { showSuccessToast } from '@components/toasts/Toasts';
 import { GWEI_TO_WEI } from '@global/constants/blockchain';
-import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { toBytes32ToKeccak256, toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
 import { Voting } from '@hooks/contract/types';
 import ArticleIcon from '@mui/icons-material/Article';
 import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
@@ -135,7 +135,7 @@ const ApproveVotingForm = () => {
   };
 
   const assignAnswersToVoting = async () => {
-    const hashAnswers = answers.map((answer) => toKeccak256HashToBytes32(answer));
+    const hashAnswers = answers.map((answer) => toBytes32ToKeccak256(answer));
     if (votingInfo?.key && hashAnswers.length >= (votingInfo?.minTotalCheckQuizAnswers || 1)) {
       await asyncErrWrapper(addAnswersToVotingContent)(votingInfo?.key, hashAnswers);
       setVotingInfo({
