@@ -31,12 +31,18 @@ const VotingForm = () => {
   const { hash } = useLocation();
   const { userState } = useUserContext();
   const {
-    getVotingAtKey, getAccountVotingScore, getVotingDuration, getAccountVote, voteOnVoting
+    getVotingAtKey,
+    getAccountVotingScore,
+    getAccountVotingRelatedQuestionIndexes,
+    getVotingDuration,
+    getAccountVote,
+    voteOnVoting
   } = useContract();
 
   const [votingKey, setVoatingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
   const [votingInfo, setVotingInfo] = useState<VotingInfo | undefined>();
+  const [accountQuestionIndexes, setAccountQuestionIndexes] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const now = getNow();
@@ -55,6 +61,12 @@ const VotingForm = () => {
           userState.walletAddress || ''
         );
         const votingDuration = await asyncErrWrapper(getVotingDuration)() || 0;
+
+        const _accountQuestionIndexes = await asyncErrWrapper(
+          getAccountVotingRelatedQuestionIndexes
+        )(voting?.key || '', userState.walletAddress || '') || [];
+
+        setAccountQuestionIndexes(_accountQuestionIndexes);
 
         const isVotingActive = now > (
           voting?.startDate || 0) && now < (voting?.startDate || 0) + votingDuration;
@@ -103,12 +115,18 @@ const VotingForm = () => {
     && votingInfo.vote?.isContentQuizCompleted
     && !votingInfo.vote?.voted;
 
+  const initialValues: any = {};
+
+  accountQuestionIndexes.forEach((qIndex) => {
+    initialValues[`answer-${qIndex}`] = '';
+  });
+
   return (
     <FormContainer css={{ maxWidth: 1000, width: 1000 }}>
       <FormTitle>Voting</FormTitle>
       <LoadContent condition={isLoading}>
         <Formik
-          initialValues={{}}
+          initialValues={initialValues}
           onSubmit={(values, { setSubmitting }) => {
 
           }}
@@ -169,6 +187,7 @@ const VotingForm = () => {
   <ContentCheckQuizForm
     setVotingInfo={setVotingInfo}
     votingInfo={votingInfo}
+    accountQuestionIndexes={accountQuestionIndexes}
   />,
                         icon: <QuizIcon />
                       }

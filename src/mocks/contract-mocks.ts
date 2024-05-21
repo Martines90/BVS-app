@@ -111,6 +111,8 @@ export const MOCK_VOTINGS = {
 
 export const mockContractFunctions = {
   getAccountVotingScore: jest.fn(() => Promise.resolve(0)),
+  getAccountVotingRelatedQuestionIndexes: jest.fn(() => Promise.resolve([2, 6, 10, 8, 1])),
+  getAccountVote: jest.fn(() => Promise.resolve({ voted: false, isContentQuizCompleted: false })),
   getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
@@ -158,10 +160,12 @@ export const mockContractFunctions = {
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElectionsAsCandidate: jest.fn(() => Promise.resolve()),
   approveVoting: jest.fn(() => Promise.resolve()),
+  completeVotingContentCheckQuiz: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
   scheduleNewVoting: jest.fn(() => Promise.resolve()),
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
   hasRole: jest.fn(() => Promise.resolve(false)),
-  voteOnElectionsCandidate: jest.fn(() => Promise.resolve())
+  voteOnElectionsCandidate: jest.fn(() => Promise.resolve()),
+  voteOnVoting: jest.fn(() => Promise.resolve())
 };

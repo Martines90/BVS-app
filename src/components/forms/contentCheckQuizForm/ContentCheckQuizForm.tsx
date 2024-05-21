@@ -3,7 +3,6 @@ import { showSuccessToast } from '@components/toasts/Toasts';
 import { VotingInfo } from '@components/types/Types';
 import { IPFS_GATEWAY_URL } from '@global/constants/general';
 import { nthFormat } from '@global/helpers/number';
-import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
@@ -18,6 +17,7 @@ import { useEffect, useState } from 'react';
 type Props = {
   votingInfo: VotingInfo;
   setVotingInfo: React.Dispatch<React.SetStateAction<VotingInfo | undefined>>;
+  accountQuestionIndexes: number[];
 };
 
 type Question = {
@@ -31,13 +31,12 @@ type QuizInfo = {
 
 const ContentCheckQuizForm = ({
   votingInfo,
-  setVotingInfo
+  setVotingInfo,
+  accountQuestionIndexes
 }: Props) => {
   const {
-    getAccountVotingRelatedQuestionIndexes,
     completeVotingContentCheckQuiz
   } = useContract();
-  const { userState } = useUserContext();
   const [quizInfo, setQuizInfo] = useState<QuizInfo>();
   const [answers, setAnswers] = useState<string[]>([]);
 
@@ -45,10 +44,6 @@ const ContentCheckQuizForm = ({
 
   useEffect(() => {
     const renderQuizInfo = async () => {
-      const accountQuestionIndexes = await asyncErrWrapper(
-        getAccountVotingRelatedQuestionIndexes
-      )(votingInfo.key || '', userState.walletAddress || '') || [];
-
       setQuizInfo({
         accountQuestionIndexes: accountQuestionIndexes.map((qIndex, index) => ({
           originalIndex: index,
@@ -58,7 +53,7 @@ const ContentCheckQuizForm = ({
     };
 
     renderQuizInfo();
-  }, []);
+  }, [accountQuestionIndexes]);
 
   const completeVotingQuiz = async () => {
     await asyncErrWrapper(completeVotingContentCheckQuiz)(
@@ -104,7 +99,7 @@ const ContentCheckQuizForm = ({
             />
           </Stack>
         ))}
-        <Button variant="contained" onClick={completeVotingQuiz}>Complete Voting quiz</Button>
+        <Button variant="contained" onClick={completeVotingQuiz}>COMPLETE QUIZ</Button>
       </Stack>
     </Stack>
   );
