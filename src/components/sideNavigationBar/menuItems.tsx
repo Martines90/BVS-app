@@ -108,9 +108,14 @@ const menuItems: MenuItem[] = [
         modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
-        label: 'Assign quiz to voting',
-        route: 'votings#assign_quiz_to_voting',
-        modes: [USER_MODES.ADMINISTRATOR]
+        label: 'Assign article to voting',
+        route: 'votings#assign_article_to_voting',
+        modes: [USER_MODES.POLITICAL_ACTOR]
+      },
+      {
+        label: 'Assign response to article',
+        route: 'votings#assign_response_to_article',
+        modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
         label: 'First voting cycle',

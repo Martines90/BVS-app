@@ -23,6 +23,7 @@ import LabelComponent from '@components/general/LabelComponent/LabelComponent';
 import YesNoText from '@components/general/YesNoText/YesNoText';
 import { showSuccessToast } from '@components/toasts/Toasts';
 import { VotingInfo } from '@components/types/Types';
+import { getVotingKeyFromHash } from '@global/helpers/routing';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import ArticleIcon from '@mui/icons-material/Article';
 import QuizIcon from '@mui/icons-material/Quiz';
@@ -39,7 +40,7 @@ const VotingForm = () => {
     voteOnVoting
   } = useContract();
 
-  const [votingKey, setVoatingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
+  const [votingKey, setVotingKey] = useState(getVotingKeyFromHash(hash));
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
   const [votingInfo, setVotingInfo] = useState<VotingInfo | undefined>();
   const [accountQuestionIndexes, setAccountQuestionIndexes] = useState<number[]>([]);
@@ -48,7 +49,7 @@ const VotingForm = () => {
   const now = getNow();
 
   const loadVoting = () => {
-    setVoatingKey(votingKeyFieldVal);
+    setVotingKey(votingKeyFieldVal);
   };
 
   useEffect(() => {

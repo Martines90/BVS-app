@@ -38,6 +38,10 @@ const AllVotingsPage = lazy(
   () => import('@pages/votings/all-votings/AllVotingsPage')
 );
 
+const AssignArticleToVotingPage = lazy(
+  () => import('@pages/votings/assign-article-to-voting/AssignArticleToVotingPage')
+);
+
 const VotingPage = lazy(
   () => import('@pages/votings/voting/VotingViewPage')
 );
@@ -100,6 +104,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
 
   if (hash.includes('#voting')) {
     return <VotingPage />;
+  }
+
+  if (hash.includes('#AssignArticleToVotingPage')) {
+    return <AssignArticleToVotingPage />;
   }
 
   if (hash.includes('#manage_first_voting_cycle')) {

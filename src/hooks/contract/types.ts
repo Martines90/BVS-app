@@ -23,6 +23,18 @@ export type Vote = {
   isContentQuizCompleted?: boolean;
 };
 
+export type ProConArticle = {
+  votingKey: BytesLike;
+  isArticleApproved: boolean;
+  isResponseApproved: boolean;
+  publisher: AddressLike;
+  articleIpfsHash: string;
+  isVoteOnA: boolean;
+  responseStatementIpfsHash: string;
+  articleContentCheckQuizIpfsHash: string;
+  responseContentCheckQuizIpfsHash: string;
+};
+
 export interface ContractInteractionProps {
   contract: Contract & BVS_Voting | undefined;
   addAnswersToVotingContent(votingKey: BytesLike, answers: BytesLike[]): Promise<void>;
@@ -79,6 +91,9 @@ export interface ContractInteractionProps {
   getPoliticalActorVotingCredits(accountKey: AddressLike): Promise<number>;
   getPoliticalActorVotingCycleVoteStartCount(
     accountKey: AddressLike, voteCycleCount: number): Promise<number>;
+  getVotingAssignedArticlesPublishedByAccount(
+    votingKey: BytesLike, account: AddressLike
+  ): Promise<ProConArticle[]>;
   getVotedOnCandidatePublicKey(): Promise<AddressLike>;
   getVotingCycleInterval(): Promise<number>;
 }

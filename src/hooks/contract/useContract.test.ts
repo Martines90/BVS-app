@@ -11,7 +11,7 @@ import {
 import {
   AddressLike, BigNumberish, BytesLike
 } from 'ethers';
-import { Voting } from './types';
+import { ProConArticle, Voting } from './types';
 import useContract from './useContract';
 
 const mockFutureTimestamp = 2533566483;
@@ -25,6 +25,34 @@ const mockApplyForCitizenshipHash = toKeccak256HashToBytes32(
 const mockVotingKeyHash = toKeccak256HashToBytes32(
   'jnksadjnsadkjskndeoio'
 );
+
+const mockArtickeKeyHash = toKeccak256HashToBytes32(
+  'dsdfssfdamkibieijrpsp'
+);
+
+type ProConArticleData = [
+  BytesLike,
+  boolean,
+  boolean,
+  AddressLike,
+  string,
+  boolean,
+  string,
+  string,
+  string
+];
+
+const mockProConArticlesData: ProConArticleData = [
+  mockVotingKeyHash,
+  false,
+  false,
+  mockAccountKey,
+  'test-ipfs-hash',
+  true,
+  'test-ipfs-hash',
+  'test-ipfs-hash',
+  'test-ipfs-hash'
+];
 
 const mockCitizens: AddressLike[] = [
   mockAccountKey
@@ -65,6 +93,7 @@ const mockContract = {
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElections: jest.fn(() => Promise.resolve()),
+  articleKeys: jest.fn(() => Promise.resolve(mockArtickeKeyHash)),
   APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3)),
   closeElections: jest.fn(() => Promise.resolve()),
   citizens: jest.fn((index) => Promise.resolve(mockCitizens[index])),
@@ -93,6 +122,7 @@ const mockContract = {
   getAccountVotingQuizAnswerIndexes: jest.fn(() => Promise.resolve([3, 4, 17, 33, 19])),
   getAdminsSize: jest.fn(() => Promise.resolve(1)),
   getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
+  getArticleKeysLength: jest.fn(() => Promise.resolve(1)),
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   getVotingKeysLength: jest.fn(() => Promise.resolve(10)),
@@ -111,6 +141,7 @@ const mockContract = {
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
   politicalActors: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   politicalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
+  proConArticles: jest.fn(() => Promise.resolve(mockProConArticlesData)),
   voteOnElections: jest.fn(() => Promise.resolve()),
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
   votings: jest.fn(() => mockVoting),
@@ -651,6 +682,38 @@ describe('useContract', () => {
 
         expect(await getPoliticalActorVotingCycleVoteStartCount(mockAccountKey, 2)).toBe(3);
         expect(mockContract.votingCycleStartVoteCount).toHaveBeenCalledWith(2, mockAccountKey);
+      });
+    });
+
+    describe('getVotingAssignedArticlesPublishedByAccount', () => {
+      it('should call votingCycleStartVoteCount and return number', async () => {
+        const { getVotingAssignedArticlesPublishedByAccount } = useContract();
+
+        const mockProConArticles: ProConArticle[] = [
+          {
+            votingKey: mockVotingKeyHash,
+            isArticleApproved: false,
+            isResponseApproved: false,
+            publisher: mockAccountKey,
+            articleIpfsHash: 'test-ipfs-hash',
+            isVoteOnA: true,
+            responseStatementIpfsHash: 'test-ipfs-hash',
+            articleContentCheckQuizIpfsHash: 'test-ipfs-hash',
+            responseContentCheckQuizIpfsHash: 'test-ipfs-hash'
+          }
+        ];
+
+        expect(await getVotingAssignedArticlesPublishedByAccount(
+          mockVotingKeyHash,
+          mockAccountKey
+        )).toEqual(mockProConArticles);
+
+        expect(mockContract.getArticleKeysLength).toHaveBeenCalled();
+        expect(mockContract.articleKeys).toHaveBeenCalledWith(BigInt(0));
+        expect(mockContract.proConArticles).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash
+        );
       });
     });
 

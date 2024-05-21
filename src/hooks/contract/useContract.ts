@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable max-lines */
 import { EMPTY_BYTES_32 } from '@global/constants/blockchain';
 import { TimeQuantities } from '@global/constants/general';
@@ -5,7 +6,9 @@ import { isValidAddress } from '@global/helpers/validators';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
-import { ContractInteractionProps, Vote, Voting } from './types';
+import {
+  ContractInteractionProps, ProConArticle, Vote, Voting
+} from './types';
 
 const useContract = (): ContractInteractionProps => {
   const { userState } = useUserContext();
@@ -174,6 +177,39 @@ const useContract = (): ContractInteractionProps => {
     await contract?.firstVotingCycleStartDate()
   ) * 1000;
 
+  const getVotingAssignedArticlesPublishedByAccount = async (
+    votingKey: BytesLike,
+    account: AddressLike
+  ) => {
+    const totalNNumOfArticles = Number(await contract?.getArticleKeysLength() || 0);
+    let startExitCount = false;
+    const articles: ProConArticle[] = [];
+    let exitCounter = 0;
+    for (let i = totalNNumOfArticles - 1; i >= 0 && exitCounter < 20; i--) {
+      const articleKey = await contract?.articleKeys(BigInt(i)) || '';
+      const votingRelatedArticle = await contract?.proConArticles(votingKey, articleKey);
+      if (votingRelatedArticle?.[3] === account) {
+        articles.push({
+          votingKey: votingRelatedArticle[0],
+          isArticleApproved: votingRelatedArticle[1],
+          isResponseApproved: votingRelatedArticle[2],
+          publisher: votingRelatedArticle[3],
+          articleIpfsHash: votingRelatedArticle[4],
+          isVoteOnA: votingRelatedArticle[5],
+          responseStatementIpfsHash: votingRelatedArticle[6],
+          articleContentCheckQuizIpfsHash: votingRelatedArticle[7],
+          responseContentCheckQuizIpfsHash: votingRelatedArticle[8]
+        });
+        startExitCount = true;
+      }
+
+      if (startExitCount) {
+        exitCounter++;
+      }
+    }
+    return articles;
+  };
+
   const getVotingCycleMinCloseToTheEndTime = async () => Number(
     await contract?.NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME() || 0
   ) * 1000;
@@ -297,6 +333,7 @@ const useContract = (): ContractInteractionProps => {
     getPoliticalActorAtIndex,
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
+    getVotingAssignedArticlesPublishedByAccount,
     getVotedOnCandidatePublicKey,
     getVotingContentCheckAnswerAtIndex,
     getVotingContentReadCheckAnswersLength,
