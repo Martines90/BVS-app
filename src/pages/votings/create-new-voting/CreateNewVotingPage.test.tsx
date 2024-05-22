@@ -31,17 +31,17 @@ describe('CreateNewVotingPage', () => {
     const mockTestFile = new File(['(⌐□_□)'], 'test-file.pdf', { type: 'application/pdf' });
 
     const mockedAxios = axios as jest.Mocked<typeof axios>;
-    mockedAxios.post.mockReturnValueOnce(Promise.resolve({
+    mockedAxios.post.mockReturnValue(Promise.resolve({
       status: 200,
       data: { ipfsHashKey: 'file-upload-generated-ipfs-hash' }
     }));
 
     const spyWindowOpen = jest.spyOn(window, 'open');
-    spyWindowOpen.mockImplementationOnce(jest.fn());
+    spyWindowOpen.mockImplementation(jest.fn());
 
-    jest.spyOn(dateHelpers, 'getNow').mockImplementationOnce(() => mockNowTimestamp);
+    jest.spyOn(dateHelpers, 'getNow').mockImplementation(() => mockNowTimestamp);
 
-    mockContractFunctions.getFirstVotingCycleStartDate.mockImplementationOnce(
+    mockContractFunctions.getFirstVotingCycleStartDate.mockImplementation(
       () => Promise.resolve(mockNowTimestamp - TimeQuantities.DAY * 1000 - 1233489)
     );
 
@@ -70,9 +70,9 @@ describe('CreateNewVotingPage', () => {
 
     await userEvent.click(startDateInput);
 
-    await userEvent.click(screen.getByText('29'));
+    await userEvent.click(screen.getByText('11'));
 
-    expect(screen.getByDisplayValue('29/05/2024')).toHaveAttribute('name', 'start-date-field');
+    expect(screen.getByDisplayValue('11/05/2024')).toHaveAttribute('name', 'start-date-field');
 
     const contentIpfsHashField = container.querySelector('input[name="contentIpfsHash"]');
 
@@ -106,7 +106,7 @@ describe('CreateNewVotingPage', () => {
 
     expect(mockContractFunctions.scheduleNewVoting).toHaveBeenCalledWith(
       'file-upload-generated-ipfs-hash',
-      1716933600,
+      1715378400,
       10000
     );
 
