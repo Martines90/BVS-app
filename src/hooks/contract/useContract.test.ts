@@ -141,6 +141,8 @@ const mockContract = {
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
   politicalActors: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   politicalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
+  publishArticleToVotingsCount: jest.fn(() => Promise.resolve(3)),
+  publishProConArticle: jest.fn(() => Promise.resolve()),
   proConArticles: jest.fn(() => Promise.resolve(mockProConArticlesData)),
   voteOnElections: jest.fn(() => Promise.resolve()),
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
@@ -298,6 +300,15 @@ describe('useContract', () => {
 
         await addAnswersToVotingContent(mockVotingKeyHash, ['answer-1-hash', 'answer-2-hash']);
         expect(mockContract.addKeccak256HashedAnswersToVotingContent).toHaveBeenCalledWith(mockVotingKeyHash, ['answer-1-hash', 'answer-2-hash']);
+      });
+    });
+
+    describe('assignArticleToVoting', () => {
+      it('should call publishProConArticle contract function', async () => {
+        const { assignArticleToVoting } = useContract();
+
+        await assignArticleToVoting(mockVotingKeyHash, 'test-ipfs-hash', true);
+        expect(mockContract.publishProConArticle).toHaveBeenCalledWith(mockVotingKeyHash, 'test-ipfs-hash', true);
       });
     });
 
@@ -676,6 +687,21 @@ describe('useContract', () => {
       });
     });
 
+    describe('getPoliticalActorPublishArticleToVotingsCount', () => {
+      it('should call publishArticleToVotingsCount and return number', async () => {
+        const { getPoliticalActorPublishArticleToVotingsCount } = useContract();
+
+        expect(await getPoliticalActorPublishArticleToVotingsCount(
+          mockAccountKey,
+          mockVotingKeyHash
+        )).toBe(3);
+        expect(mockContract.publishArticleToVotingsCount).toHaveBeenCalledWith(
+          mockAccountKey,
+          mockVotingKeyHash
+        );
+      });
+    });
+
     describe('getPoliticalActorVotingCycleVoteStartCount', () => {
       it('should call votingCycleStartVoteCount and return number', async () => {
         const { getPoliticalActorVotingCycleVoteStartCount } = useContract();
@@ -691,6 +717,7 @@ describe('useContract', () => {
 
         const mockProConArticles: ProConArticle[] = [
           {
+            articleKey: mockArtickeKeyHash,
             votingKey: mockVotingKeyHash,
             isArticleApproved: false,
             isResponseApproved: false,

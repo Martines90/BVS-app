@@ -68,7 +68,7 @@ const ApproveVotingForm = () => {
 
   const [fileInfo, setFileInfo] = useState<FileInfo>({});
 
-  const [votingKey, setVoatingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
+  const [votingKey, setVotingKey] = useState(hash.includes('?voting_key=') ? hash.split('?voting_key=')[1] : '');
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
   const [votingInfo, setVotingInfo] = useState<VotingInfo>();
   const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +76,7 @@ const ApproveVotingForm = () => {
   const now = getNow();
 
   const loadVoting = () => {
-    setVoatingKey(votingKeyFieldVal);
+    setVotingKey(votingKeyFieldVal);
   };
 
   useEffect(() => {

@@ -106,7 +106,7 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
     return <VotingPage />;
   }
 
-  if (hash.includes('#AssignArticleToVotingPage')) {
+  if (hash.includes('#assign_article_to_voting')) {
     return <AssignArticleToVotingPage />;
   }
 

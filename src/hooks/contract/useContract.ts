@@ -29,6 +29,14 @@ const useContract = (): ContractInteractionProps => {
     );
   };
 
+  const assignArticleToVoting = async (
+    votingKey: BytesLike,
+    ipfsHash: string,
+    isVoteOnA: boolean
+  ) => {
+    await contract?.publishProConArticle(votingKey, ipfsHash, isVoteOnA);
+  };
+
   const grantCitizenRole = async (
     publicKey: AddressLike,
     applicationHash: BytesLike
@@ -177,6 +185,13 @@ const useContract = (): ContractInteractionProps => {
     await contract?.firstVotingCycleStartDate()
   ) * 1000;
 
+  const getPoliticalActorPublishArticleToVotingsCount = async (
+    account: AddressLike,
+    votingKey: BytesLike
+  ) => Number(
+    await contract?.publishArticleToVotingsCount(account, votingKey) || 0
+  );
+
   const getVotingAssignedArticlesPublishedByAccount = async (
     votingKey: BytesLike,
     account: AddressLike
@@ -185,11 +200,14 @@ const useContract = (): ContractInteractionProps => {
     let startExitCount = false;
     const articles: ProConArticle[] = [];
     let exitCounter = 0;
+
     for (let i = totalNNumOfArticles - 1; i >= 0 && exitCounter < 20; i--) {
       const articleKey = await contract?.articleKeys(BigInt(i)) || '';
       const votingRelatedArticle = await contract?.proConArticles(votingKey, articleKey);
-      if (votingRelatedArticle?.[3] === account) {
+      // FIX ME: make publisher to Address type instead of string
+      if (votingRelatedArticle?.[3].toLowerCase() === String(account).toLowerCase()) {
         articles.push({
+          articleKey,
           votingKey: votingRelatedArticle[0],
           isArticleApproved: votingRelatedArticle[1],
           isResponseApproved: votingRelatedArticle[2],
@@ -333,6 +351,7 @@ const useContract = (): ContractInteractionProps => {
     getPoliticalActorAtIndex,
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
+    getPoliticalActorPublishArticleToVotingsCount,
     getVotingAssignedArticlesPublishedByAccount,
     getVotedOnCandidatePublicKey,
     getVotingContentCheckAnswerAtIndex,
@@ -341,6 +360,7 @@ const useContract = (): ContractInteractionProps => {
     getVotingKeyAtIndex,
     addAnswersToVotingContent,
     approveVoting,
+    assignArticleToVoting,
     assignQuizIpfsHashToVoting,
     applyForCitizenshipRole,
     closeElections,
