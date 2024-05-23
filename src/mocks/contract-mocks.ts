@@ -3,6 +3,7 @@
 import { GWEI_TO_WEI } from '@global/constants/blockchain';
 import { TimeQuantities } from '@global/constants/general';
 import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { ProConArticle } from '@hooks/contract/types';
 import { BytesLike } from 'ethers';
 import { MOCK_FUTURE_TIMESTAMP } from './common-mocks';
 
@@ -51,6 +52,18 @@ export const MOCK_VOTING_KEY_HASHES = [
   ) as string,
   toKeccak256HashToBytes32(
     'fsjdfljdfscmcdldklscdfs'
+  ) as string
+];
+
+export const MOCK_ARTICLE_KEYS = [
+  toKeccak256HashToBytes32(
+    'kldsfllkdfsjlkdsfkékl'
+  ) as string,
+  toKeccak256HashToBytes32(
+    'mfdslkdmvcklsvdknvsdnor'
+  ) as string,
+  toKeccak256HashToBytes32(
+    '94jfd2ösdkndlksdlfkm'
   ) as string
 ];
 
@@ -109,6 +122,23 @@ export const MOCK_VOTINGS = {
   }
 };
 
+export const mockProConArticles: ProConArticle[] = [
+  ...MOCK_ARTICLE_KEYS.map((articleKey, index) => (
+    {
+      articleKey,
+      votingKey: MOCK_VOTING_KEY_HASHES[0],
+      isArticleApproved: false,
+      isResponseApproved: false,
+      publisher: mockAccountPublicKeys[0],
+      articleIpfsHash: `article-test-ipfs-hash-${index}`,
+      isVoteOnA: true,
+      responseStatementIpfsHash: `response-statement-ipfs-hash-${index}`,
+      articleContentCheckQuizIpfsHash: `article-content-check-quiz-ipfs-hash-${index}`,
+      responseContentCheckQuizIpfsHash: `response-content-test-ipfs-hash-${index}`
+    }
+  ))
+];
+
 export const mockContractFunctions = {
   getAccountVotingScore: jest.fn(() => Promise.resolve(0)),
   getAccountVotingRelatedQuestionIndexes: jest.fn(() => Promise.resolve([2, 6, 10, 8, 1])),
@@ -117,12 +147,14 @@ export const mockContractFunctions = {
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
+  getVotingAssignedArticlesPublishedByAccount: jest.fn(() => Promise.resolve(mockProConArticles)),
   getVotingContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(0)),
   getVotingCycleInterval: jest.fn(() => Promise.resolve(30 * TimeQuantities.DAY * 1000)),
   getVotingCycleMinCloseToTheEndTime: jest.fn(
     () => Promise.resolve(10 * TimeQuantities.DAY * 1000)
   ),
   getCitizenAtIndex: jest.fn((index: number) => Promise.resolve(mockAccountPublicKeys[index])),
+  getPoliticalActorPublishArticleToVotingsCount: jest.fn(() => Promise.resolve(3)),
   getPoliticalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
   getPoliticalActorVotingCycleVoteStartCount: jest.fn(() => Promise.resolve(1)),
   getFirstVotingCycleStartDate: jest.fn(() => Promise.resolve(0)),
@@ -153,6 +185,7 @@ export const mockContractFunctions = {
   getVotingAtKey: jest.fn((key: BytesLike) => Promise.resolve(MOCK_VOTINGS[key as string])),
   getVotingDuration: jest.fn(() => Promise.resolve(14 * TimeQuantities.DAY * 1000)),
   getVotingKeyAtIndex: jest.fn((index: number) => Promise.resolve(MOCK_VOTING_KEY_HASHES[index])),
+  assignArticleToVoting: jest.fn(() => Promise.resolve()),
   isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),
   isCandidateAlreadyApplied: jest.fn(() => Promise.resolve(false)),

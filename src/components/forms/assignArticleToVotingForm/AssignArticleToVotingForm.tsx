@@ -121,7 +121,7 @@ const AssignArticleToVotingForm = () => {
       <FormTitle>Assign pro/con articles to voting</FormTitle>
       <Formik
         initialValues={formInitialValues}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={async (values) => {
           asyncErrWrapper(assignArticleToVoting)(
             votingKey,
             values.contentIpfsHash,
@@ -172,7 +172,7 @@ const AssignArticleToVotingForm = () => {
                 <SubTitle text="Articles assigned by you" />
                 <DataTable
                   popoverDisplayFields={['Article Key', 'Content IPFS hash']}
-                  tableHeadFields={['Article Key', 'Content IPFS hash', 'Vore on A (yes)', 'Approved']}
+                  tableHeadFields={['Article Key', 'Content IPFS hash', 'Vote on A (yes)', 'Approved']}
                   handlePageChange={() => {}}
                   data={proConArticlesData}
                   currentPage={1}
