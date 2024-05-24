@@ -24,11 +24,11 @@ import YesNoText from '@components/general/YesNoText/YesNoText';
 import PdfIpfsContentViewer from '@components/pdfIpfsContentViewer/PdfIpfsContentViewer';
 import { showSuccessToast } from '@components/toasts/Toasts';
 import { GWEI_TO_WEI } from '@global/constants/blockchain';
-import { toBytes32ToKeccak256, toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { toBytes32ToKeccak256 } from '@global/helpers/hash-manipulation';
 import { Voting } from '@hooks/contract/types';
 import ArticleIcon from '@mui/icons-material/Article';
+import QuizQuestionEditor from '../../QuizQuestionEditor/QuizQuestionsEditor';
 import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
-import QuizQuestionEditor from './components/QuizQuestionsEditor';
 
 type VotingInfo = {
   oVoting?: Voting;

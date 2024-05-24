@@ -4,6 +4,18 @@ import {
   AddressLike, BytesLike, Contract
 } from 'ethers';
 
+export type Article_ContractData = [
+  string,
+  boolean,
+  boolean,
+  string,
+  string,
+  boolean,
+  string,
+  string,
+  string
+];
+
 export type Voting = {
   approved: boolean;
   cancelled: boolean;
@@ -42,7 +54,11 @@ export interface ContractInteractionProps {
   approveVoting(votingKey: BytesLike): Promise<void>;
   assignArticleToVoting(
     votingKey: BytesLike, quizIpfsHash: string, isVoteOnA: boolean): Promise<void>;
+  addAnswersToArticleContent(
+    votingKey: BytesLike, articleKey: BytesLike, answers: BytesLike[]): Promise<void>;
   assignQuizIpfsHashToVoting(votingKey: BytesLike, quizIpfsHash: string): Promise<void>;
+  assignQuizIpfsHashToArticle(
+    votingKey: BytesLike, articleKey: BytesLike, quizIpfsHash: string): Promise<void>;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
     applicationFee: number): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
@@ -69,6 +85,8 @@ export interface ContractInteractionProps {
   getAccountVotingScore(votingKey: BytesLike, accountAddress: AddressLike): Promise<number>;
   getAdministratorAtIndex(index: number): Promise<AddressLike>;
   getApproveVotingMinTimeAfterLimit(): Promise<number>;
+  getArticleAtKey(votingKey: BytesLike, articleKey: BytesLike): Promise<ProConArticle | undefined>;
+  getArticleContentReadCheckAnswersLength(articleKey: BytesLike): Promise<number>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getCitizenAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateApplicationFee(): Promise<number>;

@@ -6,6 +6,7 @@ import { isValidAddress } from '@global/helpers/validators';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import { AddressLike, BytesLike } from 'ethers';
+import { articleRawDataToArticle } from './helpers/helpers';
 import {
   ContractInteractionProps, ProConArticle, Vote, Voting
 } from './types';
@@ -157,6 +158,33 @@ const useContract = (): ContractInteractionProps => {
     await contract?.voteOnElections(candidatePuplicKey);
   };
 
+  // Articles
+
+  const addAnswersToArticleContent = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    answers: BytesLike[]
+  ) => {
+    await contract?.addKeccak256HashedAnswersToArticle(
+      votingKey,
+      articleKey,
+      answers
+    );
+  };
+
+  const assignQuizIpfsHashToArticle = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    quizIpfsHash: string
+  ) => {
+    contract?.assignQuizIpfsHashToArticleOrResponse(
+      votingKey,
+      articleKey,
+      quizIpfsHash,
+      true
+    );
+  };
+
   // ********* GETTERS ***********
   const getAccountVotingRelatedQuestionIndexes = async (
     votingKey: string,
@@ -172,6 +200,21 @@ const useContract = (): ContractInteractionProps => {
   const getAdministratorAtIndex = async (index: number) => (
     (await contract?.admins(index))
   ) as AddressLike;
+
+  const getArticleAtKey = async (votingKey: BytesLike, articleKey: BytesLike) => {
+    const articleData = await contract?.proConArticles(votingKey, articleKey);
+    if (articleData) {
+      return articleRawDataToArticle(String(articleKey), articleData);
+    }
+    return undefined;
+  };
+
+  // FIXME: add to BVS articleContentReadCheckAnswers[articleKey].length function
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getArticleContentReadCheckAnswersLength = async (articleKey: BytesLike) => Number(
+    10
+    //  contract.articleContentReadCheckAnswers[articleKey].length
+  );
 
   const getApproveVotingMinTimeAfterLimit = async () => Number(
     await contract?.APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT()
@@ -206,18 +249,7 @@ const useContract = (): ContractInteractionProps => {
       const votingRelatedArticle = await contract?.proConArticles(votingKey, articleKey);
       // FIX ME: make publisher to Address type instead of string
       if (votingRelatedArticle?.[3].toLowerCase() === String(account).toLowerCase()) {
-        articles.push({
-          articleKey,
-          votingKey: votingRelatedArticle[0],
-          isArticleApproved: votingRelatedArticle[1],
-          isResponseApproved: votingRelatedArticle[2],
-          publisher: votingRelatedArticle[3],
-          articleIpfsHash: votingRelatedArticle[4],
-          isVoteOnA: votingRelatedArticle[5],
-          responseStatementIpfsHash: votingRelatedArticle[6],
-          articleContentCheckQuizIpfsHash: votingRelatedArticle[7],
-          responseContentCheckQuizIpfsHash: votingRelatedArticle[8]
-        });
+        articles.push(articleRawDataToArticle(articleKey, votingRelatedArticle));
         startExitCount = true;
       }
 
@@ -330,6 +362,8 @@ const useContract = (): ContractInteractionProps => {
     getAccountVotingScore,
     getAdministratorAtIndex,
     getApproveVotingMinTimeAfterLimit,
+    getArticleAtKey,
+    getArticleContentReadCheckAnswersLength,
     getCitizenAtIndex,
     getMinTotalQuizCheckAnswers,
     getNumberOfAdministrators,
@@ -358,10 +392,12 @@ const useContract = (): ContractInteractionProps => {
     getVotingContentReadCheckAnswersLength,
     getVotingCycleInterval,
     getVotingKeyAtIndex,
+    addAnswersToArticleContent,
     addAnswersToVotingContent,
     approveVoting,
     assignArticleToVoting,
     assignQuizIpfsHashToVoting,
+    assignQuizIpfsHashToArticle,
     applyForCitizenshipRole,
     closeElections,
     completeVotingContentCheckQuiz,

@@ -54,6 +54,21 @@ const mockProConArticlesData: ProConArticleData = [
   'test-ipfs-hash'
 ];
 
+const mockProConArticles: ProConArticle[] = [
+  {
+    articleKey: mockArtickeKeyHash,
+    votingKey: mockVotingKeyHash,
+    isArticleApproved: false,
+    isResponseApproved: false,
+    publisher: mockAccountKey,
+    articleIpfsHash: 'test-ipfs-hash',
+    isVoteOnA: true,
+    responseStatementIpfsHash: 'test-ipfs-hash',
+    articleContentCheckQuizIpfsHash: 'test-ipfs-hash',
+    responseContentCheckQuizIpfsHash: 'test-ipfs-hash'
+  }
+];
+
 const mockCitizens: AddressLike[] = [
   mockAccountKey
 ];
@@ -90,7 +105,9 @@ const mockContract = {
   ELECTION_START_END_INTERVAL: jest.fn(() => Promise.resolve(BigInt(TimeQuantities.MONTH))),
   addKeccak256HashedAnswersToVotingContent: jest.fn(() => Promise.resolve()),
   approveVoting: jest.fn(() => Promise.resolve()),
+  addKeccak256HashedAnswersToArticle: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
+  assignQuizIpfsHashToArticleOrResponse: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElections: jest.fn(() => Promise.resolve()),
   articleKeys: jest.fn(() => Promise.resolve(mockArtickeKeyHash)),
@@ -503,6 +520,43 @@ describe('useContract', () => {
     });
   });
 
+  describe('articles', () => {
+    describe('addAnswersToArticleContent', () => {
+      it('should call addKeccak256HashedAnswersToArticle', async () => {
+        const { addAnswersToArticleContent } = useContract();
+
+        expect(await addAnswersToArticleContent(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          []
+        ));
+        expect(mockContract.addKeccak256HashedAnswersToArticle).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          []
+        );
+      });
+    });
+
+    describe('assignQuizIpfsHashToArticle', () => {
+      it('should call assignQuizIpfsHashToArticleOrResponse', async () => {
+        const { assignQuizIpfsHashToArticle } = useContract();
+
+        expect(await assignQuizIpfsHashToArticle(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          'test-ipfs-hash'
+        ));
+        expect(mockContract.assignQuizIpfsHashToArticleOrResponse).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          'test-ipfs-hash',
+          true
+        );
+      });
+    });
+  });
+
   describe('getters', () => {
     describe('getAccountVotingRelatedQuestionIndexes', () => {
       it('should call getAccountVotingQuizAnswerIndexes and return account related question indexes', async () => {
@@ -546,6 +600,22 @@ describe('useContract', () => {
 
         expect(await getApproveVotingMinTimeAfterLimit()).toBe(TimeQuantities.DAY * 3 * 1000);
         expect(mockContract.APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT).toHaveBeenCalled();
+      });
+    });
+
+    describe('getArticleAtKey', () => {
+      it('should call proConArticles and return article data', async () => {
+        const { getArticleAtKey } = useContract();
+
+        expect(await getArticleAtKey(
+          mockVotingKeyHash,
+          mockArtickeKeyHash
+        )).toEqual(mockProConArticles[0]);
+
+        expect(mockContract.proConArticles).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash
+        );
       });
     });
 
@@ -714,21 +784,6 @@ describe('useContract', () => {
     describe('getVotingAssignedArticlesPublishedByAccount', () => {
       it('should call votingCycleStartVoteCount and return number', async () => {
         const { getVotingAssignedArticlesPublishedByAccount } = useContract();
-
-        const mockProConArticles: ProConArticle[] = [
-          {
-            articleKey: mockArtickeKeyHash,
-            votingKey: mockVotingKeyHash,
-            isArticleApproved: false,
-            isResponseApproved: false,
-            publisher: mockAccountKey,
-            articleIpfsHash: 'test-ipfs-hash',
-            isVoteOnA: true,
-            responseStatementIpfsHash: 'test-ipfs-hash',
-            articleContentCheckQuizIpfsHash: 'test-ipfs-hash',
-            responseContentCheckQuizIpfsHash: 'test-ipfs-hash'
-          }
-        ];
 
         expect(await getVotingAssignedArticlesPublishedByAccount(
           mockVotingKeyHash,

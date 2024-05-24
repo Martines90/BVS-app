@@ -11,7 +11,7 @@ import {
 import ApproveVotingPage from './ApproveVotingPage';
 
 import { apiBaseUrl } from '@global/config';
-import { toBytes32ToKeccak256, toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { toBytes32ToKeccak256 } from '@global/helpers/hash-manipulation';
 import axios from 'axios';
 
 jest.mock('axios');
