@@ -128,9 +128,7 @@ const VotingForm = () => {
       <LoadContent condition={isLoading}>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values, { setSubmitting }) => {
-
-          }}
+          onSubmit={() => {}}
         >
           {() => (
             <Form>

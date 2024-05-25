@@ -168,9 +168,7 @@ const ApproveVotingForm = () => {
       <LoadContent condition={!votingInfo}>
         <Formik
           initialValues={formInitialValues}
-          onSubmit={(values, { setSubmitting }) => {
-
-          }}
+          onSubmit={() => {}}
         >
           {({
             setFieldValue, values, errors, touched, handleChange

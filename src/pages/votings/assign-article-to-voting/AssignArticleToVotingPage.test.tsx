@@ -1,4 +1,4 @@
-import { MOCK_VOTING_KEY_HASHES, mockContractFunctions, mockProConArticles } from '@mocks/contract-mocks';
+import { MOCK_PRO_CON_ARTICLES, MOCK_VOTING_KEY_HASHES, mockContractFunctions } from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import { act, render, screen } from 'test-utils';
 import AssignArticleToVotingPage from './AssignArticleToVotingPage';
@@ -33,9 +33,11 @@ describe('AssignArticleToVotingPage', () => {
     expect(screen.queryByText('Vote on A (yes)')).toBeInTheDocument();
     expect(screen.queryByText('Approved')).toBeInTheDocument();
 
-    for (let i = 0; i < mockProConArticles.length; i++) {
-      expect(screen.queryByText(String(mockProConArticles[i].articleKey))).toBeInTheDocument();
-      expect(screen.queryByText(String(mockProConArticles[i].articleIpfsHash))).toBeInTheDocument();
+    for (let i = 0; i < MOCK_PRO_CON_ARTICLES.length; i++) {
+      expect(screen.queryByText(String(MOCK_PRO_CON_ARTICLES[i].articleKey))).toBeInTheDocument();
+      expect(screen.queryByText(
+        String(MOCK_PRO_CON_ARTICLES[i].articleIpfsHash)
+      )).toBeInTheDocument();
     }
 
     expect(screen.queryByText('Assign new pro/con article')).toBeInTheDocument();

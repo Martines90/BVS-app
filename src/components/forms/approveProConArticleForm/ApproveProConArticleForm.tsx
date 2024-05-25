@@ -62,8 +62,8 @@ const ApproveProConArticleForm = () => {
 
   const urlParams = new URLSearchParams(hash.includes('?') ? hash.split('?')[1] : '');
 
-  const [articleKey, setArticleKey] = useState(urlParams.get('article_key'));
-  const [votingKey, setVotingKey] = useState(urlParams.get('voting_key'));
+  const [articleKey, setArticleKey] = useState(urlParams.get('article_key') || '');
+  const [votingKey, setVotingKey] = useState(urlParams.get('voting_key') || '');
   const [articleKeyFieldVal, setArticleKeyFieldVal] = useState(articleKey);
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
   const [articleInfo, setArticleInfo] = useState<ArticleInfo>();
@@ -145,9 +145,7 @@ const ApproveProConArticleForm = () => {
       <LoadContent condition={!articleInfo}>
         <Formik
           initialValues={formInitialValues}
-          onSubmit={(values, { setSubmitting }) => {
-
-          }}
+          onSubmit={() => {}}
         >
           {({
             setFieldValue, values, errors, touched, handleChange
@@ -222,7 +220,7 @@ const ApproveProConArticleForm = () => {
                   />
                   <Stack spacing={2} direction="row">
                     <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || articleInfo?.contentCheckQuizIpfsHash || ''} />
-                    <Button color="info" disabled={!values.contentIpfsHash} onClick={assignIpfsContentCheckToArticle} variant="contained">ASSIGN IPFS HASH TO VOTING</Button>
+                    <Button color="info" disabled={!values.contentIpfsHash} onClick={assignIpfsContentCheckToArticle} variant="contained">ASSIGN IPFS HASH TO ARTICLE</Button>
                   </Stack>
                   <SubTitle text="Assign answers" />
                   {articleInfo?.contentCheckQuizIpfsHash && !articleInfo?.numOfAssignedAnswers

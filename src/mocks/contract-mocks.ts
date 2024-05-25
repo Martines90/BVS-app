@@ -122,7 +122,7 @@ export const MOCK_VOTINGS = {
   }
 };
 
-export const mockProConArticles: ProConArticle[] = [
+export const MOCK_PRO_CON_ARTICLES: ProConArticle[] = [
   ...MOCK_ARTICLE_KEYS.map((articleKey, index) => (
     {
       articleKey,
@@ -132,9 +132,9 @@ export const mockProConArticles: ProConArticle[] = [
       publisher: mockAccountPublicKeys[0],
       articleIpfsHash: `article-test-ipfs-hash-${index}`,
       isVoteOnA: true,
-      responseStatementIpfsHash: `response-statement-ipfs-hash-${index}`,
-      articleContentCheckQuizIpfsHash: `article-content-check-quiz-ipfs-hash-${index}`,
-      responseContentCheckQuizIpfsHash: `response-content-test-ipfs-hash-${index}`
+      responseStatementIpfsHash: index !== 0 ? `response-statement-ipfs-hash-${index}` : '',
+      articleContentCheckQuizIpfsHash: index !== 0 ? `article-content-check-quiz-ipfs-hash-${index}` : '',
+      responseContentCheckQuizIpfsHash: index !== 0 ? `response-content-test-ipfs-hash-${index}` : ''
     }
   ))
 ];
@@ -144,10 +144,21 @@ export const mockContractFunctions = {
   getAccountVotingRelatedQuestionIndexes: jest.fn(() => Promise.resolve([2, 6, 10, 8, 1])),
   getAccountVote: jest.fn(() => Promise.resolve({ voted: false, isContentQuizCompleted: false })),
   getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
+  getArticleAtKey: jest.fn(
+    (
+      votingKey: BytesLike,
+      articleKey: BytesLike
+    ) => MOCK_PRO_CON_ARTICLES.find(
+      (mArticle) => mArticle.articleKey === articleKey && mArticle.votingKey === votingKey
+    )
+  ),
+  getArticleContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(0)),
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
-  getVotingAssignedArticlesPublishedByAccount: jest.fn(() => Promise.resolve(mockProConArticles)),
+  getVotingAssignedArticlesPublishedByAccount: jest.fn(
+    () => Promise.resolve(MOCK_PRO_CON_ARTICLES)
+  ),
   getVotingContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(0)),
   getVotingCycleInterval: jest.fn(() => Promise.resolve(30 * TimeQuantities.DAY * 1000)),
   getVotingCycleMinCloseToTheEndTime: jest.fn(
@@ -190,9 +201,11 @@ export const mockContractFunctions = {
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),
   isCandidateAlreadyApplied: jest.fn(() => Promise.resolve(false)),
   addAnswersToVotingContent: jest.fn(() => Promise.resolve()),
+  addAnswersToArticleContent: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElectionsAsCandidate: jest.fn(() => Promise.resolve()),
   approveVoting: jest.fn(() => Promise.resolve()),
+  assignQuizIpfsHashToArticle: jest.fn(() => Promise.resolve()),
   completeVotingContentCheckQuiz: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
