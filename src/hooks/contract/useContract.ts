@@ -172,6 +172,18 @@ const useContract = (): ContractInteractionProps => {
     );
   };
 
+  const addAnswersToResponseContent = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    answers: BytesLike[]
+  ) => {
+    await contract?.addKeccak256HashedAnswersToArticleResponse(
+      votingKey,
+      articleKey,
+      answers
+    );
+  };
+
   const assignQuizIpfsHashToArticle = async (
     votingKey: BytesLike,
     articleKey: BytesLike,
@@ -182,6 +194,19 @@ const useContract = (): ContractInteractionProps => {
       articleKey,
       quizIpfsHash,
       true
+    );
+  };
+
+  const assignQuizIpfsHashToResponse = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    quizIpfsHash: string
+  ) => {
+    await contract?.assignQuizIpfsHashToArticleOrResponse(
+      votingKey,
+      articleKey,
+      quizIpfsHash,
+      false
     );
   };
 
@@ -226,6 +251,14 @@ const useContract = (): ContractInteractionProps => {
     0
     // await contract?.articleContentReadCheckAnswers(articleKey, 0) !== '' ? 10 : 0
     //  contract.articleContentReadCheckAnswers[articleKey].length
+  );
+
+  // FIXME: add to BVS articleContentResponseReadCheckAnswers[articleKey].length function
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getArticleResponseContentReadCheckAnswersLength = async (articleKey: BytesLike) => Number(
+    0
+    // await contract?.articleContentResponseReadCheckAnswers(articleKey, 0) !== '' ? 10 : 0
+    // contract.articleContentResponseReadCheckAnswers[articleKey].length
   );
 
   const getApproveVotingMinTimeAfterLimit = async () => Number(
@@ -376,6 +409,7 @@ const useContract = (): ContractInteractionProps => {
     getApproveVotingMinTimeAfterLimit,
     getArticleAtKey,
     getArticleContentReadCheckAnswersLength,
+    getArticleResponseContentReadCheckAnswersLength,
     getCitizenAtIndex,
     getMinTotalQuizCheckAnswers,
     getNumberOfAdministrators,
@@ -405,11 +439,13 @@ const useContract = (): ContractInteractionProps => {
     getVotingCycleInterval,
     getVotingKeyAtIndex,
     addAnswersToArticleContent,
+    addAnswersToResponseContent,
     addAnswersToVotingContent,
     approveVoting,
     assignArticleToVoting,
     assignQuizIpfsHashToVoting,
     assignQuizIpfsHashToArticle,
+    assignQuizIpfsHashToResponse,
     assignResponseIpfsHashToArticle,
     applyForCitizenshipRole,
     closeElections,

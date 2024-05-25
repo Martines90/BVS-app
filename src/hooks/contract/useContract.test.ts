@@ -106,6 +106,7 @@ const mockContract = {
   addKeccak256HashedAnswersToVotingContent: jest.fn(() => Promise.resolve()),
   approveVoting: jest.fn(() => Promise.resolve()),
   addKeccak256HashedAnswersToArticle: jest.fn(() => Promise.resolve()),
+  addKeccak256HashedAnswersToArticleResponse: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToArticleOrResponse: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
@@ -539,6 +540,23 @@ describe('useContract', () => {
       });
     });
 
+    describe('addAnswersToResponseContent', () => {
+      it('should call addKeccak256HashedAnswersToArticleResponse', async () => {
+        const { addAnswersToResponseContent } = useContract();
+
+        expect(await addAnswersToResponseContent(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          []
+        ));
+        expect(mockContract.addKeccak256HashedAnswersToArticleResponse).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          []
+        );
+      });
+    });
+
     describe('assignQuizIpfsHashToArticle', () => {
       it('should call assignQuizIpfsHashToArticleOrResponse', async () => {
         const { assignQuizIpfsHashToArticle } = useContract();
@@ -553,6 +571,24 @@ describe('useContract', () => {
           mockArtickeKeyHash,
           'test-ipfs-hash',
           true
+        );
+      });
+    });
+
+    describe('assignQuizIpfsHashToResponse', () => {
+      it('should call assignQuizIpfsHashToArticleOrResponse', async () => {
+        const { assignQuizIpfsHashToResponse } = useContract();
+
+        expect(await assignQuizIpfsHashToResponse(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          'test-ipfs-hash'
+        ));
+        expect(mockContract.assignQuizIpfsHashToArticleOrResponse).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          'test-ipfs-hash',
+          false
         );
       });
     });

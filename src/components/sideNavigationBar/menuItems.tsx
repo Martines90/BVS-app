@@ -32,6 +32,11 @@ const menuItems: MenuItem[] = [
         label: 'Approve articles',
         route: 'approvals#pro_con_article_approval',
         modes: []
+      },
+      {
+        label: 'Approve responses',
+        route: 'approvals#article_response_approval',
+        modes: []
       }
     ]
   },

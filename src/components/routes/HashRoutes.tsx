@@ -32,6 +32,10 @@ const ApproveProConArticlePage = lazy(
   () => import('@pages/approvals/approve-pro-con-article/ApproveProConArticlePage')
 );
 
+const ApproveResponsePage = lazy(
+  () => import('@pages/approvals/approve-response/ApproveResponsePage')
+);
+
 // votings
 
 const CreateNewVotingPage = lazy(
@@ -105,6 +109,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
 
   if (hash.includes('#pro_con_article_approval')) {
     return <ApproveProConArticlePage />;
+  }
+
+  if (hash.includes('#article_response_approval')) {
+    return <ApproveResponsePage />;
   }
 
   // votings

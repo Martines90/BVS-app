@@ -132,9 +132,9 @@ export const MOCK_PRO_CON_ARTICLES: ProConArticle[] = [
       publisher: mockAccountPublicKeys[0],
       articleIpfsHash: `article-test-ipfs-hash-${index}`,
       isVoteOnA: true,
-      responseStatementIpfsHash: index !== 0 ? `response-statement-ipfs-hash-${index}` : '',
-      articleContentCheckQuizIpfsHash: index !== 0 ? `article-content-check-quiz-ipfs-hash-${index}` : '',
-      responseContentCheckQuizIpfsHash: index !== 0 ? `response-content-test-ipfs-hash-${index}` : ''
+      responseStatementIpfsHash: index > 0 ? `response-statement-ipfs-hash-${index}` : '',
+      articleContentCheckQuizIpfsHash: index > 1 ? `article-content-check-quiz-ipfs-hash-${index}` : '',
+      responseContentCheckQuizIpfsHash: index > 1 ? `response-content-test-ipfs-hash-${index}` : ''
     }
   ))
 ];
@@ -153,6 +153,7 @@ export const mockContractFunctions = {
     )
   ),
   getArticleContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(0)),
+  getArticleResponseContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(0)),
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
@@ -203,12 +204,14 @@ export const mockContractFunctions = {
   isCandidateAlreadyApplied: jest.fn(() => Promise.resolve(false)),
   addAnswersToVotingContent: jest.fn(() => Promise.resolve()),
   addAnswersToArticleContent: jest.fn(() => Promise.resolve()),
+  addAnswersToResponseContent: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
   applyForElectionsAsCandidate: jest.fn(() => Promise.resolve()),
   approveVoting: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToArticle: jest.fn(() => Promise.resolve()),
   completeVotingContentCheckQuiz: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
+  assignQuizIpfsHashToResponse: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
   scheduleNewVoting: jest.fn(() => Promise.resolve()),
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),

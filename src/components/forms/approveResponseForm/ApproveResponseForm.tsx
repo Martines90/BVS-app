@@ -30,10 +30,12 @@ import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
 type ArticleInfo = {
   key?: string;
   contentIpfsHash?: string;
-  contentCheckQuizIpfsHash?: string;
-  approved?: boolean;
-  numOfAssignedAnswers?: number;
-  minTotalCheckQuizAnswers?: number;
+  responseContentCheckQuizIpfsHash?: string;
+  articleApproved?: boolean;
+  responseApproved?: boolean;
+  responseIpfsHash?: string;
+  numOfAssignedResponseAnswers?: number;
+  minTotalResponseCheckQuizAnswers?: number;
 };
 
 type InitialValues = {
@@ -44,13 +46,13 @@ const formInitialValues: InitialValues = {
   contentIpfsHash: ''
 };
 
-const ApproveProConArticleForm = () => {
+const ApproveResponseForm = () => {
   const { hash } = useLocation();
   const {
     getArticleAtKey,
-    addAnswersToArticleContent,
-    assignQuizIpfsHashToArticle,
-    getArticleContentReadCheckAnswersLength,
+    addAnswersToResponseContent,
+    assignQuizIpfsHashToResponse,
+    getArticleResponseContentReadCheckAnswersLength,
     getMinTotalQuizCheckAnswers
   } = useContract();
   const [answers, setAnswers] = useState<string[]>([]);
@@ -78,19 +80,20 @@ const ApproveProConArticleForm = () => {
         const article = await asyncErrWrapper(getArticleAtKey)(votingKey, articleKey);
         const _minTotalCheckQuizAnswers = await asyncErrWrapper(getMinTotalQuizCheckAnswers)();
         const _numOfAssignedAnswers = await asyncErrWrapper(
-          getArticleContentReadCheckAnswersLength
+          getArticleResponseContentReadCheckAnswersLength
         )(articleKey);
 
         setArticleInfo({
           key: (article?.articleKey || '') as string,
           contentIpfsHash: article?.articleIpfsHash || '',
-          minTotalCheckQuizAnswers: _minTotalCheckQuizAnswers,
-          numOfAssignedAnswers: (_numOfAssignedAnswers || 0),
-          contentCheckQuizIpfsHash: (article?.articleContentCheckQuizIpfsHash || '')
+          minTotalResponseCheckQuizAnswers: _minTotalCheckQuizAnswers,
+          numOfAssignedResponseAnswers: (_numOfAssignedAnswers || 0),
+          responseIpfsHash: (article?.responseStatementIpfsHash || ''),
+          responseContentCheckQuizIpfsHash: (article?.responseContentCheckQuizIpfsHash || '')
         });
 
-        if (article?.articleContentCheckQuizIpfsHash) {
-          setContentIpfsHashInput(article?.articleContentCheckQuizIpfsHash);
+        if (article?.responseContentCheckQuizIpfsHash) {
+          setContentIpfsHashInput(article?.responseContentCheckQuizIpfsHash);
         }
       } else {
         setArticleInfo({});
@@ -105,37 +108,37 @@ const ApproveProConArticleForm = () => {
     return <CommunicationWithContractIsInProgressLoader />;
   }
 
-  const assignIpfsContentCheckToArticle = async () => {
+  const assignResponseIpfsContentCheckToArticle = async () => {
     if (votingKey && articleInfo?.key && contentIpfsHashInput) {
-      asyncErrWrapper(assignQuizIpfsHashToArticle)(
+      asyncErrWrapper(assignQuizIpfsHashToResponse)(
         votingKey,
         articleInfo?.key,
         contentIpfsHashInput
       ).then(() => {
         setArticleInfo({
           ...articleInfo,
-          contentCheckQuizIpfsHash: contentIpfsHashInput
+          responseContentCheckQuizIpfsHash: contentIpfsHashInput
         });
-        showSuccessToast('Ipfs content check successfully assigned to article');
+        showSuccessToast('Ipfs content check successfully assigned to response');
       });
     }
   };
 
-  const assignAnswersToArticle = async () => {
+  const assignAnswersToResponse = async () => {
     const hashAnswers = answers.map((answer) => toBytes32ToKeccak256(answer));
     if (
       votingKey
       && articleInfo?.key
-      && hashAnswers.length >= (articleInfo?.minTotalCheckQuizAnswers || 1)
+      && hashAnswers.length >= (articleInfo?.minTotalResponseCheckQuizAnswers || 1)
     ) {
-      asyncErrWrapper(addAnswersToArticleContent)(votingKey, articleInfo?.key, hashAnswers).then(
+      asyncErrWrapper(addAnswersToResponseContent)(votingKey, articleInfo?.key, hashAnswers).then(
         () => {
           setArticleInfo({
             ...articleInfo,
-            numOfAssignedAnswers: hashAnswers.length,
-            approved: true
+            numOfAssignedResponseAnswers: hashAnswers.length,
+            responseApproved: true
           });
-          showSuccessToast('Answers successfully assigned to article');
+          showSuccessToast('Answers successfully assigned to response');
         }
       );
     }
@@ -143,7 +146,7 @@ const ApproveProConArticleForm = () => {
 
   return (
     <FormContainer css={{ maxWidth: 1000, width: 1000 }}>
-      <FormTitle>Approve article</FormTitle>
+      <FormTitle>Approve article response</FormTitle>
       <LoadContent condition={!articleInfo}>
         <Formik
           initialValues={formInitialValues}
@@ -184,20 +187,25 @@ const ApproveProConArticleForm = () => {
                   There is no existing article under this key.
                 </Alert>
                 )}
-                {articleInfo?.key && (
+                {articleInfo?.responseIpfsHash === '' && (
+                <Alert severity="info">
+                  There is no response assigned to this article.
+                </Alert>
+                )}
+                {articleInfo?.key && articleInfo?.responseIpfsHash !== '' && (
                 <Stack spacing={2}>
-                  <LabelComponent label="Approved:" component={<YesNoText text={articleInfo.approved ? 'yes' : 'no'} />} />
+                  <LabelComponent label="Response approved:" component={<YesNoText text={articleInfo.responseApproved ? 'yes' : 'no'} />} />
                   <ToggleList
                     listItemComponents={[
                       {
-                        labelText: 'Article content description',
-                        component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${articleInfo.contentIpfsHash}`} />,
+                        labelText: 'Response content description',
+                        component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${articleInfo.responseIpfsHash}`} />,
                         icon: <ArticleIcon />
                       }
                     ]}
                   />
                   <SubTitle text="Assign IPFS Quiz hash" />
-                  {!articleInfo?.contentCheckQuizIpfsHash && (
+                  {!articleInfo?.responseContentCheckQuizIpfsHash && (
                   <IpfsFileUpload
                     fileInfo={fileInfo}
                     setFileInfo={setFileInfo}
@@ -210,7 +218,7 @@ const ApproveProConArticleForm = () => {
                     name="contentIpfsHash"
                     label="Content ipfs hash reference"
                     value={contentIpfsHashInput}
-                    disabled={!!articleInfo?.contentCheckQuizIpfsHash}
+                    disabled={!!articleInfo?.responseContentCheckQuizIpfsHash}
                     fullWidth
                     error={touched.contentIpfsHash && !!errors.contentIpfsHash}
                     helperText={touched.contentIpfsHash && errors.contentIpfsHash}
@@ -221,28 +229,34 @@ const ApproveProConArticleForm = () => {
                     }}
                   />
                   <Stack spacing={2} direction="row">
-                    <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || articleInfo?.contentCheckQuizIpfsHash || ''} />
-                    <Button color="info" disabled={!values.contentIpfsHash} onClick={assignIpfsContentCheckToArticle} variant="contained">ASSIGN IPFS HASH TO ARTICLE</Button>
+                    <PdfIpfsContentViewer ipfsHash={values.contentIpfsHash || articleInfo?.responseContentCheckQuizIpfsHash || ''} />
+                    <Button color="info" disabled={!values.contentIpfsHash} onClick={assignResponseIpfsContentCheckToArticle} variant="contained">ASSIGN IPFS HASH TO RESPONSE</Button>
                   </Stack>
                   <SubTitle text="Assign answers" />
-                  {articleInfo?.contentCheckQuizIpfsHash && !articleInfo?.numOfAssignedAnswers
+                  {
+                    articleInfo?.responseContentCheckQuizIpfsHash
+                    && !articleInfo?.numOfAssignedResponseAnswers
                     && (
                       <Stack spacing={2}>
                         <QuizQuestionEditor
                           answers={answers}
                           setAnswers={setAnswers}
-                          minAnswersRequired={Number(articleInfo?.minTotalCheckQuizAnswers)}
+                          minAnswersRequired={Number(articleInfo?.minTotalResponseCheckQuizAnswers)}
                         />
-                        <Button color="info" onClick={assignAnswersToArticle} disabled={answers.length < (articleInfo.minTotalCheckQuizAnswers || 50)} variant="contained">
-                          ASSIGN ANSWERS TO ARTICLE
+                        <Button color="info" onClick={assignAnswersToResponse} disabled={answers.length < (articleInfo.minTotalResponseCheckQuizAnswers || 50)} variant="contained">
+                          ASSIGN ANSWERS TO RESPONSE
                         </Button>
                       </Stack>
-                    )}
-                  {articleInfo?.contentCheckQuizIpfsHash && articleInfo?.numOfAssignedAnswers
+                    )
+                  }
+                  {
+                  articleInfo?.responseContentCheckQuizIpfsHash
+                  && articleInfo?.numOfAssignedResponseAnswers
                     && (
-                      <LabelText label="Number of assigned answers:" text={articleInfo?.numOfAssignedAnswers} />
-                    )}
-                  {!articleInfo?.contentCheckQuizIpfsHash && <Alert severity="info">IPFS content check quiz hash has to be assigned before</Alert>}
+                      <LabelText label="Number of assigned answers:" text={articleInfo?.numOfAssignedResponseAnswers} />
+                    )
+                  }
+                  {!articleInfo?.responseContentCheckQuizIpfsHash && <Alert severity="info">IPFS content check quiz hash has to be assigned before</Alert>}
                 </Stack>
                 )}
               </Stack>
@@ -254,4 +268,4 @@ const ApproveProConArticleForm = () => {
   );
 };
 
-export default ApproveProConArticleForm;
+export default ApproveResponseForm;

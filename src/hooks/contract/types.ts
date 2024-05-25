@@ -56,8 +56,12 @@ export interface ContractInteractionProps {
     votingKey: BytesLike, quizIpfsHash: string, isVoteOnA: boolean): Promise<void>;
   addAnswersToArticleContent(
     votingKey: BytesLike, articleKey: BytesLike, answers: BytesLike[]): Promise<void>;
+  addAnswersToResponseContent(
+    votingKey: BytesLike, articleKey: BytesLike, answers: BytesLike[]): Promise<void>;
   assignQuizIpfsHashToVoting(votingKey: BytesLike, quizIpfsHash: string): Promise<void>;
   assignQuizIpfsHashToArticle(
+    votingKey: BytesLike, articleKey: BytesLike, quizIpfsHash: string): Promise<void>;
+  assignQuizIpfsHashToResponse(
     votingKey: BytesLike, articleKey: BytesLike, quizIpfsHash: string): Promise<void>;
   assignResponseIpfsHashToArticle(
     votingKey: BytesLike, articleKey: BytesLike, responseIpfsHash: string): Promise<void>;
@@ -89,6 +93,7 @@ export interface ContractInteractionProps {
   getApproveVotingMinTimeAfterLimit(): Promise<number>;
   getArticleAtKey(votingKey: BytesLike, articleKey: BytesLike): Promise<ProConArticle | undefined>;
   getArticleContentReadCheckAnswersLength(articleKey: BytesLike): Promise<number>;
+  getArticleResponseContentReadCheckAnswersLength(articleKey: BytesLike): Promise<number>;
   getCitizenRoleApplicationFee(): Promise<number>;
   getCitizenAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateApplicationFee(): Promise<number>;
