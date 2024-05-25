@@ -109,16 +109,17 @@ const ApproveProConArticleForm = () => {
 
   const assignIpfsContentCheckToArticle = async () => {
     if (votingKey && articleInfo?.key && contentIpfsHashInput) {
-      await asyncErrWrapper(assignQuizIpfsHashToArticle)(
+      asyncErrWrapper(assignQuizIpfsHashToArticle)(
         votingKey,
         articleInfo?.key,
         contentIpfsHashInput
-      );
-      setArticleInfo({
-        ...articleInfo,
-        contentCheckQuizIpfsHash: contentIpfsHashInput
+      ).then(() => {
+        setArticleInfo({
+          ...articleInfo,
+          contentCheckQuizIpfsHash: contentIpfsHashInput
+        });
+        showSuccessToast('Ipfs content check successfully assigned to article');
       });
-      showSuccessToast('Ipfs content check successfully assigned to article');
     }
   };
 
@@ -129,13 +130,16 @@ const ApproveProConArticleForm = () => {
       && articleInfo?.key
       && hashAnswers.length >= (articleInfo?.minTotalCheckQuizAnswers || 1)
     ) {
-      await asyncErrWrapper(addAnswersToArticleContent)(votingKey, articleInfo?.key, hashAnswers);
-      setArticleInfo({
-        ...articleInfo,
-        numOfAssignedAnswers: hashAnswers.length,
-        approved: true
-      });
-      showSuccessToast('Answers successfully assigned to article');
+      asyncErrWrapper(addAnswersToArticleContent)(votingKey, articleInfo?.key, hashAnswers).then(
+        () => {
+          setArticleInfo({
+            ...articleInfo,
+            numOfAssignedAnswers: hashAnswers.length,
+            approved: true
+          });
+          showSuccessToast('Answers successfully assigned to article');
+        }
+      );
     }
   };
 
@@ -154,7 +158,7 @@ const ApproveProConArticleForm = () => {
               <Stack spacing={2}>
                 <Stack spacing={2}>
                   <Stack direction="row" spacing={2}>
-                    <Label text="Voting key:" />
+                    <Label text="Voting key:" css={{ minWidth: '120px' }} />
                     <TextField
                       name="voting-key"
                       fullWidth
@@ -165,7 +169,7 @@ const ApproveProConArticleForm = () => {
                     />
                   </Stack>
                   <Stack direction="row" spacing={2}>
-                    <Label text="Article Key:" />
+                    <Label text="Article Key:" css={{ minWidth: '120px' }} />
                     <TextField
                       name="article-key"
                       fullWidth

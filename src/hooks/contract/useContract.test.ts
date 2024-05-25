@@ -160,6 +160,7 @@ const mockContract = {
   politicalActorVotingCredits: jest.fn(() => Promise.resolve(3)),
   publishArticleToVotingsCount: jest.fn(() => Promise.resolve(3)),
   publishProConArticle: jest.fn(() => Promise.resolve()),
+  publishProConArticleResponse: jest.fn(() => Promise.resolve()),
   proConArticles: jest.fn(() => Promise.resolve(mockProConArticlesData)),
   voteOnElections: jest.fn(() => Promise.resolve()),
   votingCycleStartVoteCount: jest.fn(() => Promise.resolve(3)),
@@ -552,6 +553,23 @@ describe('useContract', () => {
           mockArtickeKeyHash,
           'test-ipfs-hash',
           true
+        );
+      });
+    });
+
+    describe('assignResponseIpfsHashToArticle', () => {
+      it('should call publishProConArticleResponse', async () => {
+        const { assignResponseIpfsHashToArticle } = useContract();
+
+        expect(await assignResponseIpfsHashToArticle(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          'test-ipfs-hash'
+        ));
+        expect(mockContract.publishProConArticleResponse).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          'test-ipfs-hash'
         );
       });
     });

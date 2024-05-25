@@ -59,6 +59,8 @@ export interface ContractInteractionProps {
   assignQuizIpfsHashToVoting(votingKey: BytesLike, quizIpfsHash: string): Promise<void>;
   assignQuizIpfsHashToArticle(
     votingKey: BytesLike, articleKey: BytesLike, quizIpfsHash: string): Promise<void>;
+  assignResponseIpfsHashToArticle(
+    votingKey: BytesLike, articleKey: BytesLike, responseIpfsHash: string): Promise<void>;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
     applicationFee: number): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,

@@ -171,7 +171,7 @@ const AssignArticleToVotingForm = () => {
                 />
                 <SubTitle text="Articles assigned by you" />
                 <DataTable
-                  popoverDisplayFields={['Article Key', 'Content IPFS hash']}
+                  popoverDisplayFields={['articleKey', 'contentIpfsHash']}
                   tableHeadFields={['Article Key', 'Content IPFS hash', 'Vote on A (yes)', 'Approved']}
                   handlePageChange={() => {}}
                   data={proConArticlesData}
@@ -205,7 +205,7 @@ const AssignArticleToVotingForm = () => {
                   <Button
                     variant="contained"
                     type="submit"
-                    disabled={!values.contentIpfsHash}
+                    disabled={!values.contentIpfsHash || !!votingInfo?.contentIpfsHash}
                   >
                     ASSIGN
                   </Button>

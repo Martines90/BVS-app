@@ -118,11 +118,6 @@ const menuItems: MenuItem[] = [
         modes: [USER_MODES.POLITICAL_ACTOR]
       },
       {
-        label: 'Assign response to article',
-        route: 'votings#assign_response_to_article',
-        modes: [USER_MODES.POLITICAL_ACTOR]
-      },
-      {
         label: 'First voting cycle',
         route: 'votings#manage_first_voting_cycle',
         modes: [USER_MODES.ADMINISTRATOR]
@@ -136,6 +131,11 @@ const menuItems: MenuItem[] = [
     modes: [USER_MODES.POLITICAL_ACTOR, USER_MODES.ADMINISTRATOR],
     subMenuItems: [
       {
+        label: 'Assign response to article',
+        route: 'votings#assign_response_to_article',
+        modes: [USER_MODES.POLITICAL_ACTOR]
+      },
+      {
         label: 'Assign quiz to article',
         route: 'articles#assign_quiz_to_article',
         modes: [USER_MODES.ADMINISTRATOR]
@@ -144,11 +144,6 @@ const menuItems: MenuItem[] = [
         label: 'Assign quiz to response',
         route: 'articles#assign_quiz_to_response',
         modes: [USER_MODES.ADMINISTRATOR]
-      },
-      {
-        label: 'Create new article',
-        route: 'articles#add_new_article',
-        modes: [USER_MODES.POLITICAL_ACTOR]
       }
     ]
   }

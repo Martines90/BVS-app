@@ -197,6 +197,7 @@ export const mockContractFunctions = {
   getVotingDuration: jest.fn(() => Promise.resolve(14 * TimeQuantities.DAY * 1000)),
   getVotingKeyAtIndex: jest.fn((index: number) => Promise.resolve(MOCK_VOTING_KEY_HASHES[index])),
   assignArticleToVoting: jest.fn(() => Promise.resolve()),
+  assignResponseIpfsHashToArticle: jest.fn(() => Promise.resolve()),
   isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),
   isCandidateAlreadyApplied: jest.fn(() => Promise.resolve(false)),

@@ -177,7 +177,7 @@ const useContract = (): ContractInteractionProps => {
     articleKey: BytesLike,
     quizIpfsHash: string
   ) => {
-    contract?.assignQuizIpfsHashToArticleOrResponse(
+    await contract?.assignQuizIpfsHashToArticleOrResponse(
       votingKey,
       articleKey,
       quizIpfsHash,
@@ -185,6 +185,17 @@ const useContract = (): ContractInteractionProps => {
     );
   };
 
+  const assignResponseIpfsHashToArticle = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    responseIpfsHash: string
+  ) => {
+    await contract?.publishProConArticleResponse(
+      votingKey,
+      articleKey,
+      responseIpfsHash
+    );
+  };
   // ********* GETTERS ***********
   const getAccountVotingRelatedQuestionIndexes = async (
     votingKey: string,
@@ -212,7 +223,8 @@ const useContract = (): ContractInteractionProps => {
   // FIXME: add to BVS articleContentReadCheckAnswers[articleKey].length function
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getArticleContentReadCheckAnswersLength = async (articleKey: BytesLike) => Number(
-    10
+    0
+    // await contract?.articleContentReadCheckAnswers(articleKey, 0) !== '' ? 10 : 0
     //  contract.articleContentReadCheckAnswers[articleKey].length
   );
 
@@ -305,7 +317,7 @@ const useContract = (): ContractInteractionProps => {
 
   // FIXME: build and release a new contract with method: getVotingContentReadCheckAnswersLength
   const getVotingContentReadCheckAnswersLength = async (votingKey: BytesLike) => (
-    await contract?.votingContentReadCheckAnswers(votingKey, 0) !== '' ? 10 : 0
+    0// await contract?.votingContentReadCheckAnswers(votingKey, 0) !== '' ? 10 : 0
     // await contract?.getVotingContentReadCheckAnswersLength(votingKey) || []
   );
 
@@ -398,6 +410,7 @@ const useContract = (): ContractInteractionProps => {
     assignArticleToVoting,
     assignQuizIpfsHashToVoting,
     assignQuizIpfsHashToArticle,
+    assignResponseIpfsHashToArticle,
     applyForCitizenshipRole,
     closeElections,
     completeVotingContentCheckQuiz,

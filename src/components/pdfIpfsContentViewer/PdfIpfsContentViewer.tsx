@@ -2,16 +2,17 @@ import { IPFS_GATEWAY_URL } from '@global/constants/general';
 import { Button } from '@mui/material';
 
 type Props = {
-  ipfsHash: string | undefined
+  ipfsHash: string | undefined,
+  css?: any
 };
 
-const PdfIpfsContentViewer = ({ ipfsHash }: Props) => {
+const PdfIpfsContentViewer = ({ ipfsHash, css = {} }: Props) => {
   const viewIpfsPdf = () => {
     window.open(`${IPFS_GATEWAY_URL}/${ipfsHash}`, '_blank', 'rel=noopener noreferrer');
   };
 
   return (
-    <Button disabled={!ipfsHash} onClick={viewIpfsPdf}>VIEW</Button>
+    <Button disabled={!ipfsHash} sx={css} onClick={viewIpfsPdf}>VIEW</Button>
   );
 };
 

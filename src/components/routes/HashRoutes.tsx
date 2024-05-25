@@ -68,6 +68,12 @@ const RegisterAsCandidatePage = lazy(
   () => import('@pages/elections/register-as-candidate/RegisterAsCandidatePage')
 );
 
+// articles
+
+const AssignResponseToVotingPage = lazy(
+  () => import('@pages/articles/assign-response-to-article/AssignResponseToArticlePage')
+);
+
 const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   const { hash } = useLocation();
 
@@ -137,6 +143,12 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
 
   if (hash.includes('#register_as_candidate')) {
     return <RegisterAsCandidatePage />;
+  }
+
+  // articles
+
+  if (hash.includes('#assign_response_to_article')) {
+    return <AssignResponseToVotingPage />;
   }
 
   return (
