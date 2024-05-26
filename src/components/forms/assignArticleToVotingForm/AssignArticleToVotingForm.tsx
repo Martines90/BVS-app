@@ -20,7 +20,7 @@ import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import { useLocation } from 'react-router-dom';
 import IpfsFileUpload, { FileInfo } from '../components/IpfsFileUpload';
 
-type ProConArticleData = {
+export type ProConArticleData = {
   articleKey: string;
   contentIpfsHash: string;
   voteOnA: 'yes' | 'no';

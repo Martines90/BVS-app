@@ -221,12 +221,47 @@ const useContract = (): ContractInteractionProps => {
       responseIpfsHash
     );
   };
+
+  const completeArticleContentCheckQuiz = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    answers: string[]
+  ) => {
+    await contract?.completeContentReadQuiz(BigInt(2), votingKey, articleKey, answers);
+  };
+
+  const completeArticleResponseContentCheckQuiz = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    answers: string[]
+  ) => {
+    await contract?.completeContentReadQuiz(BigInt(3), votingKey, articleKey, answers);
+  };
+
   // ********* GETTERS ***********
   const getAccountVotingRelatedQuestionIndexes = async (
     votingKey: string,
     accountKey: AddressLike
   ) => ((
     (await contract?.getAccountVotingQuizAnswerIndexes(votingKey, accountKey)) || []
+  ) as bigint[]).map((item) => Number(item));
+
+  const getAccountArticleRelatedQuestionIndexes = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    accountKey: AddressLike
+  ) => ((
+    (await contract?.getAccountArticleQuizAnswerIndexes(votingKey, articleKey, accountKey)) || []
+  ) as bigint[]).map((item) => Number(item));
+
+  const getAccountArticleResponseRelatedQuestionIndexes = async (
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    accountKey: AddressLike
+  ) => ((
+    (
+      await contract?.getAccountArticleResponseQuizAnswerIndexes(votingKey, articleKey, accountKey)
+    ) || []
   ) as bigint[]).map((item) => Number(item));
 
   const getAccountVotingScore = async (votingKey: BytesLike, accountAddress: AddressLike) => Number(
@@ -404,6 +439,8 @@ const useContract = (): ContractInteractionProps => {
     contract,
     getAccountVote,
     getAccountVotingRelatedQuestionIndexes,
+    getAccountArticleRelatedQuestionIndexes,
+    getAccountArticleResponseRelatedQuestionIndexes,
     getAccountVotingScore,
     getAdministratorAtIndex,
     getApproveVotingMinTimeAfterLimit,
@@ -449,6 +486,8 @@ const useContract = (): ContractInteractionProps => {
     assignResponseIpfsHashToArticle,
     applyForCitizenshipRole,
     closeElections,
+    completeArticleContentCheckQuiz,
+    completeArticleResponseContentCheckQuiz,
     completeVotingContentCheckQuiz,
     grantCitizenRole,
     applyForElectionsAsCandidate,

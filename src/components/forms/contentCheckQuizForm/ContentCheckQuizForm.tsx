@@ -1,10 +1,6 @@
 import PdfViewer from '@components/pdfViewer/PdfViewer';
-import { showSuccessToast } from '@components/toasts/Toasts';
-import { VotingInfo } from '@components/types/Types';
 import { IPFS_GATEWAY_URL } from '@global/constants/general';
 import { nthFormat } from '@global/helpers/number';
-import useContract from '@hooks/contract/useContract';
-import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
   Box,
   Button,
@@ -15,9 +11,9 @@ import { Field, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 
 type Props = {
-  votingInfo: VotingInfo;
-  setVotingInfo: React.Dispatch<React.SetStateAction<VotingInfo | undefined>>;
+  quizIpfsHash: string;
   accountQuestionIndexes: number[];
+  completeVotingQuizFn: any;
 };
 
 type Question = {
@@ -30,13 +26,10 @@ type QuizInfo = {
 };
 
 const ContentCheckQuizForm = ({
-  votingInfo,
-  setVotingInfo,
-  accountQuestionIndexes
+  quizIpfsHash,
+  accountQuestionIndexes,
+  completeVotingQuizFn
 }: Props) => {
-  const {
-    completeVotingContentCheckQuiz
-  } = useContract();
   const [quizInfo, setQuizInfo] = useState<QuizInfo>();
   const [answers, setAnswers] = useState<string[]>([]);
 
@@ -55,25 +48,9 @@ const ContentCheckQuizForm = ({
     renderQuizInfo();
   }, [accountQuestionIndexes]);
 
-  const completeVotingQuiz = async () => {
-    await asyncErrWrapper(completeVotingContentCheckQuiz)(
-      votingInfo.key || '',
-      answers
-    ).then(() => {
-      setVotingInfo({
-        ...votingInfo,
-        vote: {
-          ...votingInfo.vote,
-          isContentQuizCompleted: true
-        }
-      });
-      showSuccessToast('Voting quiz successfully completed');
-    });
-  };
-
   return (
     <Stack spacing={2}>
-      <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${votingInfo.contentCheckQuizIpfsHash}`} />
+      <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${quizIpfsHash}`} />
       <Divider />
       <Stack spacing={2}>
         {quizInfo?.accountQuestionIndexes.sort(
@@ -99,7 +76,7 @@ const ContentCheckQuizForm = ({
             />
           </Stack>
         ))}
-        <Button variant="contained" onClick={completeVotingQuiz}>COMPLETE QUIZ</Button>
+        <Button variant="contained" onClick={() => completeVotingQuizFn(answers)}>COMPLETE QUIZ</Button>
       </Stack>
     </Stack>
   );

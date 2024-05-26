@@ -13,14 +13,16 @@ type Props = {
 
 const ToggleListItem = ({ listItemComponent }: Props) => {
   const [open, setOpen] = React.useState(false);
-  const { labelText, component, icon } = listItemComponent;
+  const {
+    labelText, component, icon, css
+  } = listItemComponent;
 
   const handleClick = () => {
     setOpen(!open);
   };
 
   return (
-    <Box>
+    <Box sx={css}>
       <ListItemButton sx={{ pl: 0 }} onClick={handleClick}>
         {icon && (
         <ListItemIcon>

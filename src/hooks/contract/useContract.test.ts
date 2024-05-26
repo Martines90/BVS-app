@@ -138,6 +138,8 @@ const mockContract = {
   hasRole: jest.fn(() => Promise.resolve(true)),
   MIN_TOTAL_CONTENT_READ_CHECK_ANSWER: jest.fn(() => Promise.resolve(50)),
   getAccountVotingQuizAnswerIndexes: jest.fn(() => Promise.resolve([3, 4, 17, 33, 19])),
+  getAccountArticleQuizAnswerIndexes: jest.fn(() => Promise.resolve([5, 9, 22, 11, 1])),
+  getAccountArticleResponseQuizAnswerIndexes: jest.fn(() => Promise.resolve([20, 5, 13, 2, 8])),
   getAdminsSize: jest.fn(() => Promise.resolve(1)),
   getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
   getArticleKeysLength: jest.fn(() => Promise.resolve(1)),
@@ -609,11 +611,41 @@ describe('useContract', () => {
         );
       });
     });
+
+    describe('completeArticleContentCheckQuiz', () => {
+      it('should call completeContentReadQuiz contract function', async () => {
+        const { completeArticleContentCheckQuiz } = useContract();
+
+        await completeArticleContentCheckQuiz(mockVotingKeyHash, mockArtickeKeyHash, ['answer-1-hash', 'answer-2-hash']);
+
+        expect(
+          mockContract.completeContentReadQuiz.mock.calls[
+            mockContract.completeContentReadQuiz.mock.calls.length - 1]
+        ).toEqual(
+          [BigInt(2), mockVotingKeyHash, mockArtickeKeyHash, ['answer-1-hash', 'answer-2-hash']]
+        );
+      });
+    });
+
+    describe('completeArticleResponseContentCheckQuiz', () => {
+      it('should call completeContentReadQuiz contract function', async () => {
+        const { completeArticleResponseContentCheckQuiz } = useContract();
+
+        await completeArticleResponseContentCheckQuiz(mockVotingKeyHash, mockArtickeKeyHash, ['answer-1-hash', 'answer-2-hash']);
+
+        expect(
+          mockContract.completeContentReadQuiz.mock.calls[
+            mockContract.completeContentReadQuiz.mock.calls.length - 1]
+        ).toEqual(
+          [BigInt(3), mockVotingKeyHash, mockArtickeKeyHash, ['answer-1-hash', 'answer-2-hash']]
+        );
+      });
+    });
   });
 
   describe('getters', () => {
     describe('getAccountVotingRelatedQuestionIndexes', () => {
-      it('should call getAccountVotingQuizAnswerIndexes and return account related question indexes', async () => {
+      it('should call getAccountVotingQuizAnswerIndexes and return voting content related question indexes', async () => {
         const { getAccountVotingRelatedQuestionIndexes } = useContract();
 
         expect(
@@ -622,6 +654,46 @@ describe('useContract', () => {
 
         expect(mockContract.getAccountVotingQuizAnswerIndexes).toHaveBeenCalledWith(
           mockVotingKeyHash,
+          mockAccountKey
+        );
+      });
+    });
+
+    describe('getAccountArticleRelatedQuestionIndexes', () => {
+      it('should call getAccountArticleQuizAnswerIndexes and return article content related question indexes', async () => {
+        const { getAccountArticleRelatedQuestionIndexes } = useContract();
+
+        expect(
+          await getAccountArticleRelatedQuestionIndexes(
+            mockVotingKeyHash,
+            mockArtickeKeyHash,
+            mockAccountKey
+          )
+        ).toStrictEqual([5, 9, 22, 11, 1]);
+
+        expect(mockContract.getAccountArticleQuizAnswerIndexes).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
+          mockAccountKey
+        );
+      });
+    });
+
+    describe('getAccountArticleResponseRelatedQuestionIndexes', () => {
+      it('should call getAccountArticleResponseQuizAnswerIndexes and return response content related question indexes', async () => {
+        const { getAccountArticleResponseRelatedQuestionIndexes } = useContract();
+
+        expect(
+          await getAccountArticleResponseRelatedQuestionIndexes(
+            mockVotingKeyHash,
+            mockArtickeKeyHash,
+            mockAccountKey
+          )
+        ).toStrictEqual([20, 5, 13, 2, 8]);
+
+        expect(mockContract.getAccountArticleResponseQuizAnswerIndexes).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          mockArtickeKeyHash,
           mockAccountKey
         );
       });

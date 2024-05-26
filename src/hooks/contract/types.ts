@@ -69,6 +69,10 @@ export interface ContractInteractionProps {
     applicationFee: number): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
   closeElections(): Promise<void>,
+  completeArticleContentCheckQuiz(
+    votingKey: BytesLike, articleKey: BytesLike, answers: string[]): Promise<void>,
+  completeArticleResponseContentCheckQuiz(
+    votingKey: BytesLike, articleKey: BytesLike, answers: string[]): Promise<void>,
   completeVotingContentCheckQuiz(votingKey: BytesLike, answers: string[]): Promise<void>,
   grantCitizenRole(publicKey: AddressLike, applicationHash: BytesLike): Promise<void>;
   hasRole(role: USER_ROLES, walletAddress: AddressLike): Promise<boolean>;
@@ -85,6 +89,16 @@ export interface ContractInteractionProps {
   voteOnVoting(votingKey: BytesLike, voteOnA: boolean): Promise<void>;
   getAccountVotingRelatedQuestionIndexes(
     votingKey: BytesLike,
+    accountAddress: AddressLike
+  ): Promise<number[]>;
+  getAccountArticleRelatedQuestionIndexes(
+    votingKey: BytesLike,
+    articleKey: BytesLike,
+    accountAddress: AddressLike
+  ): Promise<number[]>;
+  getAccountArticleResponseRelatedQuestionIndexes(
+    votingKey: BytesLike,
+    articleKey: BytesLike,
     accountAddress: AddressLike
   ): Promise<number[]>;
   getAccountVote(votingKey: BytesLike, accountAddress: AddressLike): Promise<Vote>;
