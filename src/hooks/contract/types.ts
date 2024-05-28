@@ -135,8 +135,8 @@ export interface ContractInteractionProps {
   getPoliticalActorVotingCredits(accountKey: AddressLike): Promise<number>;
   getPoliticalActorVotingCycleVoteStartCount(
     accountKey: AddressLike, voteCycleCount: number): Promise<number>;
-  getVotingAssignedArticlesPublishedByAccount(
-    votingKey: BytesLike, account: AddressLike
+  getVotingAssignedArticlesPublished(
+    votingKey: BytesLike, account?: AddressLike
   ): Promise<ProConArticle[]>;
   getVotedOnCandidatePublicKey(): Promise<AddressLike>;
   getVotingCycleInterval(): Promise<number>;

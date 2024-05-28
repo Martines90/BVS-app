@@ -16,3 +16,5 @@ export enum TimeQuantities {
 export const TABLE_DISPLAY_MAX_ROWS = 10;
 
 export const IPFS_GATEWAY_URL = 'https://quicknode.quicknode-ipfs.com/ipfs';
+
+export const NON_EXISTING_ADDRESS = '0x0000000000000000000000000000000000000000000000000000000000000000';

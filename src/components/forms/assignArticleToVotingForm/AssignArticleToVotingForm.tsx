@@ -47,7 +47,7 @@ const formInitialValues = {
 const AssignArticleToVotingForm = () => {
   const { hash } = useLocation();
   const {
-    getVotingAssignedArticlesPublishedByAccount,
+    getVotingAssignedArticlesPublished,
     getPoliticalActorVotingCredits,
     getPoliticalActorPublishArticleToVotingsCount,
     assignArticleToVoting
@@ -75,7 +75,7 @@ const AssignArticleToVotingForm = () => {
 
   const loadAssignedArticles = async () => {
     if (votingKey) {
-      const articles = await asyncErrWrapper(getVotingAssignedArticlesPublishedByAccount)(
+      const articles = await asyncErrWrapper(getVotingAssignedArticlesPublished)(
         votingKey,
         userState.walletAddress || ''
       ) || [];

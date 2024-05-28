@@ -89,7 +89,8 @@ const ApproveResponseForm = () => {
           minTotalResponseCheckQuizAnswers: _minTotalCheckQuizAnswers,
           numOfAssignedResponseAnswers: (_numOfAssignedAnswers || 0),
           responseIpfsHash: (article?.responseStatementIpfsHash || ''),
-          responseContentCheckQuizIpfsHash: (article?.responseContentCheckQuizIpfsHash || '')
+          responseContentCheckQuizIpfsHash: (article?.responseContentCheckQuizIpfsHash || ''),
+          responseApproved: article?.isResponseApproved
         });
 
         if (article?.responseContentCheckQuizIpfsHash) {

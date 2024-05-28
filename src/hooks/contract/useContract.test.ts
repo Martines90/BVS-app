@@ -907,11 +907,11 @@ describe('useContract', () => {
       });
     });
 
-    describe('getVotingAssignedArticlesPublishedByAccount', () => {
+    describe('getVotingAssignedArticlesPublished', () => {
       it('should call votingCycleStartVoteCount and return number', async () => {
-        const { getVotingAssignedArticlesPublishedByAccount } = useContract();
+        const { getVotingAssignedArticlesPublished } = useContract();
 
-        expect(await getVotingAssignedArticlesPublishedByAccount(
+        expect(await getVotingAssignedArticlesPublished(
           mockVotingKeyHash,
           mockAccountKey
         )).toEqual(mockProConArticles);

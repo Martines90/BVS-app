@@ -157,7 +157,7 @@ export const mockContractFunctions = {
   getAdministratorAtIndex: jest.fn(
     (index: number) => Promise.resolve(mockAccountPublicKeys[index])
   ),
-  getVotingAssignedArticlesPublishedByAccount: jest.fn(
+  getVotingAssignedArticlesPublished: jest.fn(
     () => Promise.resolve(MOCK_PRO_CON_ARTICLES)
   ),
   getVotingContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(0)),

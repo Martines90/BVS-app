@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable max-lines */
 import { EMPTY_BYTES_32 } from '@global/constants/blockchain';
-import { TimeQuantities } from '@global/constants/general';
+import { NON_EXISTING_ADDRESS, TimeQuantities } from '@global/constants/general';
 import { isValidAddress } from '@global/helpers/validators';
 import { ContractRoleskeccak256, USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
@@ -315,22 +315,33 @@ const useContract = (): ContractInteractionProps => {
     await contract?.publishArticleToVotingsCount(account, votingKey) || 0
   );
 
-  const getVotingAssignedArticlesPublishedByAccount = async (
+  const getVotingAssignedArticlesPublished = async (
     votingKey: BytesLike,
-    account: AddressLike
+    account?: AddressLike
   ) => {
     const totalNNumOfArticles = Number(await contract?.getArticleKeysLength() || 0);
-    let startExitCount = false;
+    let startExitCount = !account;
     const articles: ProConArticle[] = [];
     let exitCounter = 0;
+    const limitToGoBack = account ? 20 : 40;
 
-    for (let i = totalNNumOfArticles - 1; i >= 0 && exitCounter < 20; i--) {
+    for (let i = totalNNumOfArticles - 1; i >= 0 && exitCounter < limitToGoBack; i--) {
       const articleKey = await contract?.articleKeys(BigInt(i)) || '';
       const votingRelatedArticle = await contract?.proConArticles(votingKey, articleKey);
+
+      console.log('votingRelatedArticle:', votingRelatedArticle);
+
+      if (votingRelatedArticle?.votingKey === NON_EXISTING_ADDRESS) {
+        continue;
+      }
       // FIX ME: make publisher to Address type instead of string
-      if (votingRelatedArticle?.[3].toLowerCase() === String(account).toLowerCase()) {
+      if (account) {
+        if (votingRelatedArticle?.[3].toLowerCase() === String(account).toLowerCase()) {
+          articles.push(articleRawDataToArticle(articleKey, votingRelatedArticle));
+          startExitCount = true;
+        }
+      } else if (votingRelatedArticle) {
         articles.push(articleRawDataToArticle(articleKey, votingRelatedArticle));
-        startExitCount = true;
       }
 
       if (startExitCount) {
@@ -469,7 +480,7 @@ const useContract = (): ContractInteractionProps => {
     getPoliticalActorVotingCredits,
     getPoliticalActorVotingCycleVoteStartCount,
     getPoliticalActorPublishArticleToVotingsCount,
-    getVotingAssignedArticlesPublishedByAccount,
+    getVotingAssignedArticlesPublished,
     getVotedOnCandidatePublicKey,
     getVotingContentCheckAnswerAtIndex,
     getVotingContentReadCheckAnswersLength,

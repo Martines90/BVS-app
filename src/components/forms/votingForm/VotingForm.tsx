@@ -41,7 +41,7 @@ const VotingForm = () => {
     getAccountArticleRelatedQuestionIndexes,
     getAccountArticleResponseRelatedQuestionIndexes,
     getVotingDuration,
-    getVotingAssignedArticlesPublishedByAccount,
+    getVotingAssignedArticlesPublished,
     getAccountVote,
     voteOnVoting,
     completeVotingContentCheckQuiz,
@@ -72,17 +72,23 @@ const VotingForm = () => {
       const votingDuration = await asyncErrWrapper(getVotingDuration)() || 0;
 
       const articles = await Promise.all(
-        (await asyncErrWrapper(getVotingAssignedArticlesPublishedByAccount)(
-          votingKey,
-          userState.walletAddress || ''
+        (await asyncErrWrapper(getVotingAssignedArticlesPublished)(
+          votingKey
         ) || []).map(async (_article) => {
-          const articleContentCheckQuestionIndexes = await asyncErrWrapper(
-            getAccountArticleRelatedQuestionIndexes
-          )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
+          let articleContentCheckQuestionIndexes: number[] = [];
+          let articleResponseCheckQuestionIndexes: number[] = [];
 
-          const articleResponseCheckQuestionIndexes = await asyncErrWrapper(
-            getAccountArticleResponseRelatedQuestionIndexes
-          )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
+          if (_article?.isArticleApproved) {
+            articleContentCheckQuestionIndexes = await asyncErrWrapper(
+              getAccountArticleRelatedQuestionIndexes
+            )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
+          }
+
+          if (_article?.isResponseApproved) {
+            articleResponseCheckQuestionIndexes = await asyncErrWrapper(
+              getAccountArticleResponseRelatedQuestionIndexes
+            )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
+          }
 
           return {
             ..._article,
@@ -274,10 +280,10 @@ const VotingForm = () => {
                         [] as any[],
                         (votingInfo?.proConArticles?.map((article: ProConArticleExt, index) => ([
                           {
-                            labelText: `${index + 1}# article (${article.isVoteOnA ? 'vote on A' : 'vote on B'})`,
+                            labelText: `${index + 1}# article (${article.isVoteOnA ? 'vote on A' : 'vote on B'}) - approved: ${article.isArticleApproved ? 'yes' : 'no'}`,
                             component: (
                               <ToggleList
-                                listItemComponents={[
+                                listItemComponents={article.isArticleApproved ? [
                                   {
                                     labelText: 'Content description',
                                     component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${article.articleIpfsHash}`} />,
@@ -286,24 +292,31 @@ const VotingForm = () => {
                                   {
                                     labelText: 'Content check quiz',
                                     component:
-  <ContentCheckQuizForm
-    quizIpfsHash={article.articleContentCheckQuizIpfsHash || ''}
-    accountQuestionIndexes={article.articleContentCheckQuestionIndexes || []}
-    completeVotingQuizFn={(answers: string[]) => completeArticleQuiz(article.articleKey, answers)}
-  />,
+                                  <ContentCheckQuizForm
+                                    quizIpfsHash={article.articleContentCheckQuizIpfsHash || ''}
+                                    accountQuestionIndexes={
+                                      article.articleContentCheckQuestionIndexes || []
+                                    }
+                                    completeVotingQuizFn={
+                                      (answers: string[]) => completeArticleQuiz(
+                                        article.articleKey,
+                                        answers
+                                      )
+                                    }
+                                  />,
                                     css: { marginLeft: '20px' }
 
                                   }
-                                ]}
+                                ] : []}
                               />
                             ),
                             icon: <ArticleIcon />
                           },
                           {
-                            labelText: `Response on article ${index + 1}#`,
+                            labelText: `Response on article ${index + 1}# - approved: ${article.isResponseApproved ? 'yes' : 'no'}`,
                             component: (
                               <ToggleList
-                                listItemComponents={[
+                                listItemComponents={article.isResponseApproved ? [
                                   {
                                     labelText: 'Content description',
                                     component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${article.responseStatementIpfsHash}`} />,
@@ -312,17 +325,22 @@ const VotingForm = () => {
                                   {
                                     labelText: 'Content check quiz',
                                     component:
-  <ContentCheckQuizForm
-    quizIpfsHash={article.responseContentCheckQuizIpfsHash}
-    accountQuestionIndexes={article?.articleResponseCheckQuestionIndexes || []}
-    completeVotingQuizFn={
-      (answers: string[]) => completeArticleResponseQuiz(article.articleKey, answers)
-    }
-  />,
+                                  <ContentCheckQuizForm
+                                    quizIpfsHash={article.responseContentCheckQuizIpfsHash}
+                                    accountQuestionIndexes={
+                                      article?.articleResponseCheckQuestionIndexes || []
+                                    }
+                                    completeVotingQuizFn={
+                                      (answers: string[]) => completeArticleResponseQuiz(
+                                        article.articleKey,
+                                        answers
+                                      )
+                                    }
+                                  />,
                                     css: { marginLeft: '20px' }
 
                                   }
-                                ]}
+                                ] : []}
                               />
                             ),
                             icon: <ArticleIcon />

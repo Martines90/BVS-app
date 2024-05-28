@@ -59,7 +59,7 @@ const PopoverText = ({ text, popText }: Props) => {
           horizontal: 'left'
         }}
         onClose={handlePopoverClose}
-        onMouseEnter={() => console.log('mouse entered')}
+        onMouseEnter={() => {}}
       >
         <Typography sx={{ p: 1 }}>{popText}</Typography>
       </Popover>
