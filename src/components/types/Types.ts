@@ -18,4 +18,5 @@ export type VotingInfo = {
   voteOnAScore?: number;
   voteOnBScore?: number;
   vote?: Vote;
+  votingContentCheckQuizIndexes?: number[];
 };

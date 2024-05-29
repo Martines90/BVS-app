@@ -329,8 +329,6 @@ const useContract = (): ContractInteractionProps => {
       const articleKey = await contract?.articleKeys(BigInt(i)) || '';
       const votingRelatedArticle = await contract?.proConArticles(votingKey, articleKey);
 
-      console.log('votingRelatedArticle:', votingRelatedArticle);
-
       if (votingRelatedArticle?.votingKey === NON_EXISTING_ADDRESS) {
         continue;
       }

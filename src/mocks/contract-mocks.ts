@@ -140,6 +140,8 @@ export const MOCK_PRO_CON_ARTICLES: ProConArticle[] = [
 ];
 
 export const mockContractFunctions = {
+  getAccountArticleRelatedQuestionIndexes: jest.fn(() => Promise.resolve([3, 9, 4, 1, 2])),
+  getAccountArticleResponseRelatedQuestionIndexes: jest.fn(() => Promise.resolve([3, 9, 1, 6, 5])),
   getAccountVotingScore: jest.fn(() => Promise.resolve(0)),
   getAccountVotingRelatedQuestionIndexes: jest.fn(() => Promise.resolve([2, 6, 10, 8, 1])),
   getAccountVote: jest.fn(() => Promise.resolve({ voted: false, isContentQuizCompleted: false })),
@@ -199,6 +201,8 @@ export const mockContractFunctions = {
   getVotingKeyAtIndex: jest.fn((index: number) => Promise.resolve(MOCK_VOTING_KEY_HASHES[index])),
   assignArticleToVoting: jest.fn(() => Promise.resolve()),
   assignResponseIpfsHashToArticle: jest.fn(() => Promise.resolve()),
+  completeArticleContentCheckQuiz: jest.fn(() => Promise.resolve()),
+  completeArticleResponseContentCheckQuiz: jest.fn(() => Promise.resolve()),
   isAccountAppliedForCitizenship: jest.fn(() => Promise.resolve(false)),
   isThereOngoingElections: jest.fn(() => Promise.resolve(false)),
   isCandidateAlreadyApplied: jest.fn(() => Promise.resolve(false)),

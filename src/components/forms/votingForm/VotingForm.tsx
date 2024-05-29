@@ -13,7 +13,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
@@ -52,7 +51,6 @@ const VotingForm = () => {
   const [votingKey, setVotingKey] = useState(getVotingKeyFromHash(hash));
   const [votingKeyFieldVal, setVotingKeyFieldVal] = useState(votingKey);
   const [votingInfo, setVotingInfo] = useState<VotingInfo | undefined>();
-  const [accountQuestionIndexes, setAccountQuestionIndexes] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const now = getNow();
@@ -78,13 +76,15 @@ const VotingForm = () => {
           let articleContentCheckQuestionIndexes: number[] = [];
           let articleResponseCheckQuestionIndexes: number[] = [];
 
-          if (_article?.isArticleApproved) {
+          if (_article?.articleContentCheckQuizIpfsHash !== '') {
+            // FIX ME
             articleContentCheckQuestionIndexes = await asyncErrWrapper(
               getAccountArticleRelatedQuestionIndexes
             )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
           }
 
-          if (_article?.isResponseApproved) {
+          if (_article?.responseContentCheckQuizIpfsHash !== '') {
+            // FIX ME
             articleResponseCheckQuestionIndexes = await asyncErrWrapper(
               getAccountArticleResponseRelatedQuestionIndexes
             )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
@@ -99,15 +99,13 @@ const VotingForm = () => {
       );
 
       let _accountQuestionIndexes: number[] = [];
-      if (voting?.approved) {
+      if (voting?.votingContentCheckQuizIpfsHash !== '') {
         // eslint-disable-next-line max-len
         // FIXME : there is zero division at getAccountQuizAnswerIndexes call cause of votingContentReadCheckAnswers[_votingKey].length
         _accountQuestionIndexes = await asyncErrWrapper(
           getAccountVotingRelatedQuestionIndexes
         )(voting?.key || '', userState.walletAddress || '') || [];
       }
-
-      setAccountQuestionIndexes(_accountQuestionIndexes);
 
       const isVotingActive = now > (
         voting?.startDate || 0) && now < (voting?.startDate || 0) + votingDuration;
@@ -124,7 +122,8 @@ const VotingForm = () => {
         numberOfVotes: voting?.voteCount || 0,
         voteOnAScore: voting?.voteOnAScore || 0,
         voteOnBScore: voting?.voteOnBScore || 0,
-        vote
+        vote,
+        votingContentCheckQuizIndexes: _accountQuestionIndexes
       });
     } else {
       setVotingInfo(undefined);
@@ -196,86 +195,74 @@ const VotingForm = () => {
     && votingInfo.vote?.isContentQuizCompleted
     && !votingInfo.vote?.voted;
 
-  const initialValues: any = {};
-
-  accountQuestionIndexes.forEach((qIndex) => {
-    initialValues[`answer-${qIndex}`] = '';
-  });
-
   return (
     <FormContainer css={{ maxWidth: 1000, width: 1000 }}>
       <FormTitle>Voting</FormTitle>
       <LoadContent condition={isLoading}>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={() => {}}
-        >
-          {() => (
-            <Form>
-              <Stack spacing={2}>
-                <Stack direction="row" spacing={2}>
-                  <Typography sx={{
-                    fontWeight: 'bold',
-                    lineHeight: '50px',
-                    display: 'table-cell'
-                  }}
-                  >Key:
-                  </Typography>
-                  <TextField
-                    name="voting-key"
-                    fullWidth
-                    value={votingKeyFieldVal}
-                    onChange={
+        <Stack spacing={2}>
+          <Stack direction="row" spacing={2}>
+            <Typography sx={{
+              fontWeight: 'bold',
+              lineHeight: '50px',
+              display: 'table-cell'
+            }}
+            >Key:
+            </Typography>
+            <TextField
+              name="voting-key"
+              fullWidth
+              value={votingKeyFieldVal}
+              onChange={
                           (e) => { setVotingKeyFieldVal(e.target.value); }
                         }
-                  />
-                  <Button sx={{ width: '200px' }} variant="contained" onClick={() => loadVoting()}>LOAD VOTING</Button>
-                </Stack>
-                {votingInfo?.key === '' && (
-                  <Alert severity="info">
-                    There is no existing voting under this key.
-                  </Alert>
-                )}
-                {!!votingInfo && (
-                <Stack spacing={2}>
-                  <Stack direction="row" spacing={10}>
-                    <Stack>
-                      <LabelText label="Start date:" text={votingInfo.startDate} />
-                      <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
-                      <LabelComponent label="Active:" component={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
-                      <LabelComponent label="Content check quiz completed:" component={<YesNoText text={votingInfo.vote?.isContentQuizCompleted ? 'yes' : 'no'} />} />
-                    </Stack>
-                    <Stack>
-                      <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />
-                      <LabelText label='Score on "Yes":' text={votingInfo.voteOnAScore} />
-                      <LabelText label='Score on "No":' text={votingInfo.voteOnBScore} />
-                      <LabelComponent label="Voted:" component={<YesNoText text={votingInfo.vote?.voted ? 'yes' : 'no'} />} />
-                    </Stack>
-                  </Stack>
-                  <LabelText label="Your voting score:" text={votingInfo.relatedVotingScore} />
-                  <SubTitle text="Voting content" />
-                  <ToggleList
-                    listItemComponents={[
-                      {
-                        labelText: 'Voting content description',
-                        component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${votingInfo.contentIpfsHash}`} />,
-                        icon: <ArticleIcon />
-                      },
-                      {
-                        labelText: `Voting content check quiz ${votingInfo.approved ? '' : '(not assigned yet)'}`,
-                        component:
+            />
+            <Button sx={{ width: '200px' }} variant="contained" onClick={() => loadVoting()}>LOAD VOTING</Button>
+          </Stack>
+          {votingInfo?.key === '' && (
+          <Alert severity="info">
+            There is no existing voting under this key.
+          </Alert>
+          )}
+          {!!votingInfo && (
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={10}>
+              <Stack>
+                <LabelText label="Start date:" text={votingInfo.startDate} />
+                <LabelComponent label="Approved:" component={<YesNoText text={votingInfo.approved ? 'yes' : 'no'} />} />
+                <LabelComponent label="Active:" component={<YesNoText text={votingInfo.active ? 'yes' : 'no'} />} />
+                <LabelComponent label="Content check quiz completed:" component={<YesNoText text={votingInfo.vote?.isContentQuizCompleted ? 'yes' : 'no'} />} />
+              </Stack>
+              <Stack>
+                <LabelText label="Total number of votes:" text={votingInfo.numberOfVotes} />
+                <LabelText label='Score on "Yes":' text={votingInfo.voteOnAScore} />
+                <LabelText label='Score on "No":' text={votingInfo.voteOnBScore} />
+                <LabelComponent label="Voted:" component={<YesNoText text={votingInfo.vote?.voted ? 'yes' : 'no'} />} />
+              </Stack>
+            </Stack>
+            <LabelText label="Your voting score:" text={votingInfo.relatedVotingScore} />
+            <SubTitle text="Voting content" />
+            <ToggleList
+              listItemComponents={[
+                {
+                  labelText: 'Voting content description',
+                  component: <PdfViewer documentUrl={`${IPFS_GATEWAY_URL}/${votingInfo.contentIpfsHash}`} />,
+                  icon: <ArticleIcon />
+                },
+                {
+                  labelText: `Voting content check quiz${votingInfo.contentCheckQuizIpfsHash ? '' : ' (not assigned yet)'}`,
+                  component:
   <ContentCheckQuizForm
     quizIpfsHash={votingInfo.contentCheckQuizIpfsHash || ''}
-    accountQuestionIndexes={accountQuestionIndexes}
+    accountQuestionIndexes={votingInfo.votingContentCheckQuizIndexes || []}
     completeVotingQuizFn={completeVotingQuiz}
   />,
-                        icon: <QuizIcon />
-                      }
-                    ]}
-                  />
-                  <SubTitle text="Assigned pro/con articles & responses" />
-                  <ToggleList
-                    listItemComponents={
+                  icon: <QuizIcon />
+                }
+              ]}
+            />
+            <SubTitle text="Assigned pro/con articles & responses" />
+            <ToggleList
+              listItemComponents={
                       ([] as any).concat.apply(
                         [] as any[],
                         (votingInfo?.proConArticles?.map((article: ProConArticleExt, index) => ([
@@ -349,18 +336,15 @@ const VotingForm = () => {
                         )) || [])
                       )
                   }
-                  />
+            />
 
-                  <Stack direction="row" spacing={2}>
-                    <Button sx={{ width: '50%' }} onClick={() => vote(true)} disabled={!canVote} variant="contained">YES</Button>
-                    <Button sx={{ width: '50%' }} onClick={() => vote(false)} disabled={!canVote} variant="contained">NO</Button>
-                  </Stack>
-                </Stack>
-                )}
-              </Stack>
-            </Form>
+            <Stack direction="row" spacing={2}>
+              <Button sx={{ width: '50%' }} onClick={() => vote(true)} disabled={!canVote} variant="contained">YES</Button>
+              <Button sx={{ width: '50%' }} onClick={() => vote(false)} disabled={!canVote} variant="contained">NO</Button>
+            </Stack>
+          </Stack>
           )}
-        </Formik>
+        </Stack>
       </LoadContent>
     </FormContainer>
   );

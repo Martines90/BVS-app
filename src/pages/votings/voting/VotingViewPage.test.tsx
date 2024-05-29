@@ -1,8 +1,15 @@
 /* eslint-disable no-await-in-loop */
 import { TimeQuantities } from '@global/constants/general';
 import * as dateHelpers from '@global/helpers/date';
+import { ProConArticle } from '@hooks/contract/types';
 import { MOCK_FUTURE_TIMESTAMP } from '@mocks/common-mocks';
-import { MOCK_VOTINGS, MOCK_VOTING_KEY_HASHES, mockContractFunctions } from '@mocks/contract-mocks';
+import {
+  MOCK_ARTICLE_KEYS,
+  MOCK_VOTINGS,
+  MOCK_VOTING_KEY_HASHES,
+  mockAccountPublicKeys,
+  mockContractFunctions
+} from '@mocks/contract-mocks';
 import userEvent from '@testing-library/user-event';
 import {
   act, mockedUseLocation, render, screen
@@ -13,6 +20,23 @@ jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions
 }));
+
+const MOCK_PRO_CON_ARTICLES_APPROVED: ProConArticle[] = [
+  ...MOCK_ARTICLE_KEYS.map((articleKey, index) => (
+    {
+      articleKey,
+      votingKey: MOCK_VOTING_KEY_HASHES[0],
+      isArticleApproved: true,
+      isResponseApproved: true,
+      publisher: mockAccountPublicKeys[0],
+      articleIpfsHash: `article-test-ipfs-hash-${index}`,
+      isVoteOnA: true,
+      responseStatementIpfsHash: `response-statement-ipfs-hash-${index}`,
+      articleContentCheckQuizIpfsHash: `article-content-check-quiz-ipfs-hash-${index}`,
+      responseContentCheckQuizIpfsHash: `response-content-test-ipfs-hash-${index}`
+    }
+  ))
+];
 
 describe('VotingViewPage', () => {
   let container: any;
@@ -35,6 +59,10 @@ describe('VotingViewPage', () => {
     mockContractFunctions.getAccountVote.mockReturnValueOnce(Promise.resolve({
       voted: false, isContentQuizCompleted: true
     }));
+
+    mockContractFunctions.getVotingAssignedArticlesPublished.mockReturnValue(
+      Promise.resolve(MOCK_PRO_CON_ARTICLES_APPROVED)
+    );
 
     await act(async () => {
       ({ container } = render(<VotingViewPage />));
@@ -110,23 +138,90 @@ describe('VotingViewPage', () => {
 
     await userEvent.click(screen.getByText('Voting content check quiz'));
 
-    const answers = [];
+    const answersToVotingCheck = [];
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const i of [2, 6, 10, 8, 1]) {
       const answerField1 = container.querySelector(`input[name="answer-${i}"]`);
       await userEvent.type(answerField1, `test answer ${i}`);
-      answers.push(`test answer ${i}`);
+      answersToVotingCheck.push(`test answer ${i}`);
     }
 
     await userEvent.click(screen.getByRole('button', { name: 'COMPLETE QUIZ' }));
 
     expect(mockContractFunctions.completeVotingContentCheckQuiz).toHaveBeenCalledWith(
       voting2.key,
-      answers
+      answersToVotingCheck
     );
 
     expect(screen.queryAllByText('no').length).toBe(2);
     expect(screen.queryAllByText('yes').length).toBe(2);
+
+    await userEvent.click(screen.getByText('Voting content check quiz'));
+
+    // complete article
+
+    expect(screen.queryByText('Assigned pro/con articles & responses')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByText('1# article (vote on A) - approved: yes'));
+    await userEvent.click(screen.getByText('Content check quiz'));
+
+    const answersToArticleContentCheck = [];
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const i of [3, 9, 4, 1, 2]) {
+      const answerField1 = container.querySelector(`input[name="answer-${i}"]`);
+      await userEvent.type(answerField1, `test answer ${i}`);
+      answersToArticleContentCheck.push(`test answer ${i}`);
+    }
+
+    await userEvent.click(screen.getByRole('button', { name: 'COMPLETE QUIZ' }));
+
+    expect(mockContractFunctions.completeArticleContentCheckQuiz).toHaveBeenCalledWith(
+      voting2.key,
+      MOCK_PRO_CON_ARTICLES_APPROVED[0].articleKey,
+      answersToArticleContentCheck
+    );
+
+    await userEvent.click(screen.getByText('1# article (vote on A) - approved: yes'));
+
+    // complete response
+
+    await userEvent.click(screen.getByText('Response on article 1# - approved: yes'));
+    await userEvent.click(screen.getByText('Content check quiz'));
+
+    const answersToArticleResponseContentCheck = [];
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const i of [3, 9, 1, 6, 5]) {
+      const answerField1 = container.querySelector(`input[name="answer-${i}"]`);
+      await userEvent.type(answerField1, `test answer ${i}`);
+      answersToArticleResponseContentCheck.push(`test answer ${i}`);
+    }
+
+    await userEvent.click(screen.getByRole('button', { name: 'COMPLETE QUIZ' }));
+
+    expect(mockContractFunctions.completeArticleResponseContentCheckQuiz).toHaveBeenCalledWith(
+      voting2.key,
+      MOCK_PRO_CON_ARTICLES_APPROVED[0].articleKey,
+      answersToArticleResponseContentCheck
+    );
+
+    // check all the articles & responses
+
+    let i = 0;
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const article of MOCK_PRO_CON_ARTICLES_APPROVED) {
+      expect(
+        screen.queryByText(
+          `${i + 1}# article (vote on ${article.isVoteOnA ? 'A' : 'B'}) - approved: ${article.isArticleApproved ? 'yes' : 'no'}`
+        )
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByText(
+          `Response on article ${i + 1}# - approved: ${article.isResponseApproved ? 'yes' : 'no'}`
+        )
+      ).toBeInTheDocument();
+      i++;
+    }
 
     // Try load non existing voting
 
