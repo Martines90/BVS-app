@@ -6,7 +6,7 @@ const ApplyForCitizenshipWarning = () => (
     sx={{ margin: '10px auto' }}
     severity="warning"
     action={(
-      <LinkText navigateTo="community/apply-for-citizenship">
+      <LinkText navigateTo="community#apply_for_citizenship">
         Apply for citizenship
       </LinkText>
       )}

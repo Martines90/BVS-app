@@ -1,6 +1,9 @@
+/* eslint-disable max-lines */
+import DateTextField from '@components/general/DateTextField/DateTextField';
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { CircularProgressM } from '@components/general/Loaders/components/CircularProgress';
-import { toKeccak256HashToBytes32 } from '@global/helpers/hash-manipulation';
+import { getNow } from '@global/helpers/date';
+import { toBytes32ToKeccak256 } from '@global/helpers/hash-manipulation';
 import { USER_ROLES } from '@global/types/user';
 import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
@@ -15,20 +18,15 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { BytesLike } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { keccak256 } from 'js-sha3';
 import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
-
-// Yup validation schema
-const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required')
-});
 
 type ContractInfo = {
   citizenshipApplicationFee?: number;
@@ -36,9 +34,21 @@ type ContractInfo = {
   hasCitizenRole?: boolean;
 };
 
+type UserInfo = {
+  email?: string;
+  firstName?: string;
+  middleNames?: string;
+  lastName?: string;
+  birthDate?: Dayjs | null;
+  birthCountry?: string;
+  birthState?: string;
+  birthCity?: string;
+};
+
 const CitizenshipApplicationForm = () => {
-  const [hash, setHash] = useState('');
-  const [email, setEmail] = useState('');
+  const [hash, setHash] = useState<BytesLike>('');
+  const [userInfo, setUserInfo] = useState<UserInfo>({});
+  const [startDateOpen, setStartDateOpen] = useState(false);
   const { userState } = useUserContext();
   const {
     getCitizenRoleApplicationFee,
@@ -77,6 +87,25 @@ const CitizenshipApplicationForm = () => {
     setHash(keccak256(`${accountPublicKey}`).slice(0, 31));
   }, []);
 
+  useEffect(() => {
+    const userData = '';
+
+    setHash(
+      toBytes32ToKeccak256(
+        userData.concat(
+          userInfo.firstName || '',
+          userInfo.middleNames || '',
+          userInfo.lastName || '',
+          userInfo.birthDate?.format('DD/MM/YYYY') || '',
+          userInfo.birthCountry || '',
+          userInfo.birthState || '',
+          userInfo.birthCity || '',
+          accountPublicKey
+        )
+      )
+    );
+  }, [userInfo]);
+
   const callContractApplyForCitizenshipFn = async (
     applicantEmailPubKeyHash: BytesLike
   ) => contractInfo?.citizenshipApplicationFee
@@ -95,155 +124,249 @@ const CitizenshipApplicationForm = () => {
     );
   }
 
-  return (
-    <FormContainer>
-      <FormTitle>Citizenship Application Board</FormTitle>
-      <LoadContent condition={!contractInfo}>
-        <Formik
-          initialValues={{ email: '' }}
-          validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-          // Assuming `hash` is the state variable where the hash is stored
-            const applicationHash = toKeccak256HashToBytes32(
-              values.email + accountPublicKey
-            );
+  const startDate = dayjs(getNow());
 
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <FormContainer>
+        <FormTitle>Citizenship Application Board</FormTitle>
+        <LoadContent condition={!contractInfo}>
+          <Formik
+            initialValues={{
+              firstName: '',
+              middleNames: '',
+              lastName: '',
+              birthDate: undefined,
+              birthCountry: '',
+              birthState: '',
+              birthCity: ''
+            }}
+            onSubmit={(values, { setSubmitting }) => {
             // Call the smart contract function with the application hash
-            callContractApplyForCitizenshipFn(applicationHash)
-              .then(() => {
-                setContractInfo({
-                  ...contractInfo,
-                  appliedForCitizenship: true
+              callContractApplyForCitizenshipFn(hash)
+                .then(() => {
+                  setContractInfo({
+                    ...contractInfo,
+                    appliedForCitizenship: true
+                  });
+                })
+                .catch((error) => {
+                  // Handle errors if the smart contract interaction fails
+                  console.error(error);
+                })
+                .finally(() => {
+                  setSubmitting(false); // Finish the submission process
                 });
-              })
-              .catch((error) => {
-              // Handle errors if the smart contract interaction fails
-                console.error(error);
-              })
-              .finally(() => {
-                setSubmitting(false); // Finish the submission process
-              });
-          }}
-        >
-          {({
-            errors, touched, handleChange
-          }) => (
-            <Form>
-              <Stack spacing={2}>
+            }}
+          >
+            {({
+              errors, values, handleChange, setFieldValue
+            }) => (
+              <Form>
                 <Stack spacing={2}>
-                  <Typography variant="h6">
-                    Step 1: Apply for citizenship
-                  </Typography>
-                  {!contractInfo?.appliedForCitizenship ? (
-                    <Stack spacing={2}>
-                      <Typography>
-                        Citizenship application fee:{' '}
-                        {contractInfo?.citizenshipApplicationFee ? (
-                          <>
-                            {contractInfo?.citizenshipApplicationFee}
-                            {' (wei)'}
-                          </>
-                        ) : (
-                          <CircularProgressM />
-                        )}
-                      </Typography>
-                      <Typography>Your public key: {accountPublicKey}</Typography>
-                      <Field
-                        as={TextField}
-                        name="email"
-                        label="Email address"
-                        fullWidth
-                        error={touched.email && !!errors.email}
-                        helperText={touched.email && errors.email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          handleChange(e);
-                          setEmail(e.target.value);
-                          // Generate the hash whenever the email address changes
-                          setHash(
-                            keccak256(e.target.value + accountPublicKey).slice(
-                              0,
-                              31
-                            )
-                          );
-                        }}
-                      />
-                      <TextField
-                        disabled
-                        label="Application hash"
-                        value={hash} // Set the value to the state variable holding the hash
-                        fullWidth
-                      />
-                    </Stack>
-                  ) : (
-                    <Stack spacing={2}>
-                      <Alert severity="info">
-                        You citizenship application in the BVS blockchain contract
-                        already registered.
-                      </Alert>
-                    </Stack>
-                  )}
-                  <Box textAlign="center">
-                    <Button
-                      variant="contained"
-                      disabled={contractInfo?.appliedForCitizenship}
-                      type="submit"
-                    >
-                      Apply for citizenship
-                    </Button>
-                  </Box>
-                </Stack>
-                <Stack spacing={2}>
-                  <Typography variant="h6">
-                    Step 2: Send your application hash
-                  </Typography>
-                  <Typography>
-                    Send your application hash to{' '}
-                    <a href="mailto:application@bvs.gov">application@bvs.gov</a>
-                  </Typography>
-                  <Alert severity="warning">
-                    Important! Make sure:{' '}
+                  <Stack spacing={2}>
+                    {!contractInfo?.appliedForCitizenship ? (
+                      <Stack spacing={2}>
+                        <Typography variant="h6">
+                          Step 1: Apply for citizenship
+                        </Typography>
+                        <Alert severity="info">
+                          Important: Your personal data will not get stored/sent to anywhere
+                          , here we only generate a hash key and that will be stored only!
+                        </Alert>
+                        <Typography>
+                          Citizenship application fee:{' '}
+                          {contractInfo?.citizenshipApplicationFee ? (
+                            <>
+                              {contractInfo?.citizenshipApplicationFee}
+                              {' (wei)'}
+                            </>
+                          ) : (
+                            <CircularProgressM />
+                          )}
+                        </Typography>
+                        <Typography>Your public key: {accountPublicKey}</Typography>
+                        <Field
+                          as={TextField}
+                          name="firstName"
+                          label="First name"
+                          fullWidth
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange(e);
+                            setUserInfo({
+                              ...userInfo,
+                              firstName: e.target.value
+                            });
+                          }}
+                        />
+                        <Field
+                          as={TextField}
+                          name="middleNames"
+                          label="Middle name(s)"
+                          fullWidth
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange(e);
+                            setUserInfo({
+                              ...userInfo,
+                              middleNames: e.target.value
+                            });
+                          }}
+                        />
+                        <Field
+                          as={TextField}
+                          name="lastName"
+                          label="Last name"
+                          fullWidth
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange(e);
+                            setUserInfo({
+                              ...userInfo,
+                              lastName: e.target.value
+                            });
+                          }}
+                        />
+                        <DesktopDatePicker
+                          open={startDateOpen}
+                          onClose={() => setStartDateOpen(false)}
+                          onOpen={() => setStartDateOpen(true)}
+                          label="Birth date"
+                          name="birthDate"
+                          defaultValue={startDate}
+                          onChange={(value: Dayjs | null) => {
+                            setFieldValue('birthDate', value);
+                            setUserInfo({
+                              ...userInfo,
+                              birthDate: value
+                            });
+                          }}
+                          slots={{
+                            field: DateTextField
+                          }}
+                          slotProps={{
+                            field: {
+                              ...{
+                                setOpen: setStartDateOpen,
+                                dataTestId: 'birth-date',
+                                value: (values.birthDate as any)?.format('DD/MM/YYYY') || '',
+                                name: 'birth-date-field',
+                                error: errors.birthDate
+                              } as any
+                            }
+                          }}
+                        />
+                        <Field
+                          as={TextField}
+                          name="birthCountry"
+                          label="Birth country"
+                          fullWidth
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange(e);
+                            setUserInfo({
+                              ...userInfo,
+                              birthCountry: e.target.value
+                            });
+                          }}
+                        />
+                        <Field
+                          as={TextField}
+                          name="birthState"
+                          label="Birth state"
+                          fullWidth
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange(e);
+                            setUserInfo({
+                              ...userInfo,
+                              birthState: e.target.value
+                            });
+                          }}
+                        />
+                        <Field
+                          as={TextField}
+                          name="birthCity"
+                          label="Birth city"
+                          fullWidth
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange(e);
+                            setUserInfo({
+                              ...userInfo,
+                              birthCity: e.target.value
+                            });
+                          }}
+                        />
+                        <TextField
+                          disabled
+                          label="Application hash"
+                          value={hash} // Set the value to the state variable holding the hash
+                          fullWidth
+                        />
+                      </Stack>
+                    ) : (
+                      <Stack spacing={2}>
+                        <Typography variant="h6">
+                          Step 1: Apply for citizenship (completed)
+                        </Typography>
+                        <Alert severity="info">
+                          You citizenship application successfully{' '}
+                          registered into the blockchain network
+                        </Alert>
+                      </Stack>
+                    )}
+                    <Box textAlign="center">
+                      <Button
+                        variant="contained"
+                        disabled={contractInfo?.appliedForCitizenship}
+                        type="submit"
+                      >
+                        Apply for citizenship
+                      </Button>
+                    </Box>
+                  </Stack>
+                  <Stack spacing={2}>
+                    <Typography variant="h6">
+                      Step 2: Send your application info to{' '}
+                      <a href="mailto:application@bvs.gov">application@bvs.gov</a> email address
+                    </Typography>
+                    <Alert severity="warning">
+                      Important! Make sure your application email contains:
+                      <List sx={{ listStyleType: 'disc' }}>
+                        <ListItem>
+                          <Stack>
+                            <Typography>*Your public key:</Typography>
+                            <Typography sx={{ color: 'red' }}>
+                              {accountPublicKey}
+                            </Typography>
+                          </Stack>
+                        </ListItem>
+                      </List>
+                    </Alert>
+                  </Stack>
+                  <Stack spacing={2}>
+                    <Typography variant="h6">Step 3:</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }}>
+                      One of our administrators will contact you to organize the
+                      citizenship application interview process. Where we:
+                    </Typography>
                     <List sx={{ listStyleType: 'disc' }}>
                       <ListItem>
-                        <Stack>
-                          <Stack direction="row">
-                            <Typography>The email sent from:</Typography>
-                            <Typography sx={{ color: 'red' }}>{email}</Typography>
-                          </Stack>
-                          <Typography>
-                            and contains the following informations:
-                          </Typography>
-                        </Stack>
+                        <Typography>
+                          *Schedule a personal or video call
+                        </Typography>
                       </ListItem>
                       <ListItem>
-                        <Stack>
-                          <Typography>Your public key:</Typography>
-                          <Typography sx={{ color: 'red' }}>
-                            {accountPublicKey}
-                          </Typography>
-                        </Stack>
-                      </ListItem>
-                      <ListItem>
-                        <Stack>
-                          <Typography>Generated hash:</Typography>
-                          <Typography sx={{ color: 'red' }}>{hash}</Typography>
-                        </Stack>
+                        <Typography>
+                          *We ask for your documents to prove that your identity
+                          {' '}matches with your provided data
+                        </Typography>
                       </ListItem>
                     </List>
-                  </Alert>
+                  </Stack>
                 </Stack>
-                <Stack spacing={2}>
-                  <Typography variant="h6">Step 3:</Typography>
-                  <Typography>
-                    One of our administrators will contact you to organize the
-                    citizenship application interview process.
-                  </Typography>
-                </Stack>
-              </Stack>
-            </Form>
-          )}
-        </Formik>
-      </LoadContent>
-    </FormContainer>
+              </Form>
+            )}
+          </Formik>
+        </LoadContent>
+      </FormContainer>
+    </LocalizationProvider>
   );
 };
 
