@@ -20,8 +20,9 @@ type Props = {
   popoverDisplayFields?: string[],
   data: any[],
   currentPage: number,
-  handlePageChange: (_event: any, value: number) => void,
-  isLoadingData: boolean
+  handlePageChange?: (_event: any, value: number) => void,
+  isLoadingData: boolean,
+  cellCss?: any
 };
 
 const STableCell = styled(TableCell)(() => ({
@@ -33,18 +34,24 @@ const STableCell = styled(TableCell)(() => ({
   }
 }));
 
-const CellContent = styled('div')(() => ({
-  '&': {
-    overflow: 'hidden',
-    maxWidth: '100px',
-    textOverflow: 'ellipsis'
-  }
-}));
-
 const DataTable = ({
-  tableHeadFields, data, currentPage, handlePageChange, isLoadingData, popoverDisplayFields = []
+  tableHeadFields,
+  data,
+  currentPage,
+  handlePageChange = undefined,
+  isLoadingData,
+  popoverDisplayFields = [],
+  cellCss = {}
 }: Props) => {
   const totalPages = Math.ceil(data.length / TABLE_DISPLAY_MAX_ROWS);
+  const CellContent = styled('div')(() => ({
+    '&': {
+      overflow: 'hidden',
+      maxWidth: '100px',
+      textOverflow: 'ellipsis',
+      ...cellCss
+    }
+  }));
 
   return (
     <Box sx={{ p: 2, minWidth: '400px' }}>
@@ -93,6 +100,8 @@ const DataTable = ({
           </TableBody>
         </Table>
       </TableContainer>
+      {handlePageChange
+      && (
       <Pagination
         count={totalPages}
         page={currentPage}
@@ -108,6 +117,7 @@ const DataTable = ({
         )}
         sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}
       />
+      )}
     </Box>
   );
 };

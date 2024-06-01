@@ -65,6 +65,11 @@ const menuItems: MenuItem[] = [
         label: 'Apply for citizenship',
         route: 'community#apply_for_citizenship',
         modes: []
+      },
+      {
+        label: 'Constants',
+        route: 'community#constants',
+        modes: []
       }
     ]
   },

@@ -19,6 +19,10 @@ const AdministratorsPage = lazy(
   () => import('@pages/community/administrators/AdministratorsPage')
 );
 
+const ConstantsPage = lazy(
+  () => import('@pages/community/constants/ConstantsPage')
+);
+
 // approvals
 const ApproveCitizenshipApplicationPage = lazy(
   () => import('@pages/approvals/approve-citizenship-application/ApproveCitizenshipApplicationPage')
@@ -96,6 +100,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
 
   if (hash.includes('#apply_for_citizenship')) {
     return <ApplyForCitizenshipPage />;
+  }
+
+  if (hash.includes('#constants')) {
+    return <ConstantsPage />;
   }
 
   // approvals
