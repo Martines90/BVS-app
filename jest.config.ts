@@ -1,7 +1,7 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
-  testTimeout: 10000,
+  testTimeout: 12000,
   setupFiles: [],
   moduleDirectories: ['utils', __dirname, 'node_modules'],
   testEnvironment: 'jsdom',

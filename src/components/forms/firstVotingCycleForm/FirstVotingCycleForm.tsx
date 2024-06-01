@@ -77,6 +77,7 @@ const FirstVotingCycleForm = () => {
                     label="Voting cycles start date"
                     name="electionsStartDate"
                     minDate={minDate}
+                    defaultValue={minDate}
                     onChange={(value: Dayjs | null) => {
                       setFieldValue('startDate', value);
                     }}

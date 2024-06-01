@@ -15,6 +15,7 @@ type ConstantsData = {
 
 const ConstantsTable = () => {
   const { contract } = useContract();
+  const [rolesConstantData, setRolesConstantData] = useState<ConstantsData[]>([]);
   const [electionsConstantData, setElectionsConstantData] = useState<ConstantsData[]>([]);
   const [votingConstantData, setVotingConstantData] = useState<ConstantsData[]>([]);
   const [contentValidationData, setContentValidationData] = useState<ConstantsData[]>([]);
@@ -22,6 +23,27 @@ const ConstantsTable = () => {
 
   const loadConstants = async () => {
     setIsLoadingData(true);
+
+    // roles
+
+    const _rolesConstants: { [key: string]: number | string } = {};
+
+    _rolesConstants.MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED = `${await asyncErrWrapper(
+      async () => Number(await contract?.MIN_PERCENTAGE_GRANT_ADMIN_APPROVALS_REQUIRED() || 0)
+    )() || 0}%`;
+
+    _rolesConstants.MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE = `${await asyncErrWrapper(
+      async () => Number(await contract?.MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE() || 0)
+    )() || 0}%`;
+
+    _rolesConstants.CITIZEN_ROLE_APPLICATION_FEE = `${await asyncErrWrapper(
+      async () => Number(await contract?.citizenRoleApplicationFee() || 0)
+    )() || 0} wei`;
+
+    setRolesConstantData(Object.keys(_rolesConstants).map((key) => ({
+      name: key,
+      value: _rolesConstants[key]
+    })));
 
     const _electionConstants: { [key: string]: number | string } = {};
 
@@ -32,6 +54,10 @@ const ConstantsTable = () => {
     _electionConstants.MINIMUM_PERCENTAGE_OF_ELECTION_VOTES = `${await asyncErrWrapper(
       async () => Number(await contract?.MINIMUM_PERCENTAGE_OF_ELECTION_VOTES() || 0)
     )() || 0}%`;
+
+    _electionConstants.ELECTION_CANDIDATE_APPLICATION_FEE = `${await asyncErrWrapper(
+      async () => Number(await contract?.electionsCandidateApplicationFee() || 0)
+    )() || 0} wei`;
 
     setElectionsConstantData(Object.keys(_electionConstants).map((key) => ({
       name: key,
@@ -102,6 +128,14 @@ const ConstantsTable = () => {
   return (
     <LoadContent condition={false}>
       <Stack spacing={2}>
+        <SubTitle text="Roles" />
+        <DataTable
+          cellCss={{ maxWidth: '400px' }}
+          tableHeadFields={['Name', 'Value']}
+          data={rolesConstantData}
+          currentPage={1}
+          isLoadingData={isLoadingData}
+        />
         <SubTitle text="Elections" />
         <DataTable
           cellCss={{ maxWidth: '400px' }}

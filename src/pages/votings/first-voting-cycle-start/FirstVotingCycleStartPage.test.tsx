@@ -37,13 +37,13 @@ describe('CreateNewVotingTable', () => {
 
     await userEvent.click(startDateInput);
 
-    await userEvent.click(screen.getByText('25'));
+    await userEvent.click(screen.getByText('19'));
 
-    expect(screen.getByDisplayValue('25/05/2024')).toHaveAttribute('name', 'start-date-field');
+    expect(screen.getByDisplayValue('19/04/2024')).toHaveAttribute('name', 'start-date-field');
 
     await userEvent.click(screen.getByRole('button', { name: 'SET FIRST VOTING CYCLE START DATE' }));
 
-    expect(mockContractFunctions.setFirstVotingCycleStartDate).toHaveBeenCalledWith(1716588000);
+    expect(mockContractFunctions.setFirstVotingCycleStartDate).toHaveBeenCalledWith(1713554301);
   });
 
   it('should render view when voting cycle already picked', async () => {

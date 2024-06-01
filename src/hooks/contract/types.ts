@@ -82,6 +82,7 @@ export interface ContractInteractionProps {
   isHashMatchWithCitizenshipApplicationHash(
     publicKey: AddressLike, applicationHash: BytesLike): Promise<boolean>;
   isThereOngoingElections(): Promise<boolean>;
+  isVotingWon(votingKey: BytesLike, voteOnA: boolean): Promise<boolean>;
   scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
   scheduleNewVoting(ipfsHash: string, startDate: number, targetBudget: number): Promise<void>;
   setFirstVotingCycleStartDate(date: number): Promise<void>;
@@ -118,6 +119,7 @@ export interface ContractInteractionProps {
   getElectionsEndDate(): Promise<number>;
   getFirstVotingCycleStartDate(): Promise<number>;
   getMinTotalQuizCheckAnswers(): Promise<number>;
+  getMinPercentageOfVotes(): Promise<number>;
   getNumberOfAdministrators(): Promise<number>;
   getNumberOfCitizens(): Promise<number>;
   getNumberOfPoliticalActors(): Promise<number>;

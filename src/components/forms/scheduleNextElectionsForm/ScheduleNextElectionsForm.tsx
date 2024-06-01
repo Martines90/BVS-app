@@ -115,6 +115,7 @@ const ScheduleNextElectionsForm = () => {
                      label="Elections start date"
                      name="electionsStartDate"
                      minDate={defaultStartDate}
+                     defaultValue={defaultStartDate}
                      onChange={(value: Dayjs | null) => {
                        if (
                          !!value

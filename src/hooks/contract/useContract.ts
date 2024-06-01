@@ -87,6 +87,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.completeContentReadQuiz(BigInt(1), votingKey, EMPTY_BYTES_32, answers);
   };
 
+  const isVotingWon = async (votingKey: BytesLike, isVoteOnA: boolean) => Boolean(
+    contract?.isVotingWon(votingKey, isVoteOnA)
+  );
+
   const setFirstVotingCycleStartDate = async (date: number) => {
     await contract?.setFirstVotingCycleStartDate(date);
   };
@@ -406,6 +410,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.VOTING_CYCLE_INTERVAL() || 0
   ) * 1000;
 
+  const getMinPercentageOfVotes = async () => Number(
+    await contract?.MIN_PERCENTAGE_OF_VOTES() || 0
+  );
+
   const getVotingKeyAtIndex = async (index: number) => (
     (await contract?.votingKeys(BigInt(index)) || '0x0')
   ) as AddressLike;
@@ -470,6 +478,7 @@ const useContract = (): ContractInteractionProps => {
     getElectionsCandidatePublicKeyAtIndex,
     getElectionCandidateScore,
     getFirstVotingCycleStartDate,
+    getMinPercentageOfVotes,
     getNumberOfElectionCandidates,
     getVotingDuration,
     getVotingCycleMinCloseToTheEndTime,
@@ -488,6 +497,7 @@ const useContract = (): ContractInteractionProps => {
     addAnswersToResponseContent,
     addAnswersToVotingContent,
     approveVoting,
+    applyForElectionsAsCandidate,
     assignArticleToVoting,
     assignQuizIpfsHashToVoting,
     assignQuizIpfsHashToArticle,
@@ -499,8 +509,8 @@ const useContract = (): ContractInteractionProps => {
     completeArticleResponseContentCheckQuiz,
     completeVotingContentCheckQuiz,
     grantCitizenRole,
-    applyForElectionsAsCandidate,
     hasRole,
+    isVotingWon,
     scheduleNextElections,
     scheduleNewVoting,
     setFirstVotingCycleStartDate,
