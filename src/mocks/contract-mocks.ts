@@ -183,7 +183,7 @@ export const mockContractFunctions = {
   getNumberOfPoliticalActors: jest.fn(() => Promise.resolve(mockAccountPublicKeys.length)),
   getCitizenRoleApplicationFee: jest.fn(() => Promise.resolve(MOCK_CITIZENSHIP_APPLICATION_FEE)),
   getElectionCandidateApplicationFee: jest.fn(
-    () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
+    () => Promise.resolve(BigInt(MOCK_REGISTER_AS_CANDIDATE_FEE))
   ),
   getElectionsCandidatePublicKeyAtIndex: jest.fn(
     (index) => Promise.resolve(MOCK_CANDIDATE_ACCOUNT_KEYS[index])

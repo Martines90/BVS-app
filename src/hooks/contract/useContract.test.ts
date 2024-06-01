@@ -378,7 +378,7 @@ describe('useContract', () => {
       it('should call applyForElections contract function', async () => {
         const { applyForElectionsAsCandidate } = useContract();
 
-        await applyForElectionsAsCandidate(MOCK_REGISTER_AS_CANDIDATE_FEE);
+        await applyForElectionsAsCandidate(BigInt(MOCK_REGISTER_AS_CANDIDATE_FEE));
         expect(mockContract.applyForElections).toHaveBeenCalled();
       });
     });

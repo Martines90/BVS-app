@@ -68,7 +68,7 @@ export interface ContractInteractionProps {
     votingKey: BytesLike, articleKey: BytesLike, responseIpfsHash: string): Promise<void>;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
     applicationFee: bigint): Promise<void>;
-  applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
+  applyForElectionsAsCandidate(applicationFee: bigint): Promise<void>,
   closeElections(): Promise<void>,
   completeArticleContentCheckQuiz(
     votingKey: BytesLike, articleKey: BytesLike, answers: string[]): Promise<void>,

@@ -133,7 +133,7 @@ const useContract = (): ContractInteractionProps => {
   // Elections
 
   const applyForElectionsAsCandidate = async (
-    applicationFee: number
+    applicationFee: bigint
   ) => {
     await userState.contract?.applyForElections(
       {

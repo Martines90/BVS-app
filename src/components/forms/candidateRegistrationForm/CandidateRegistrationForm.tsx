@@ -13,7 +13,7 @@ import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 
 type ContractInfo = {
-  candidateApplicationFee?: number;
+  candidateApplicationFee?: bigint;
   registeredAsCandidate?: boolean;
   electionStartDate?: number;
 };
@@ -131,12 +131,12 @@ const CandidateRegistrationForm = () => {
                 <Stack spacing={2}>
                   <Typography>
                     Candidate application fee:{' '}
-                    {contractInfo?.candidateApplicationFee && (
+                    {contractInfo?.candidateApplicationFee ? (
                       <>
-                        {contractInfo.candidateApplicationFee}
+                        {contractInfo.candidateApplicationFee.toString()}
                         {' (wei)'}
                       </>
-                    )}
+                    ) : null}
                   </Typography>
                 </Stack>
                 )}
