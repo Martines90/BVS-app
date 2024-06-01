@@ -79,7 +79,8 @@ export const MOCK_VOTINGS = {
     startDate: MOCK_FUTURE_TIMESTAMP,
     voteOnAScore: 12445,
     voteOnBScore: 23334,
-    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-0'
+    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-0',
+    actualNumberOfCitizens: 10
   },
   [MOCK_VOTING_KEY_HASHES[1]]: {
     approved: false,
@@ -92,7 +93,8 @@ export const MOCK_VOTINGS = {
     startDate: (MOCK_FUTURE_TIMESTAMP - TimeQuantities.WEEK * 1000),
     voteOnAScore: 333,
     voteOnBScore: 45,
-    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-1'
+    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-1',
+    actualNumberOfCitizens: 10
   },
   [MOCK_VOTING_KEY_HASHES[2]]: {
     approved: true,
@@ -105,7 +107,8 @@ export const MOCK_VOTINGS = {
     startDate: (MOCK_FUTURE_TIMESTAMP + TimeQuantities.WEEK * 1000),
     voteOnAScore: 333,
     voteOnBScore: 45,
-    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-2'
+    votingContentCheckQuizIpfsHash: 'content-check-ipfs-hash-2',
+    actualNumberOfCitizens: 10
   },
   [MOCK_VOTING_KEY_HASHES[3]]: {
     approved: false,
@@ -118,7 +121,8 @@ export const MOCK_VOTINGS = {
     startDate: (MOCK_FUTURE_TIMESTAMP + (TimeQuantities.WEEK + TimeQuantities.DAY) * 1000),
     voteOnAScore: 0,
     voteOnBScore: 0,
-    votingContentCheckQuizIpfsHash: ''
+    votingContentCheckQuizIpfsHash: '',
+    actualNumberOfCitizens: 10
   }
 };
 

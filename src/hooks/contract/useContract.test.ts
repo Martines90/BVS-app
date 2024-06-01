@@ -84,7 +84,8 @@ type ContractVoting = [
   BigNumberish,
   BigNumberish,
   BigNumberish,
-  string
+  string,
+  BigNumberish
 ];
 
 const mockVoting: ContractVoting = [
@@ -98,7 +99,8 @@ const mockVoting: ContractVoting = [
   BigInt(mockFutureTimestamp),
   BigInt(12445),
   BigInt(23334),
-  'content-ipfs-hash'
+  'content-ipfs-hash',
+  BigInt(10)
 ];
 
 const mockContract = {
@@ -146,6 +148,7 @@ const mockContract = {
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   getVotingKeysLength: jest.fn(() => Promise.resolve(10)),
+  getContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(50)),
   citizenshipApplications: jest.fn((publicKey) => {
     if (publicKey === mockAccountKey) {
       return Promise.resolve(mockApplyForCitizenshipHash);
@@ -745,6 +748,30 @@ describe('useContract', () => {
       });
     });
 
+    describe('getArticleContentReadCheckAnswersLength', () => {
+      it('should call votingContentReadCheckAnswers and return a number', async () => {
+        const { getArticleContentReadCheckAnswersLength } = useContract();
+
+        expect(await getArticleContentReadCheckAnswersLength(mockVotingKeyHash)).toBe(50);
+        expect(mockContract.getContentReadCheckAnswersLength).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          2
+        );
+      });
+    });
+
+    describe('getArticleResponseContentReadCheckAnswersLength', () => {
+      it('should call votingContentReadCheckAnswers and return a number', async () => {
+        const { getArticleResponseContentReadCheckAnswersLength } = useContract();
+
+        expect(await getArticleResponseContentReadCheckAnswersLength(mockVotingKeyHash)).toBe(50);
+        expect(mockContract.getContentReadCheckAnswersLength).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          3
+        );
+      });
+    });
+
     describe('getCitizenAtIndex', () => {
       it('should call citizens and return public key', async () => {
         const { getCitizenAtIndex } = useContract();
@@ -926,7 +953,6 @@ describe('useContract', () => {
     });
 
     describe('getVotingContentCheckAnswerAtIndex', () => {
-      // FIXME: votingContentReadCheckAnswers has to be getVotingContentReadCheckAnswersLength
       it('should call votingContentReadCheckAnswers and return a string', async () => {
         const { getVotingContentCheckAnswerAtIndex } = useContract();
 
@@ -939,12 +965,14 @@ describe('useContract', () => {
     });
 
     describe('getVotingContentReadCheckAnswersLength', () => {
-      // FIXME: votingContentReadCheckAnswers has to be getVotingContentReadCheckAnswersLength
       it('should call votingContentReadCheckAnswers and return a number', async () => {
         const { getVotingContentReadCheckAnswersLength } = useContract();
 
         expect(await getVotingContentReadCheckAnswersLength(mockVotingKeyHash)).toBe(50);
-        expect(mockContract.votingContentReadCheckAnswers).toHaveBeenCalled();
+        expect(mockContract.getContentReadCheckAnswersLength).toHaveBeenCalledWith(
+          mockVotingKeyHash,
+          1
+        );
       });
     });
 
@@ -972,7 +1000,8 @@ describe('useContract', () => {
           startDate: mockFutureTimestamp * 1000,
           voteOnAScore: 12445,
           voteOnBScore: 23334,
-          votingContentCheckQuizIpfsHash: 'content-ipfs-hash'
+          votingContentCheckQuizIpfsHash: 'content-ipfs-hash',
+          actualNumberOfCitizens: 10
         };
 
         expect(await getVotingAtKey(mockVotingKeyHash)).toEqual(mockExpectedVotingData);

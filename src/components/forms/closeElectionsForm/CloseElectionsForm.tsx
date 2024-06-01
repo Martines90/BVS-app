@@ -2,8 +2,6 @@ import LabelText from '@components/general/LabelText/LabelText';
 import IF from '@components/general/Loaders/IF';
 import LoadContent from '@components/general/Loaders/LoadContent';
 import { showSuccessToast } from '@components/toasts/Toasts';
-import { BVS_HARDCODED_SETTINGS } from '@global/constants/blockchain';
-import { TimeQuantities } from '@global/constants/general';
 import { formatDateTime, formatDateTimeToTime, getNow } from '@global/helpers/date';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
@@ -26,8 +24,6 @@ const CloseElectionsForm = () => {
   const [electionsInfo, setElectionInfo] = useState<ElectionsInfo | undefined>(undefined);
 
   const now = getNow();
-  const electionsCanBeClosedAfterExtraTime = BVS_HARDCODED_SETTINGS.electionsCanCloseAfterDays
-  * TimeQuantities.DAY * 1000;
 
   useEffect(() => {
     const getElectionsState = async () => {
@@ -82,26 +78,24 @@ const CloseElectionsForm = () => {
               formatDateTimeToTime(electionsInfo?.endDate)
               }
               </Typography>
-              {(electionsInfo?.endDate || 0) + electionsCanBeClosedAfterExtraTime < now
-                ? (
+              {(electionsInfo?.endDate || 0) < now
+                && (
                   <Stack spacing={2}>
                     <Button variant="contained" disabled={!closeElectionBtnEnabled} onClick={closeElectionsHandler}>Close Elections</Button>
-                    <Alert severity="warning">Closing elections will result winner (get more than 5% of votes) candidates will automatically get their political role</Alert>
-                  </Stack>
-                )
-                : (
-                  <Stack spacing={2}>
-                    <Typography>Elections can be officially closed after {
-                    formatDateTimeToTime(
-                      (electionsInfo?.endDate || 0) + electionsCanBeClosedAfterExtraTime
-                    )
-                    }
-                    </Typography>
                     <Alert severity="warning">Closing elections will result winner (get more than 5% of votes) candidates will automatically get their political role</Alert>
                   </Stack>
                 )}
             </Stack>
           </IF>
+          <Stack spacing={2}>
+            <Typography>Elections can be officially closed after {
+                    formatDateTimeToTime(
+                      (electionsInfo?.endDate || 0)
+                    )
+                    }
+            </Typography>
+            <Alert severity="warning">Closing elections will result winner (get more than 5% of votes) candidates will automatically get their political role</Alert>
+          </Stack>
         </Stack>
       </LoadContent>
     </FormContainer>

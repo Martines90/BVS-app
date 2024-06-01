@@ -28,6 +28,7 @@ export type Voting = {
   voteOnAScore: number;
   voteOnBScore: number;
   votingContentCheckQuizIpfsHash: string;
+  actualNumberOfCitizens: number;
 };
 
 export type Vote = {
@@ -127,6 +128,8 @@ export interface ContractInteractionProps {
   getNumberOfVotings(): Promise<number>;
   getVotingContentCheckAnswerAtIndex(votingKey: BytesLike, index: number): Promise<string>;
   getVotingContentReadCheckAnswersLength(votingKey: BytesLike): Promise<number>;
+  getArticleContentReadCheckAnswersLength(articleKey: BytesLike): Promise<number>;
+  getArticleResponseContentReadCheckAnswersLength(responseKey: BytesLike): Promise<number>;
   getVotingDuration(): Promise<number>;
   getVotingAtKey(votingKey: BytesLike): Promise<Voting>;
   getVotingCycleMinCloseToTheEndTime(): Promise<number>;

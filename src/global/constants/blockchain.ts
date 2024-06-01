@@ -10,7 +10,6 @@ export const BVS_CONTRACT = {
 };
 
 export const BVS_HARDCODED_SETTINGS = {
-  electionsCanCloseAfterDays: 7, // FIX ME: place it into the contract as a constant
   newVotingCanStartAfterDays: 10,
   newVotingCantStartAfterDays: 30
 };

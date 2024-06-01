@@ -112,7 +112,8 @@ const useContract = (): ContractInteractionProps => {
       startDate: Number(voting[7]) * 1000,
       voteOnAScore: Number(voting[8]),
       voteOnBScore: Number(voting[9]),
-      votingContentCheckQuizIpfsHash: voting[10]
+      votingContentCheckQuizIpfsHash: voting[10],
+      actualNumberOfCitizens: Number(voting[11])
     } as Voting;
   };
 
@@ -284,22 +285,6 @@ const useContract = (): ContractInteractionProps => {
     return undefined;
   };
 
-  // FIXME: add to BVS articleContentReadCheckAnswers[articleKey].length function
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getArticleContentReadCheckAnswersLength = async (articleKey: BytesLike) => Number(
-    0
-    // await contract?.articleContentReadCheckAnswers(articleKey, 0) !== '' ? 10 : 0
-    //  contract.articleContentReadCheckAnswers[articleKey].length
-  );
-
-  // FIXME: add to BVS articleContentResponseReadCheckAnswers[articleKey].length function
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getArticleResponseContentReadCheckAnswersLength = async (articleKey: BytesLike) => Number(
-    0
-    // await contract?.articleContentResponseReadCheckAnswers(articleKey, 0) !== '' ? 10 : 0
-    // contract.articleContentResponseReadCheckAnswers[articleKey].length
-  );
-
   const getApproveVotingMinTimeAfterLimit = async () => Number(
     await contract?.APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT()
   ) * 1000;
@@ -336,7 +321,7 @@ const useContract = (): ContractInteractionProps => {
       if (votingRelatedArticle?.votingKey === NON_EXISTING_ADDRESS) {
         continue;
       }
-      // FIX ME: make publisher to Address type instead of string
+
       if (account) {
         if (votingRelatedArticle?.[3].toLowerCase() === String(account).toLowerCase()) {
           articles.push(articleRawDataToArticle(articleKey, votingRelatedArticle));
@@ -396,10 +381,18 @@ const useContract = (): ContractInteractionProps => {
     await contract?.VOTING_DURATION() || 0
   ) * 1000;
 
-  // FIXME: build and release a new contract with method: getVotingContentReadCheckAnswersLength
-  const getVotingContentReadCheckAnswersLength = async (votingKey: BytesLike) => (
-    0// await contract?.votingContentReadCheckAnswers(votingKey, 0) !== '' ? 10 : 0
-    // await contract?.getVotingContentReadCheckAnswersLength(votingKey) || []
+  const getVotingContentReadCheckAnswersLength = async (votingKey: BytesLike) => Number(
+    await contract?.getContentReadCheckAnswersLength(votingKey, 1) || 0
+  );
+
+  const getArticleContentReadCheckAnswersLength = async (articleKey: BytesLike) => Number(
+    await contract?.getContentReadCheckAnswersLength(articleKey, 2) || 0
+  );
+
+  const getArticleResponseContentReadCheckAnswersLength = async (
+    articleResponseKey: BytesLike
+  ) => Number(
+    await contract?.getContentReadCheckAnswersLength(articleResponseKey, 3) || 0
   );
 
   const getVotingContentCheckAnswerAtIndex = async (votingKey: BytesLike, index: number) => (

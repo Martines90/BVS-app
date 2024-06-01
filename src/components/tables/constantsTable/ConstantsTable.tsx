@@ -101,16 +101,8 @@ const ConstantsTable = () => {
       async () => Number(await contract?.MIN_TOTAL_CONTENT_READ_CHECK_ANSWER() || 0)
     )() || 0}`;
 
-    _contentCheckConstants.VOTING_CHECK_ASKED_NUM_OF_QUESTIONS = `${await asyncErrWrapper(
-      async () => Number(await contract?.VOTING_CHECK_ASKED_NUM_OF_QUESTIONS() || 0)
-    )() || 0}`;
-
-    _contentCheckConstants.ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS = `${await asyncErrWrapper(
-      async () => Number(await contract?.ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS() || 0)
-    )() || 0}`;
-
-    _contentCheckConstants.ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS = `${await asyncErrWrapper(
-      async () => Number(await contract?.ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS() || 0)
+    _contentCheckConstants.CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS = `${await asyncErrWrapper(
+      async () => Number(await contract?.CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS() || 0)
     )() || 0}`;
 
     setContentValidationData(Object.keys(_contentCheckConstants).map((key) => ({

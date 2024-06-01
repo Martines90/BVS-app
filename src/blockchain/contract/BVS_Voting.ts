@@ -28,14 +28,15 @@ export declare namespace BVS_Voting {
     approved: boolean;
     cancelled: boolean;
     key: BytesLike;
-    budget: Number;
-    voteCount: Number;
+    budget: BigNumberish;
+    voteCount: BigNumberish;
     creator: AddressLike;
     contentIpfsHash: string;
-    startDate: Number;
-    voteOnAScore: Number;
-    voteOnBScore: Number;
+    startDate: BigNumberish;
+    voteOnAScore: BigNumberish;
+    voteOnBScore: BigNumberish;
     votingContentCheckQuizIpfsHash: string;
+    actualNumberOfCitizens: BigNumberish;
   };
 
   export type VotingStructOutput = [
@@ -49,7 +50,8 @@ export declare namespace BVS_Voting {
     startDate: bigint,
     voteOnAScore: bigint,
     voteOnBScore: bigint,
-    votingContentCheckQuizIpfsHash: string
+    votingContentCheckQuizIpfsHash: string,
+    actualNumberOfCitizens: bigint
   ] & {
     approved: boolean;
     cancelled: boolean;
@@ -62,6 +64,7 @@ export declare namespace BVS_Voting {
     voteOnAScore: bigint;
     voteOnBScore: bigint;
     votingContentCheckQuizIpfsHash: string;
+    actualNumberOfCitizens: bigint;
   };
 }
 
@@ -70,9 +73,8 @@ export interface BVS_VotingInterface extends Interface {
     nameOrSignature:
       | "ADMINISTRATOR"
       | "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT"
-      | "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS"
-      | "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS"
       | "CITIZEN"
+      | "CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS"
       | "ELECTION_START_END_INTERVAL"
       | "MAX_DAILY_NEW_CITIZENS_CAN_ADD_PERCENTAGE"
       | "MINIMUM_PERCENTAGE_OF_ELECTION_VOTES"
@@ -82,7 +84,6 @@ export interface BVS_VotingInterface extends Interface {
       | "MIN_VOTE_SCORE"
       | "NEW_VOTING_PERIOD_MIN_SCHEDULE_AHEAD_TIME"
       | "POLITICAL_ACTOR"
-      | "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS"
       | "VOTING_CYCLE_INTERVAL"
       | "VOTING_DURATION"
       | "addKeccak256HashedAnswersToArticle"
@@ -125,6 +126,7 @@ export interface BVS_VotingInterface extends Interface {
       | "getArticleKeysLength"
       | "getBlockTime"
       | "getCitizensSize"
+      | "getContentReadCheckAnswersLength"
       | "getElectionCandidatesSize"
       | "getElectionVotersSize"
       | "getPoliticalActorsSize"
@@ -174,15 +176,11 @@ export interface BVS_VotingInterface extends Interface {
     functionFragment: "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "CITIZEN", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "ELECTION_START_END_INTERVAL",
     values?: undefined
@@ -217,10 +215,6 @@ export interface BVS_VotingInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "POLITICAL_ACTOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -392,6 +386,10 @@ export interface BVS_VotingInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getContentReadCheckAnswersLength",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getElectionCandidatesSize",
     values?: undefined
   ): string;
@@ -525,15 +523,11 @@ export interface BVS_VotingInterface extends Interface {
     functionFragment: "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "CITIZEN", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "ELECTION_START_END_INTERVAL",
     data: BytesLike
@@ -568,10 +562,6 @@ export interface BVS_VotingInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "POLITICAL_ACTOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -734,6 +724,10 @@ export interface BVS_VotingInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCitizensSize",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContentReadCheckAnswersLength",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -951,19 +945,13 @@ export interface BVS_Voting extends BaseContract {
     "view"
   >;
 
-  ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
-    [],
-    [bigint],
-    "view"
-  >;
-
-  ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
-    [],
-    [bigint],
-    "view"
-  >;
-
   CITIZEN: TypedContractMethod<[], [string], "view">;
+
+  CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
+    [],
+    [bigint],
+    "view"
+  >;
 
   ELECTION_START_END_INTERVAL: TypedContractMethod<[], [bigint], "view">;
 
@@ -1002,12 +990,6 @@ export interface BVS_Voting extends BaseContract {
   >;
 
   POLITICAL_ACTOR: TypedContractMethod<[], [string], "view">;
-
-  VOTING_CHECK_ASKED_NUM_OF_QUESTIONS: TypedContractMethod<
-    [],
-    [bigint],
-    "view"
-  >;
 
   VOTING_CYCLE_INTERVAL: TypedContractMethod<[], [bigint], "view">;
 
@@ -1202,6 +1184,12 @@ export interface BVS_Voting extends BaseContract {
   getBlockTime: TypedContractMethod<[], [bigint], "view">;
 
   getCitizensSize: TypedContractMethod<[], [bigint], "view">;
+
+  getContentReadCheckAnswersLength: TypedContractMethod<
+    [key: BytesLike, contentType: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   getElectionCandidatesSize: TypedContractMethod<[], [bigint], "view">;
 
@@ -1401,7 +1389,8 @@ export interface BVS_Voting extends BaseContract {
         bigint,
         bigint,
         bigint,
-        string
+        string,
+        bigint
       ] & {
         approved: boolean;
         cancelled: boolean;
@@ -1414,6 +1403,7 @@ export interface BVS_Voting extends BaseContract {
         voteOnAScore: bigint;
         voteOnBScore: bigint;
         votingContentCheckQuizIpfsHash: string;
+        actualNumberOfCitizens: bigint;
       }
     ],
     "view"
@@ -1430,14 +1420,11 @@ export interface BVS_Voting extends BaseContract {
     nameOrSignature: "APPROVE_VOTING_BEFORE_IT_STARTS_LIMIT"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "ARTICLE_CHECK_ASKED_NUM_OF_QUESTIONS"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "ARTICLE_RESPONSE_CHECK_ASKED_NUM_OF_QUESTIONS"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "CITIZEN"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "CONTENT_CHECK_ASKED_NUM_OF_QUESTIONS"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "ELECTION_START_END_INTERVAL"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -1465,9 +1452,6 @@ export interface BVS_Voting extends BaseContract {
   getFunction(
     nameOrSignature: "POLITICAL_ACTOR"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "VOTING_CHECK_ASKED_NUM_OF_QUESTIONS"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "VOTING_CYCLE_INTERVAL"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -1685,6 +1669,13 @@ export interface BVS_Voting extends BaseContract {
     nameOrSignature: "getCitizensSize"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getContentReadCheckAnswersLength"
+  ): TypedContractMethod<
+    [key: BytesLike, contentType: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "getElectionCandidatesSize"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -1887,7 +1878,8 @@ export interface BVS_Voting extends BaseContract {
         bigint,
         bigint,
         bigint,
-        string
+        string,
+        bigint
       ] & {
         approved: boolean;
         cancelled: boolean;
@@ -1900,6 +1892,7 @@ export interface BVS_Voting extends BaseContract {
         voteOnAScore: bigint;
         voteOnBScore: bigint;
         votingContentCheckQuizIpfsHash: string;
+        actualNumberOfCitizens: bigint;
       }
     ],
     "view"

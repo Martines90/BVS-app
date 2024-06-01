@@ -41,6 +41,9 @@ const VotingForm = () => {
     getAccountArticleResponseRelatedQuestionIndexes,
     getVotingDuration,
     getVotingAssignedArticlesPublished,
+    getVotingContentReadCheckAnswersLength,
+    getArticleContentReadCheckAnswersLength,
+    getArticleResponseContentReadCheckAnswersLength,
     getAccountVote,
     voteOnVoting,
     completeVotingContentCheckQuiz,
@@ -76,15 +79,21 @@ const VotingForm = () => {
           let articleContentCheckQuestionIndexes: number[] = [];
           let articleResponseCheckQuestionIndexes: number[] = [];
 
-          if (_article?.articleContentCheckQuizIpfsHash !== '') {
-            // FIX ME
+          const articleAssignedAnswersLength = await asyncErrWrapper(
+            getArticleContentReadCheckAnswersLength
+          )(_article.articleKey) || 0;
+
+          if (articleAssignedAnswersLength > 0) {
             articleContentCheckQuestionIndexes = await asyncErrWrapper(
               getAccountArticleRelatedQuestionIndexes
             )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
           }
 
-          if (_article?.responseContentCheckQuizIpfsHash !== '') {
-            // FIX ME
+          const articleResponseAssignedAnswersLength = await asyncErrWrapper(
+            getArticleResponseContentReadCheckAnswersLength
+          )(_article.articleKey) || 0;
+
+          if (articleResponseAssignedAnswersLength > 0) {
             articleResponseCheckQuestionIndexes = await asyncErrWrapper(
               getAccountArticleResponseRelatedQuestionIndexes
             )(voting?.key || '', _article.articleKey, userState.walletAddress || '') || [];
@@ -99,9 +108,10 @@ const VotingForm = () => {
       );
 
       let _accountQuestionIndexes: number[] = [];
-      if (voting?.votingContentCheckQuizIpfsHash !== '') {
-        // eslint-disable-next-line max-len
-        // FIXME : there is zero division at getAccountQuizAnswerIndexes call cause of votingContentReadCheckAnswers[_votingKey].length
+      const votingAssignedAnswersLength = await asyncErrWrapper(
+        getVotingContentReadCheckAnswersLength
+      )(voting?.key || '') || 0;
+      if (votingAssignedAnswersLength > 0) {
         _accountQuestionIndexes = await asyncErrWrapper(
           getAccountVotingRelatedQuestionIndexes
         )(voting?.key || '', userState.walletAddress || '') || [];

@@ -60,6 +60,18 @@ describe('VotingViewPage', () => {
       voted: false, isContentQuizCompleted: true
     }));
 
+    mockContractFunctions.getVotingContentReadCheckAnswersLength.mockReturnValue(
+      Promise.resolve(10)
+    );
+
+    mockContractFunctions.getArticleContentReadCheckAnswersLength.mockReturnValue(
+      Promise.resolve(10)
+    );
+
+    mockContractFunctions.getArticleResponseContentReadCheckAnswersLength.mockReturnValue(
+      Promise.resolve(10)
+    );
+
     mockContractFunctions.getVotingAssignedArticlesPublished.mockReturnValue(
       Promise.resolve(MOCK_PRO_CON_ARTICLES_APPROVED)
     );

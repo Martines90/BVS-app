@@ -29,7 +29,6 @@ const VotingsTable = () => {
     getNumberOfVotings,
     getVotingDuration,
     getMinPercentageOfVotes,
-    getNumberOfCitizens,
     isVotingWon
   } = useContract();
   const [data, setData] = useState<VotingTableData[]>([]);
@@ -47,7 +46,6 @@ const VotingsTable = () => {
 
     const votingDuration = await asyncErrWrapper(getVotingDuration)() || 0;
     const minPercentageOfVotes = await asyncErrWrapper(getMinPercentageOfVotes)() || 0;
-    const numOfCitizens = await asyncErrWrapper(getNumberOfCitizens)() || 0;
 
     for (let i = from; i < _to; i++) {
       const votingKey = await asyncErrWrapper(getVotingKeyAtIndex)(
@@ -57,8 +55,8 @@ const VotingsTable = () => {
 
       const isVotingFinished = (now / 1000) > voting.startDate + votingDuration;
       const isVotingApproved = voting.approved;
-      // FIX ME: numOfCitizens has to be stored in the Voting struct as a value
-      const isEnoughVotesArrived = (voting.voteCount * 100) / numOfCitizens < minPercentageOfVotes;
+      const isEnoughVotesArrived = (voting.voteCount * 100)
+      / voting.actualNumberOfCitizens < minPercentageOfVotes;
 
       let status = '';
 
