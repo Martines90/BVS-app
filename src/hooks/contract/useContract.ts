@@ -19,7 +19,7 @@ const useContract = (): ContractInteractionProps => {
   // Roles
   const applyForCitizenshipRole = async (
     applicantEmailPubKeyHash: BytesLike,
-    applicationFee: number
+    applicationFee: bigint
   ) => {
     await userState.contract?.applyForCitizenshipRole(
       applicantEmailPubKeyHash,
@@ -419,11 +419,11 @@ const useContract = (): ContractInteractionProps => {
     (await contract?.electionCandidateScores(accountAddress) || 0)
   );
 
-  const getCitizenRoleApplicationFee = async () => Number(
+  const getCitizenRoleApplicationFee = async () => BigInt(
     (await contract?.citizenRoleApplicationFee()) || 0
   );
 
-  const getElectionCandidateApplicationFee = async () => Number(
+  const getElectionCandidateApplicationFee = async () => BigInt(
     (await contract?.electionsCandidateApplicationFee()) || 0
   );
 

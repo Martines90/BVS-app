@@ -120,7 +120,7 @@ const mockContract = {
   completeContentReadQuiz: jest.fn(() => Promise.resolve()),
   admins: jest.fn((index) => Promise.resolve(mockCitizens[index])),
   electionsCandidateApplicationFee: jest.fn(
-    () => Promise.resolve(MOCK_REGISTER_AS_CANDIDATE_FEE)
+    () => Promise.resolve(BigInt(MOCK_REGISTER_AS_CANDIDATE_FEE))
   ),
   electionCandidateScores: jest.fn((accountKey) => {
     if (accountKey === mockAccountKey) {
@@ -202,12 +202,12 @@ describe('useContract', () => {
 
         await applyForCitizenshipRole(
           mockApplyForCitizenshipHash,
-          MOCK_CITIZENSHIP_APPLICATION_FEE
+          BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE)
         );
 
         expect(mockContract.applyForCitizenshipRole).toHaveBeenCalledWith(
           mockApplyForCitizenshipHash,
-          { from: mockAccountKey, value: MOCK_CITIZENSHIP_APPLICATION_FEE }
+          { from: mockAccountKey, value: BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE) }
         );
       });
     });
@@ -490,7 +490,9 @@ describe('useContract', () => {
       it('should call electionsCandidateApplicationFee and return application fee', async () => {
         const { getElectionCandidateApplicationFee } = useContract();
 
-        expect(await getElectionCandidateApplicationFee()).toBe(MOCK_REGISTER_AS_CANDIDATE_FEE);
+        expect(await getElectionCandidateApplicationFee()).toBe(
+          BigInt(MOCK_REGISTER_AS_CANDIDATE_FEE)
+        );
         expect(mockContract.electionsCandidateApplicationFee).toHaveBeenCalled();
       });
     });
@@ -794,7 +796,7 @@ describe('useContract', () => {
       it('should call citizenRoleApplicationFee and return application fee', async () => {
         const { getCitizenRoleApplicationFee } = useContract();
 
-        expect(await getCitizenRoleApplicationFee()).toBe(MOCK_CITIZENSHIP_APPLICATION_FEE);
+        expect(await getCitizenRoleApplicationFee()).toBe(BigInt(MOCK_CITIZENSHIP_APPLICATION_FEE));
         expect(mockContract.scheduleNextElections).toHaveBeenCalled();
       });
     });

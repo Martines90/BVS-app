@@ -67,7 +67,7 @@ const menuItems: MenuItem[] = [
         modes: []
       },
       {
-        label: 'Constants',
+        label: 'Constants & config',
         route: 'community#constants',
         modes: []
       }

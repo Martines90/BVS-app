@@ -13,6 +13,8 @@ export enum TimeQuantities {
   HOUR = hourInSec
 }
 
+export const ONE_GWEI = 1000000000;
+
 export const TABLE_DISPLAY_MAX_ROWS = 10;
 
 export const IPFS_GATEWAY_URL = 'https://quicknode.quicknode-ipfs.com/ipfs';

@@ -67,7 +67,7 @@ export interface ContractInteractionProps {
   assignResponseIpfsHashToArticle(
     votingKey: BytesLike, articleKey: BytesLike, responseIpfsHash: string): Promise<void>;
   applyForCitizenshipRole(applicantEmailPubKeyHash: BytesLike,
-    applicationFee: number): Promise<void>;
+    applicationFee: bigint): Promise<void>;
   applyForElectionsAsCandidate(applicationFee: number): Promise<void>,
   closeElections(): Promise<void>,
   completeArticleContentCheckQuiz(
@@ -110,9 +110,9 @@ export interface ContractInteractionProps {
   getArticleAtKey(votingKey: BytesLike, articleKey: BytesLike): Promise<ProConArticle | undefined>;
   getArticleContentReadCheckAnswersLength(articleKey: BytesLike): Promise<number>;
   getArticleResponseContentReadCheckAnswersLength(articleKey: BytesLike): Promise<number>;
-  getCitizenRoleApplicationFee(): Promise<number>;
+  getCitizenRoleApplicationFee(): Promise<bigint>;
   getCitizenAtIndex(index: number): Promise<AddressLike>;
-  getElectionCandidateApplicationFee(): Promise<number>;
+  getElectionCandidateApplicationFee(): Promise<bigint>;
   getElectionsCandidatePublicKeyAtIndex(index: number): Promise<AddressLike>;
   getElectionCandidateScore(accountAddress: AddressLike): Promise<number>;
   getElectionStartEndIntervalInDays(): Promise<number>;

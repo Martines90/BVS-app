@@ -29,7 +29,7 @@ import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 
 type ContractInfo = {
-  citizenshipApplicationFee?: number;
+  citizenshipApplicationFee?: bigint;
   appliedForCitizenship?: boolean;
   hasCitizenRole?: boolean;
 };

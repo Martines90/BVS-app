@@ -89,6 +89,7 @@ export interface BVS_VotingInterface extends Interface {
       | "addKeccak256HashedAnswersToArticle"
       | "addKeccak256HashedAnswersToArticleResponse"
       | "addKeccak256HashedAnswersToVotingContent"
+      | "addUpdateContactEmail"
       | "adminApprovalSentToAccount"
       | "adminRoleGrantApprovals"
       | "admins"
@@ -109,6 +110,7 @@ export interface BVS_VotingInterface extends Interface {
       | "citizenshipApplications"
       | "closeElections"
       | "completeContentReadQuiz"
+      | "contactEmails"
       | "creationDate"
       | "dailyCitizenRoleModifyCredit"
       | "electionCandidateScores"
@@ -150,7 +152,9 @@ export interface BVS_VotingInterface extends Interface {
       | "sendGrantAdministratorRoleApproval"
       | "setFirstVotingCycleStartDate"
       | "unlockVotingBudget"
+      | "updateCitizenshipApplicationFee"
       | "updateCitizenshipRoleApplicationFee"
+      | "updateElectionsApplicationFee"
       | "voteOnElections"
       | "voteOnVoting"
       | "votes"
@@ -238,6 +242,10 @@ export interface BVS_VotingInterface extends Interface {
     values: [BytesLike, BytesLike[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "addUpdateContactEmail",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminApprovalSentToAccount",
     values: [AddressLike, BigNumberish]
   ): string;
@@ -316,6 +324,10 @@ export interface BVS_VotingInterface extends Interface {
   encodeFunctionData(
     functionFragment: "completeContentReadQuiz",
     values: [BigNumberish, BytesLike, BytesLike, string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "contactEmails",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "creationDate",
@@ -482,7 +494,15 @@ export interface BVS_VotingInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "updateCitizenshipApplicationFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateCitizenshipRoleApplicationFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateElectionsApplicationFee",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -585,6 +605,10 @@ export interface BVS_VotingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "addUpdateContactEmail",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "adminApprovalSentToAccount",
     data: BytesLike
   ): Result;
@@ -656,6 +680,10 @@ export interface BVS_VotingInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "completeContentReadQuiz",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "contactEmails",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -817,7 +845,15 @@ export interface BVS_VotingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "updateCitizenshipApplicationFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateCitizenshipRoleApplicationFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateElectionsApplicationFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1021,6 +1057,12 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
 
+  addUpdateContactEmail: TypedContractMethod<
+    [emailKey: string, emailAddress: string],
+    [void],
+    "nonpayable"
+  >;
+
   adminApprovalSentToAccount: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
@@ -1126,6 +1168,8 @@ export interface BVS_Voting extends BaseContract {
     [void],
     "nonpayable"
   >;
+
+  contactEmails: TypedContractMethod<[arg0: string], [string], "view">;
 
   creationDate: TypedContractMethod<[], [bigint], "view">;
 
@@ -1331,8 +1375,20 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
 
+  updateCitizenshipApplicationFee: TypedContractMethod<
+    [_newCitizenshipApplicationFee: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   updateCitizenshipRoleApplicationFee: TypedContractMethod<
     [value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  updateElectionsApplicationFee: TypedContractMethod<
+    [_newElectionsApplicationFee: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -1488,6 +1544,13 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "addUpdateContactEmail"
+  ): TypedContractMethod<
+    [emailKey: string, emailAddress: string],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "adminApprovalSentToAccount"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
@@ -1601,6 +1664,9 @@ export interface BVS_Voting extends BaseContract {
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "contactEmails"
+  ): TypedContractMethod<[arg0: string], [string], "view">;
   getFunction(
     nameOrSignature: "creationDate"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -1823,8 +1889,22 @@ export interface BVS_Voting extends BaseContract {
     nameOrSignature: "unlockVotingBudget"
   ): TypedContractMethod<[_votingKey: BytesLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "updateCitizenshipApplicationFee"
+  ): TypedContractMethod<
+    [_newCitizenshipApplicationFee: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "updateCitizenshipRoleApplicationFee"
   ): TypedContractMethod<[value: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateElectionsApplicationFee"
+  ): TypedContractMethod<
+    [_newElectionsApplicationFee: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "voteOnElections"
   ): TypedContractMethod<[voteOnAddress: AddressLike], [void], "nonpayable">;

@@ -1,3 +1,5 @@
+import { ONE_GWEI } from '@global/constants/general';
+
 /* eslint-disable import/prefer-default-export */
 export const nthFormat = (n: number) => {
   let ord = 'th';
@@ -12,3 +14,17 @@ export const nthFormat = (n: number) => {
 
   return `${n}${ord}`;
 };
+
+export const weiToGwei = (amount: bigint | number) => BigInt(amount) / BigInt(ONE_GWEI);
+
+export const gweiToWei = (amount: bigint | number) => BigInt(amount) * BigInt(ONE_GWEI);
+
+export const weiToGweiDecimal = (amount: bigint | number) => Number(
+  (BigInt(amount) * BigInt(1000000)) / BigInt(ONE_GWEI)
+) / 1000000;
+
+export const displayGweiOrGweiDecimal = (amount: bigint) => (
+  amount < BigInt(10 * ONE_GWEI)
+    ? weiToGweiDecimal(amount)
+    : weiToGwei(amount)
+);
