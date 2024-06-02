@@ -26,6 +26,10 @@ const useContract = (): ContractInteractionProps => {
     await contract?.updateElectionsApplicationFee(amount);
   };
 
+  const updateContactAtKey = async (contactKey: string, newContact: string) => {
+    await contract?.addUpdateContact(contactKey, newContact);
+  };
+
   // Roles
   const applyForCitizenshipRole = async (
     applicantEmailPubKeyHash: BytesLike,
@@ -303,6 +307,21 @@ const useContract = (): ContractInteractionProps => {
     (await contract?.citizens(index))
   ) as AddressLike;
 
+  const getContacts = async () => {
+    const numOfContacts = Number(await contract?.getContactKeysSize() || 0);
+
+    const contacts: { [key: string]: string } = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (let i = 0; i < numOfContacts; i++) {
+      const contactKey = await contract?.contactKeys(BigInt(i)) || '';
+      const contactAddress = await contract?.contacts(contactKey) || '';
+
+      contacts[contactKey] = contactAddress;
+    }
+
+    return contacts;
+  };
+
   const getFirstVotingCycleStartDate = async () => Number(
     await contract?.firstVotingCycleStartDate()
   ) * 1000;
@@ -468,6 +487,7 @@ const useContract = (): ContractInteractionProps => {
     getArticleContentReadCheckAnswersLength,
     getArticleResponseContentReadCheckAnswersLength,
     getCitizenAtIndex,
+    getContacts,
     getMinTotalQuizCheckAnswers,
     getNumberOfAdministrators,
     getNumberOfCitizens,
@@ -516,6 +536,7 @@ const useContract = (): ContractInteractionProps => {
     isVotingWon,
     updateCitizenshipApplicationFee,
     updateElectionsApplicationFee,
+    updateContactAtKey,
     scheduleNextElections,
     scheduleNewVoting,
     setFirstVotingCycleStartDate,

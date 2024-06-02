@@ -109,6 +109,7 @@ const mockContract = {
   approveVoting: jest.fn(() => Promise.resolve()),
   addKeccak256HashedAnswersToArticle: jest.fn(() => Promise.resolve()),
   addKeccak256HashedAnswersToArticleResponse: jest.fn(() => Promise.resolve()),
+  addUpdateContact: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToVoting: jest.fn(() => Promise.resolve()),
   assignQuizIpfsHashToArticleOrResponse: jest.fn(() => Promise.resolve()),
   applyForCitizenshipRole: jest.fn(() => Promise.resolve()),
@@ -146,6 +147,7 @@ const mockContract = {
   getApproveVotingMinTimeAfterLimit: jest.fn(() => Promise.resolve(TimeQuantities.DAY * 3 * 1000)),
   getArticleKeysLength: jest.fn(() => Promise.resolve(1)),
   getCitizensSize: jest.fn(() => Promise.resolve(3)),
+  getContactKeysSize: jest.fn(() => Promise.resolve(2)),
   getElectionCandidatesSize: jest.fn(() => Promise.resolve(0)),
   getVotingKeysLength: jest.fn(() => Promise.resolve(10)),
   getContentReadCheckAnswersLength: jest.fn(() => Promise.resolve(50)),
@@ -156,10 +158,13 @@ const mockContract = {
     return Promise.resolve(MOCK_NON_EXISTING_ADDRESS);
   }),
   calculateVoteScore: jest.fn(() => Promise.resolve(BigInt(133))),
+  contactKeys: jest.fn((index: bigint) => Promise.resolve(['test_contact_key_1', 'test_contact_key_2'][Number(index)])),
+  contacts: jest.fn((key: string) => Promise.resolve({ test_contact_key_1: 'test1@email.com', test_contact_key_2: 'test2@email.com' }[key])),
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   getPoliticalActorsSize: jest.fn(() => Promise.resolve(BigInt(3))),
   updateCitizenshipApplicationFee: jest.fn(() => Promise.resolve()),
+  updateElectionsApplicationFee: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
   scheduleNewVoting: jest.fn(() => Promise.resolve()),
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
@@ -196,8 +201,6 @@ describe('useContract', () => {
     expect(useContract).toBeDefined();
   });
 
-  updateCitizenshipApplicationFee;
-
   describe('Global variables', () => {
     describe('updateCitizenshipApplicationFee', () => {
       it('should call updateCitizenshipApplicationFee with new amount', async () => {
@@ -209,6 +212,36 @@ describe('useContract', () => {
 
         expect(mockContract.updateCitizenshipApplicationFee).toHaveBeenCalledWith(
           BigInt(1000000000)
+        );
+      });
+    });
+
+    describe('updateElectionsApplicationFee', () => {
+      it('should call updateElectionsApplicationFee with new amount', async () => {
+        const { updateElectionsApplicationFee } = useContract();
+
+        await updateElectionsApplicationFee(
+          BigInt(2000000000)
+        );
+
+        expect(mockContract.updateElectionsApplicationFee).toHaveBeenCalledWith(
+          BigInt(2000000000)
+        );
+      });
+    });
+
+    describe('updateContactAtKey', () => {
+      it('should call addUpdateContact with new contact value and key', async () => {
+        const { updateContactAtKey } = useContract();
+
+        await updateContactAtKey(
+          'test_email_address_key',
+          'test@email.com'
+        );
+
+        expect(mockContract.addUpdateContact).toHaveBeenCalledWith(
+          'test_email_address_key',
+          'test@email.com'
         );
       });
     });
@@ -854,6 +887,21 @@ describe('useContract', () => {
 
         expect(await getElectionsEndDate()).toBe(mockFutureTimestamp * 1000);
         expect(mockContract.electionsEndDate).toHaveBeenCalled();
+      });
+    });
+
+    describe('getContacts', () => {
+      it('should return contacts', async () => {
+        const { getContacts } = useContract();
+
+        expect(await getContacts()).toEqual({
+          test_contact_key_1: 'test1@email.com',
+          test_contact_key_2: 'test2@email.com'
+        });
+
+        expect(mockContract.getContactKeysSize).toHaveBeenCalled();
+        expect(mockContract.contactKeys).toHaveBeenCalledTimes(2);
+        expect(mockContract.contacts).toHaveBeenCalledTimes(2);
       });
     });
 

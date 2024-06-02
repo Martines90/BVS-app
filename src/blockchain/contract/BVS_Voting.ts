@@ -89,7 +89,7 @@ export interface BVS_VotingInterface extends Interface {
       | "addKeccak256HashedAnswersToArticle"
       | "addKeccak256HashedAnswersToArticleResponse"
       | "addKeccak256HashedAnswersToVotingContent"
-      | "addUpdateContactEmail"
+      | "addUpdateContact"
       | "adminApprovalSentToAccount"
       | "adminRoleGrantApprovals"
       | "admins"
@@ -110,7 +110,8 @@ export interface BVS_VotingInterface extends Interface {
       | "citizenshipApplications"
       | "closeElections"
       | "completeContentReadQuiz"
-      | "contactEmails"
+      | "contactKeys"
+      | "contacts"
       | "creationDate"
       | "dailyCitizenRoleModifyCredit"
       | "electionCandidateScores"
@@ -128,6 +129,7 @@ export interface BVS_VotingInterface extends Interface {
       | "getArticleKeysLength"
       | "getBlockTime"
       | "getCitizensSize"
+      | "getContactKeysSize"
       | "getContentReadCheckAnswersLength"
       | "getElectionCandidatesSize"
       | "getElectionVotersSize"
@@ -242,7 +244,7 @@ export interface BVS_VotingInterface extends Interface {
     values: [BytesLike, BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "addUpdateContactEmail",
+    functionFragment: "addUpdateContact",
     values: [string, string]
   ): string;
   encodeFunctionData(
@@ -326,9 +328,10 @@ export interface BVS_VotingInterface extends Interface {
     values: [BigNumberish, BytesLike, BytesLike, string[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "contactEmails",
-    values: [string]
+    functionFragment: "contactKeys",
+    values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "contacts", values: [string]): string;
   encodeFunctionData(
     functionFragment: "creationDate",
     values?: undefined
@@ -395,6 +398,10 @@ export interface BVS_VotingInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getCitizensSize",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContactKeysSize",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -605,7 +612,7 @@ export interface BVS_VotingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "addUpdateContactEmail",
+    functionFragment: "addUpdateContact",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -683,9 +690,10 @@ export interface BVS_VotingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "contactEmails",
+    functionFragment: "contactKeys",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "contacts", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "creationDate",
     data: BytesLike
@@ -752,6 +760,10 @@ export interface BVS_VotingInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCitizensSize",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContactKeysSize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1057,8 +1069,8 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
 
-  addUpdateContactEmail: TypedContractMethod<
-    [emailKey: string, emailAddress: string],
+  addUpdateContact: TypedContractMethod<
+    [contactKey: string, contactAddress: string],
     [void],
     "nonpayable"
   >;
@@ -1169,7 +1181,9 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
 
-  contactEmails: TypedContractMethod<[arg0: string], [string], "view">;
+  contactKeys: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+
+  contacts: TypedContractMethod<[arg0: string], [string], "view">;
 
   creationDate: TypedContractMethod<[], [bigint], "view">;
 
@@ -1228,6 +1242,8 @@ export interface BVS_Voting extends BaseContract {
   getBlockTime: TypedContractMethod<[], [bigint], "view">;
 
   getCitizensSize: TypedContractMethod<[], [bigint], "view">;
+
+  getContactKeysSize: TypedContractMethod<[], [bigint], "view">;
 
   getContentReadCheckAnswersLength: TypedContractMethod<
     [key: BytesLike, contentType: BigNumberish],
@@ -1544,9 +1560,9 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "addUpdateContactEmail"
+    nameOrSignature: "addUpdateContact"
   ): TypedContractMethod<
-    [emailKey: string, emailAddress: string],
+    [contactKey: string, contactAddress: string],
     [void],
     "nonpayable"
   >;
@@ -1665,7 +1681,10 @@ export interface BVS_Voting extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "contactEmails"
+    nameOrSignature: "contactKeys"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "contacts"
   ): TypedContractMethod<[arg0: string], [string], "view">;
   getFunction(
     nameOrSignature: "creationDate"
@@ -1733,6 +1752,9 @@ export interface BVS_Voting extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getCitizensSize"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getContactKeysSize"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getContentReadCheckAnswersLength"

@@ -47,6 +47,11 @@ const menuItems: MenuItem[] = [
     modes: [],
     subMenuItems: [
       {
+        label: 'Contacts',
+        route: 'community#contacts',
+        modes: []
+      },
+      {
         label: 'Administrators',
         route: 'community#administrators',
         modes: []
@@ -69,7 +74,7 @@ const menuItems: MenuItem[] = [
       {
         label: 'Constants & config',
         route: 'community#constants',
-        modes: []
+        modes: [USER_MODES.ADMINISTRATOR]
       }
     ]
   },

@@ -16,7 +16,7 @@ describe('ConstantsPage', () => {
     expect(ConstantsPage).toBeDefined();
   });
 
-  describe('there is upcoming elections and user not yet registered as a candidate', () => {
+  describe('Display content', () => {
     it('should render expected content and call contract functions', async () => {
       await act(() => {
         ({ container } = render(<ConstantsPage />));

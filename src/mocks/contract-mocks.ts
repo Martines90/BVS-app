@@ -67,6 +67,12 @@ export const MOCK_ARTICLE_KEYS = [
   ) as string
 ];
 
+export const MOCK_CONTACTS: { [key: string]: string } = {
+  test_contact_key_1: 'test1@email.com',
+  test_contact_key_2: '+3634 4555 4322',
+  test_contact_key_3: 'test3@email.com'
+};
+
 export const MOCK_VOTINGS = {
   [MOCK_VOTING_KEY_HASHES[0]]: {
     approved: true,
@@ -196,6 +202,9 @@ export const mockContractFunctions = {
   getElectionStartEndIntervalInDays: jest.fn(
     () => Promise.resolve(MOCK_ELECTIONS_START_END_INTERVAL_IN_DAYS)
   ),
+  getContacts: jest.fn(
+    () => Promise.resolve(MOCK_CONTACTS)
+  ),
   getNumberOfElectionCandidates: jest.fn(() => Promise.resolve(MOCK_CANDIDATE_ACCOUNT_KEYS.length)),
   getNumberOfVotings: jest.fn(() => Promise.resolve(MOCK_VOTING_KEY_HASHES.length)),
   getPoliticalActorAtIndex:
@@ -224,6 +233,7 @@ export const mockContractFunctions = {
   assignQuizIpfsHashToResponse: jest.fn(() => Promise.resolve()),
   updateCitizenshipApplicationFee: jest.fn(() => Promise.resolve()),
   updateElectionsApplicationFee: jest.fn(() => Promise.resolve()),
+  updateContactAtKey: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
   scheduleNewVoting: jest.fn(() => Promise.resolve()),
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),

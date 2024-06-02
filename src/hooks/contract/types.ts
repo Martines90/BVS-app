@@ -86,6 +86,7 @@ export interface ContractInteractionProps {
   isVotingWon(votingKey: BytesLike, voteOnA: boolean): Promise<boolean>;
   updateCitizenshipApplicationFee(amount: bigint): Promise<void>,
   updateElectionsApplicationFee(amount: bigint): Promise<void>,
+  updateContactAtKey(contactKey: string, newContact: string): Promise<void>,
   scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
   scheduleNewVoting(ipfsHash: string, startDate: number, targetBudget: number): Promise<void>;
   setFirstVotingCycleStartDate(date: number): Promise<void>;
@@ -120,6 +121,7 @@ export interface ContractInteractionProps {
   getElectionStartEndIntervalInDays(): Promise<number>;
   getElectionsStartDate(): Promise<number>;
   getElectionsEndDate(): Promise<number>;
+  getContacts(): Promise<{ [key: string]: string }>;
   getFirstVotingCycleStartDate(): Promise<number>;
   getMinTotalQuizCheckAnswers(): Promise<number>;
   getMinPercentageOfVotes(): Promise<number>;
