@@ -159,6 +159,7 @@ const mockContract = {
   electionsStartDate: jest.fn(() => Promise.resolve(BigInt(0))),
   electionsEndDate: jest.fn(() => Promise.resolve(BigInt(0))),
   getPoliticalActorsSize: jest.fn(() => Promise.resolve(BigInt(3))),
+  updateCitizenshipApplicationFee: jest.fn(() => Promise.resolve()),
   scheduleNextElections: jest.fn(() => Promise.resolve()),
   scheduleNewVoting: jest.fn(() => Promise.resolve()),
   setFirstVotingCycleStartDate: jest.fn(() => Promise.resolve()),
@@ -193,6 +194,24 @@ jest.mock('@hooks/context/userContext/UserContext', () => ({
 describe('useContract', () => {
   it('should exists', () => {
     expect(useContract).toBeDefined();
+  });
+
+  updateCitizenshipApplicationFee;
+
+  describe('Global variables', () => {
+    describe('updateCitizenshipApplicationFee', () => {
+      it('should call updateCitizenshipApplicationFee with new amount', async () => {
+        const { updateCitizenshipApplicationFee } = useContract();
+
+        await updateCitizenshipApplicationFee(
+          BigInt(1000000000)
+        );
+
+        expect(mockContract.updateCitizenshipApplicationFee).toHaveBeenCalledWith(
+          BigInt(1000000000)
+        );
+      });
+    });
   });
 
   describe('roles', () => {

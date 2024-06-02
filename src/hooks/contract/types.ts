@@ -84,6 +84,8 @@ export interface ContractInteractionProps {
     publicKey: AddressLike, applicationHash: BytesLike): Promise<boolean>;
   isThereOngoingElections(): Promise<boolean>;
   isVotingWon(votingKey: BytesLike, voteOnA: boolean): Promise<boolean>;
+  updateCitizenshipApplicationFee(amount: bigint): Promise<void>,
+  updateElectionsApplicationFee(amount: bigint): Promise<void>,
   scheduleNextElections(fromDate: number, toDate: number): Promise<void>;
   scheduleNewVoting(ipfsHash: string, startDate: number, targetBudget: number): Promise<void>;
   setFirstVotingCycleStartDate(date: number): Promise<void>;

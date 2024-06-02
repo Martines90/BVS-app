@@ -16,6 +16,16 @@ const useContract = (): ContractInteractionProps => {
 
   const { contract } = userState;
 
+  // global variables
+
+  const updateCitizenshipApplicationFee = async (amount: bigint) => {
+    await contract?.updateCitizenshipApplicationFee(amount);
+  };
+
+  const updateElectionsApplicationFee = async (amount: bigint) => {
+    await contract?.updateElectionsApplicationFee(amount);
+  };
+
   // Roles
   const applyForCitizenshipRole = async (
     applicantEmailPubKeyHash: BytesLike,
@@ -504,6 +514,8 @@ const useContract = (): ContractInteractionProps => {
     grantCitizenRole,
     hasRole,
     isVotingWon,
+    updateCitizenshipApplicationFee,
+    updateElectionsApplicationFee,
     scheduleNextElections,
     scheduleNewVoting,
     setFirstVotingCycleStartDate,

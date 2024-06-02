@@ -17,7 +17,9 @@ export const nthFormat = (n: number) => {
 
 export const weiToGwei = (amount: bigint | number) => BigInt(amount) / BigInt(ONE_GWEI);
 
-export const gweiToWei = (amount: bigint | number) => BigInt(amount) * BigInt(ONE_GWEI);
+export const gweiToWei = (amount: bigint | number) => (
+  amount > 1 ? BigInt(amount) * BigInt(ONE_GWEI) : BigInt(Number(amount) * ONE_GWEI)
+);
 
 export const weiToGweiDecimal = (amount: bigint | number) => Number(
   (BigInt(amount) * BigInt(1000000)) / BigInt(ONE_GWEI)

@@ -75,7 +75,7 @@ const ConstantsPage = () => {
               onChange={
                 (e) => {
                   setCitizenshipApplicationFee(
-                    gweiToWei(BigInt(e.target.value))
+                    gweiToWei(Number(e.target.value))
                   );
                 }
               }
@@ -99,7 +99,7 @@ const ConstantsPage = () => {
               onChange={
                 (e) => {
                   setElectionsCandidateApplicationFee(
-                    gweiToWei(BigInt(e.target.value))
+                    gweiToWei(Number(e.target.value))
                   );
                 }
               }
