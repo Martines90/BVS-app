@@ -3,6 +3,10 @@ import { lazy } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // community
+const ContactsPage = lazy(
+  () => import('@pages/community/contacts/ContactsPage')
+);
+
 const ApplyForCitizenshipPage = lazy(
   () => import('@pages/community/apply-for-citizenship/ApplyForCitizenshipPage')
 );
@@ -86,6 +90,10 @@ const HashRoutes = ({ mainPageName }: { mainPageName: string }) => {
   const { hash } = useLocation();
 
   // community
+  if (hash.includes('#contacts')) {
+    return <ContactsPage />;
+  }
+
   if (hash.includes('#citizens')) {
     return <CitizensPage />;
   }

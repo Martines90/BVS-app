@@ -11,8 +11,7 @@ import {
 import { useEffect, useState } from 'react';
 
 const labelCssSettings = {
-  minWidth: '220px',
-  lineHeight: '24px'
+  minWidth: '110px'
 };
 
 type Contact = {
@@ -20,7 +19,7 @@ type Contact = {
   value?: string
 };
 
-const ConstantsPage = () => {
+const ContactsPage = () => {
   const { getContacts, updateContactAtKey } = useContract();
   const [contacts, setContacts] = useState<{ [key: string]: string }>({});
   const [newContact, setNewContact] = useState<Contact>({});
@@ -131,4 +130,4 @@ const ConstantsPage = () => {
   );
 };
 
-export default ConstantsPage;
+export default ContactsPage;
