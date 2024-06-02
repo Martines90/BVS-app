@@ -1,11 +1,21 @@
 import { MOCK_CONTACTS, mockContractFunctions } from '@mocks/contract-mocks';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act, render, screen } from 'test-utils';
+import React from 'react';
+import { act, screen } from 'test-utils';
 import ContactsPage from './ContactsPage';
 
 jest.mock('@hooks/contract/useContract', () => ({
   __esModule: true,
   default: () => mockContractFunctions
+}));
+
+jest.mock('@hooks/context/userContext/UserContext', () => ({
+  useUserContext: () => ({
+    userState: {
+      mode: 'administrator'
+    }
+  })
 }));
 
 describe('ContactsPage', () => {
@@ -21,7 +31,7 @@ describe('ContactsPage', () => {
         ({ container } = render(<ContactsPage />));
       });
 
-      expect(screen.queryByText('Contacts')).toBeInTheDocument();
+      expect(screen.queryAllByText('Contacts').length).toBe(2);
 
       expect(mockContractFunctions.getContacts).toHaveBeenCalled();
 

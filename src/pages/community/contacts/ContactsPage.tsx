@@ -3,10 +3,13 @@ import SubTitle from '@components/general/SubTitle/SubTitle';
 import PageContainer from '@components/pages/components/PageContainer';
 import PageTitle from '@components/pages/components/PageTitle';
 import { showSuccessToast } from '@components/toasts/Toasts';
+import { USER_MODES } from '@global/types/user';
+import { useUserContext } from '@hooks/context/userContext/UserContext';
 import useContract from '@hooks/contract/useContract';
 import asyncErrWrapper from '@hooks/error-success/asyncErrWrapper';
 import {
-  Box, Button, Stack, TextField
+  Box, Button, Stack, TextField,
+  Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -21,6 +24,7 @@ type Contact = {
 
 const ContactsPage = () => {
   const { getContacts, updateContactAtKey } = useContract();
+  const { userState } = useUserContext();
   const [contacts, setContacts] = useState<{ [key: string]: string }>({});
   const [newContact, setNewContact] = useState<Contact>({});
 
@@ -48,6 +52,8 @@ const ContactsPage = () => {
     });
   };
 
+  const isAdmin = userState.mode === USER_MODES.ADMINISTRATOR;
+
   return (
     <PageContainer>
       <PageTitle>
@@ -55,16 +61,18 @@ const ContactsPage = () => {
       </PageTitle>
       <Box sx={{ p: 2 }}>
         <Stack spacing={2}>
-          <SubTitle text="Add new contact" />
-          <Stack direction="row" spacing={2}>
-            <Label text="New contact:" css={labelCssSettings} />
-            <TextField
-              label="Contact key"
-              placeholder="Contact key"
-              name="new-contact-key"
-              fullWidth
-              value={newContact.key || ''}
-              onChange={
+          {isAdmin && (
+          <Stack spacing={2}>
+            <SubTitle text="Add new contact" />
+            <Stack direction="row" spacing={2}>
+              <Label text="New contact:" css={labelCssSettings} />
+              <TextField
+                label="Contact key"
+                placeholder="Contact key"
+                name="new-contact-key"
+                fullWidth
+                value={newContact.key || ''}
+                onChange={
                 (e) => {
                   setNewContact({
                     ...newContact,
@@ -72,14 +80,14 @@ const ContactsPage = () => {
                   });
                 }
               }
-            />
-            <TextField
-              label="Contact value"
-              placeholder="Contact value"
-              name="new-contact-value"
-              fullWidth
-              value={newContact.value || ''}
-              onChange={
+              />
+              <TextField
+                label="Contact value"
+                placeholder="Contact value"
+                name="new-contact-value"
+                fullWidth
+                value={newContact.value || ''}
+                onChange={
                 (e) => {
                   setNewContact({
                     ...newContact,
@@ -87,20 +95,25 @@ const ContactsPage = () => {
                   });
                 }
               }
-            />
-            <Button
-              sx={{ width: '160px' }}
-              variant="contained"
-              onClick={addNewContact}
-            >
-              CREATE
-            </Button>
+              />
+              <Button
+                sx={{ width: '160px' }}
+                variant="contained"
+                onClick={addNewContact}
+              >
+                CREATE
+              </Button>
+            </Stack>
           </Stack>
-          <SubTitle text="Already existing contacts" />
+          )}
+          <SubTitle text="Contacts" />
+          {Object.keys(contacts).length === 0
+            && <Typography>No contacts added yet</Typography>}
           {Object.keys(contacts).map((key) => (
             <Stack key={key} direction="row" spacing={2}>
               <Label text={key} css={labelCssSettings} />
               <TextField
+                disabled={!isAdmin}
                 label="Contact value"
                 placeholder="Contact value"
                 name={`${key}-value`}
@@ -115,6 +128,8 @@ const ContactsPage = () => {
                   }
                 }
               />
+              {isAdmin
+              && (
               <Button
                 sx={{ width: '160px' }}
                 variant="contained"
@@ -122,6 +137,7 @@ const ContactsPage = () => {
               >
                 UPDATE
               </Button>
+              )}
             </Stack>
           ))}
         </Stack>
